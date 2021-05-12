@@ -13,3 +13,4 @@
 **/.DS_Store
 /api.txt
 /pom.xml
+/target/
