@@ -11,3 +11,5 @@
 /.idea/
 /Assignment2.iml
 **/.DS_Store
+/api.txt
+/pom.xml
