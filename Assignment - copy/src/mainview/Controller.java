@@ -11,10 +11,10 @@ import model.User;
 public class Controller {
     private Display display;
     private User user;
-    // private List<Bid> bids;
+    private List<Bid> initiatedBids, allBids;
     // private List<Message> messages;
     // private List<Contract> contracts;
-
+    private View homeView;
     public Controller() {
         this.start();
     }
@@ -35,7 +35,10 @@ public class Controller {
     			}
     			if (!(user == null)) {
                     display.removePanel(authView.panel);
-    				(new HomeView(display, user)).display();
+                    initModels();
+                    initViews();
+                    homeView.display();
+    				// (new HomeView(display, user)).display();
     			} else {
 					Utils.INVALID_USER.show();
 				}
@@ -43,6 +46,17 @@ public class Controller {
         });
 
         authView.display();
+    }
+
+    private void initModels() {
+        assert (this.user != null);
+        this.initiatedBids = user.getInitiatedBids();
+        this.allBids = Bid.getAll();
+        
+    }
+
+    private void initViews() {
+        assert (this.user != null);
     }
 
 }
