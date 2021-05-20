@@ -7,14 +7,19 @@ import model.Bid;
 import model.Contract;
 import model.Message;
 import model.User;
+import studentview.StudentAllBidsView;
+import studentview.StudentAllContractsView;
+import studentview.StudentView;
 
 public class Controller {
     private Display display;
     private User user;
     private List<Bid> initiatedBids, allBids;
     // private List<Message> messages;
-    // private List<Contract> contracts;
-    private View homeView;
+    private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
+    private View homeView, studentAllBidsView,
+        studentAllContractView,
+        studentView;
     public Controller() {
         this.start();
     }
@@ -52,11 +57,16 @@ public class Controller {
         assert (this.user != null);
         this.initiatedBids = user.getInitiatedBids();
         this.allBids = Bid.getAll();
-        
+        this.contractsAsFirstParty = Contract.getAllContractsAsFirstParty(this.user.getId());
+        this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
     }
 
     private void initViews() {
         assert (this.user != null);
+        this.homeView = new HomeView(display, user);
+        this.studentView = new StudentView(display, user);
+        this.studentAllBidsView = new StudentAllBidsView(display, user);
+        this.studentAllContractView = new StudentAllContractsView(display, user);
     }
 
 }

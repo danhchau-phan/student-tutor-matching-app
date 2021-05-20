@@ -20,7 +20,7 @@ import model.User;
 /**
  * View that displays all contracts where this Student is first party
  */
-class StudentAllContractsView extends StudentView {
+public class StudentAllContractsView extends StudentView {
 	public static final int CONTRACT_QUOTA = 5; 
 	public StudentAllContractsView(Display display, User user) {
 		super(display, user);

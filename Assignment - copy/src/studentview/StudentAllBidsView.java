@@ -17,7 +17,7 @@ import model.Bid;
 /**
  * View that allows the Student to see all unexpired and unclosed match requests created by them
  */
-class StudentAllBidsView extends StudentView {
+public class StudentAllBidsView extends StudentView {
 	List<Bid> bids;
 	public StudentAllBidsView(Display display, User user) {
 		super(display, user);
