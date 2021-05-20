@@ -10,6 +10,7 @@ import java.awt.FlowLayout;
 public class HomeView extends View {
 
 	private User user;
+	
 	/**
 		 * Home view which directs user to different site
 		 * @param display the shared display
@@ -22,11 +23,10 @@ public class HomeView extends View {
 	}
 
 	protected void placeComponents() {
-
 		JPanel panel = createPanel(new FlowLayout());
 		JButton studentButton = new JButton("Student site");
-		
-        JButton tutorButton = new JButton("Tutor site");
+		JButton tutorButton = new JButton("Tutor site");
+		JButton logOut = new JButton("Log out");
         
         if (user.isStudent()) { 
         	panel.add(studentButton);
@@ -35,11 +35,10 @@ public class HomeView extends View {
         if (user.isTutor()) {
         	panel.add(tutorButton);
         	addSwitchPanelListener(panel, tutorButton, new TutorView(display, user));
-        }
+        }  
         
-        JButton logOut = new JButton("Log out");
         panel.add(logOut);
-        addSwitchPanelListener(panel, logOut, new AuthenticationView(display));
+        // addSwitchPanelListener(panel, logOut, new AuthenticationView(display));
         this.display.setVisible();
 	}
 }

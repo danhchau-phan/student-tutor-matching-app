@@ -16,7 +16,7 @@ public class Contract implements Model {
 	private String id;
 	private User firstParty, secondParty;
 	private Subject subject;
-	private Date dateCreated, dateSigned, expiryDate;
+	private Date dateCreated, dateSigned, expiryDate, terminationDate;
 	
 	private ContractAddInfo addInfo;
 	private static final int YEAR_IN_MILLIS = 3600 * 24 * 365 * 1000;

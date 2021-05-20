@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 /**
@@ -48,6 +49,8 @@ public abstract class View {
 		};
 		comp.addMouseListener(mouseListener);
 	}
-	
 
+	protected void addMouseListener(JComponent component, MouseClickListener listener) {
+		component.addMouseListener(listener);
+	}
 }

@@ -28,4 +28,8 @@ public class Display {
 	public void removePanel(JComponent panel) {
 		frame.remove(panel);
 	}
+
+	public void removeAll() {
+		frame.removeAll();
+	}
 }
