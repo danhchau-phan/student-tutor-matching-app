@@ -23,7 +23,7 @@ import model.Subject;
 /**
  * View where the Student creates a match request
  */
-class CreateRequestView extends StudentView {
+public class CreateRequestView extends StudentView {
 	JRadioButton openBid = new JRadioButton("Open");
     JRadioButton closeBid = new JRadioButton("Close");
     ButtonGroup bidType = new ButtonGroup();
