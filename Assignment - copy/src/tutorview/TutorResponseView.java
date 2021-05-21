@@ -9,11 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 
-import mainview.Display;
-import mainview.ListPanel;
-import mainview.MouseClickListener;
-import mainview.Utils;
-import mainview.View;
+import mainview.*;
 import model.Bid;
 import model.BidResponse;
 import model.Contract;
@@ -27,7 +23,7 @@ import java.awt.FlowLayout;
  * If the match request is type open, the Tutor sees all competing bids from other Tutors.
  * If the match request is type close, the Tutor is redirected to TutorMessageView.
  */
-class TutorResponseView extends TutorView {
+class TutorResponseView extends TutorView implements BidsPanel {
 	private Bid bid;
 
 	public TutorResponseView(Display display, User user, Bid bid) {
@@ -94,4 +90,8 @@ class TutorResponseView extends TutorView {
 		}
 	}
 
+	@Override
+	public void runBidPanel(List<Bid> bidCollection) {
+
+	}
 }

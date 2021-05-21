@@ -4,18 +4,22 @@ import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * Factory class for all views
  */
 public abstract class View {
-	protected Display display;
+	private JFrame frame;
+	public static final int FRAME_WIDTH = 500;
+	public static final int FRAME_HEIGHT = 500;
 	protected JButton homeButton = new JButton("Home");
 	
-	public View(Display display) {
-		this.display = display;
+	public View() {
+//		this.display = display;
+		frame = new JFrame("TimTam App");
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	public void display() {
@@ -36,18 +40,10 @@ public abstract class View {
 	}
 	
 	protected abstract void placeComponents();
-	
-	protected void addSwitchPanelListener(JPanel panel, Component comp, View view) {
-		MouseListener mouseListener = new MouseClickListener() {
 
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				display.removePanel(panel);
-				view.display();
-			}
-		};
+	public void addSwitchPanelListener(JPanel panel, Component comp, View view) {
+
 		comp.addMouseListener(mouseListener);
 	}
-	
 
 }

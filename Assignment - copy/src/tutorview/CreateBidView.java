@@ -2,6 +2,7 @@ package tutorview;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -11,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import mainview.BidsPanel;
 import mainview.Display;
 import mainview.MouseClickListener;
 import mainview.Utils;
@@ -21,8 +23,7 @@ import model.Bid;
 /**
  * This is the View where the Tutor creates the bid in open bidding
  */
-class CreateBidView extends TutorView {
-	private Bid bid;
+public class CreateBidView extends TutorView implements BidsPanel  {
 	private JLabel rateLb = new JLabel("Rate");
 	private JLabel durationLb = new JLabel("Duration");
 	private JLabel timeDateLb = new JLabel("Time and Date"); // Wednesday 2PM
@@ -58,20 +59,23 @@ class CreateBidView extends TutorView {
     yes.setSelected(true);
     }
 	
-	public CreateBidView(Display display, User user, Bid bid) {
+	public CreateBidView(Display display, User user) {
 		super(display, user);
-		this.bid = bid;
 	}
 	
 	protected void placeComponents() {
 		super.placeComponents();
+	}
+
+	@Override
+	public void runBidPanel(List<Bid> bidCollection) {
 		JPanel midPanel = createPanel();
 		GroupLayout groupLayout = new GroupLayout(midPanel);
 		midPanel.setLayout(groupLayout);
 		midPanel.setBackground(Color.green);
-		
+
 		main.add(midPanel);
-		
+
 		groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup()
 						.addComponent(rateLb)
@@ -92,7 +96,7 @@ class CreateBidView extends TutorView {
 								.addComponent(yes)
 								.addComponent(no))
 						.addComponent(addInfo)));
-		
+
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup()
 						.addComponent(rateLb)
@@ -115,45 +119,49 @@ class CreateBidView extends TutorView {
 				.addGroup(groupLayout.createParallelGroup()
 						.addComponent(addInfoLb)
 						.addComponent(addInfo))
-				);
+		);
 		JPanel bottomPanel = createPanel();
-        bottomPanel.setBackground(Color.red);
-        main.add(bottomPanel, BorderLayout.SOUTH);
-        JButton createBid = new JButton("Create Bid"); 
+		bottomPanel.setBackground(Color.red);
+		main.add(bottomPanel, BorderLayout.SOUTH);
+		JButton createBid = new JButton("Create Bid");
 		bottomPanel.add(createBid);
-		
-		createBid.addMouseListener(new MouseClickListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String r = rate.getText();
-				String rT = rateType.getSelection().getActionCommand();
-				String d = duration.getText();
-				String tD = timeDate.getText();
-				String s = sessionsPerWeek.getText();
-				String a = addInfo.getText();
-				boolean f = freeLesson.getSelection().getActionCommand() == "yes"? true : false;
-				try {
-					BidResponse response = new BidResponse(
-							user.getId(),
-							user.getFullName(),
-							r,
-							rT,
-							d,
-							tD,
-							s,
-							a,
-							f);
-					bid.addResponse(response);
-					Utils.SUCCESS_BID_CREATION.show();
-				} catch (NumberFormatException nfe) {
-					Utils.INVALID_FIELDS.show();
-				} catch (NullPointerException npe) {
-					Utils.PLEASE_FILL_IN.show();
-				}
-			}
-			});
-		
+
+//		createBid.addMouseListener(new MouseClickListener() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				String r = rate.getText();
+//				String rT = rateType.getSelection().getActionCommand();
+//				String d = duration.getText();
+//				String tD = timeDate.getText();
+//				String s = sessionsPerWeek.getText();
+//				String a = addInfo.getText();
+//				boolean f = freeLesson.getSelection().getActionCommand() == "yes"? true : false;
+//				try {
+//					BidResponse response = new BidResponse(
+//							user.getId(),
+//							user.getFullName(),
+//							r,
+//							rT,
+//							d,
+//							tD,
+//							s,
+//							a,
+//							f);
+//					bid.addResponse(response);
+//
+//					// Add to response collection
+//
+//
+//
+//					Utils.SUCCESS_BID_CREATION.show();
+//				} catch (NumberFormatException nfe) {
+//					Utils.INVALID_FIELDS.show();
+//				} catch (NullPointerException npe) {
+//					Utils.PLEASE_FILL_IN.show();
+//				}
+//			}
+//		});
+
 		this.display.setVisible();
 	}
-
 }

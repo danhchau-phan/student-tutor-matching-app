@@ -33,4 +33,5 @@ public class TutorView extends View implements NavigationPane{
 		showNavigationPane(display, main, new JButton[]{homeButton, viewAllBids, viewContracts});
 		this.display.setVisible();
 	}
+
 }
