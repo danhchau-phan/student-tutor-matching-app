@@ -25,7 +25,13 @@ public class StudentMessageView extends JPanel implements MessageView{
 
 	private Message message;
 	private Bid bid;
-	public StudentMessageView(Display display, User user, Message message, Bid bid) {
+	private JButton send = new JButton("Send");
+	private JButton selectBid = new JButton("Select bid");
+	private User user;
+	private JTextField chatBox;
+
+	public StudentMessageView(User user, Message message, Bid bid) {
+		this.user = user;
 		this.bid = bid;
 		this.message = message;
 	}
@@ -40,43 +46,29 @@ public class StudentMessageView extends JPanel implements MessageView{
 		JPanel chatArea = new JPanel();
 		chatArea.setLayout(new BorderLayout());
 
-		JTextField chatBox = this.getChatBox();
+		chatBox = this.getChatBox();
 		chatArea.add(chatBox);
 
-		JButton send = new JButton("Send");
-		JButton selectBid = new JButton("Select bid");
 		JPanel bTs = new JPanel();
 		bTs.setLayout(new BoxLayout(bTs, BoxLayout.Y_AXIS));
 		bTs.add(send);
 		bTs.add(selectBid);
 
 		chatArea.add(bTs, BorderLayout.EAST);
-
-		send.addMouseListener(new MouseClickListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String content = chatBox.getText();
-				mS.addNewMessage(content, user.getUsername());
-				chatBox.setText("");
-				display.removePanel(main);
-				(new StudentMessageView(display, user, message, bid)).display();
-			}});
 		
-		selectBid.addMouseListener(new MouseClickListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Contract.postContract(user.getId(), 
-						message.getPosterId(), 
-						bid.getSubject().getId(),
-						new ContractAddInfo(true, false));
-				Bid.closeDownBid(bid.getId());
-				Utils.SUCCESS_CONTRACT_CREATION.show();
-				
-			}});
-		
-		main.add(log, BorderLayout.CENTER);
-		main.add(chatArea, BorderLayout.SOUTH);
-		this.display.setVisible();
+		this.add(log, BorderLayout.CENTER);
+		this.add(chatArea, BorderLayout.SOUTH);
 	}
 
+	public String getChatContent() {
+		return this.chatBox.getText();
+	}
+
+	public void setSendMessageListener(MouseClickListener listener) {
+		this.send.addMouseListener(listener);
+	}
+
+	public void setSelectBidListener(MouseClickListener listener) {
+		this.selectBid.addMouseListener(listener);
+	}
 }

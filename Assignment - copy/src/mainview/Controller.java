@@ -33,9 +33,9 @@ public class Controller {
     private StudentResponseView studentResponse;
     private StudentMessageView studentMessage;
     private Bid activeBid;
-
+    private Message activeMessage;
     
-    private HashMap<EventType, List<Observer>> observers;
+    // private HashMap<EventType, List<Observer>> observers;
 
     public Controller() {
         this.start();
@@ -120,7 +120,7 @@ public class Controller {
             public void mouseClicked(MouseEvent e) {
                 int id = studentAllBids.getSelectedIndex();
                 activeBid = initiatedBids.get(id);
-                studentResponse = new StudentResponseView(user, activeBid);
+                studentResponse = new StudentResponseView(activeBid);
                 studentResponse.setResponseListener(new ResponseListener());
 
                 if (studentView.activePanel != null) {
@@ -132,6 +132,8 @@ public class Controller {
 				display.setVisible();
             }
         });
+    
+        studentAllContracts.setSignContractListener(new SignContractListener());
     }
 
     private void subscribeViews() {
@@ -143,14 +145,8 @@ public class Controller {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (activeBid.getType() == Bid.BidType.close) {
-                studentMessage = new StudentMessageView(display, user, studentResponse.getSelectedMessage(), activeBid);
-                if (studentView.activePanel != null) {
-					studentView.main.remove(studentView.activePanel);
-				}
-				studentView.main.add(studentMessage);
-				studentView.activePanel = studentMessage;
-				display.createPanel(studentView.main);
-				display.setVisible();
+                activeMessage = studentResponse.getSelectedMessage();
+                showStudentMessagePanel();
             } else {
                 BidResponse selectedResponse = studentResponse.getSelectedResponse();
                 Contract.postContract(user.getId(), 
@@ -162,5 +158,47 @@ public class Controller {
             }
         }
 
+    }
+
+    class SendMessageListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            String content = studentMessage.getChatContent();
+            activeMessage.addNewMessage(content, user.getUsername());
+            showStudentMessagePanel();
+        }
+    }
+
+    private void showStudentMessagePanel() {
+        studentMessage = new StudentMessageView(user, activeMessage, activeBid);
+        studentMessage.setSendMessageListener(new SendMessageListener());
+        studentMessage.setSelectBidListener(new SelectBidListener());
+
+        if (studentView.activePanel != null) {
+            studentView.main.remove(studentView.activePanel);
+        }
+        studentView.main.add(studentMessage);
+        studentView.activePanel = studentMessage;
+        display.createPanel(studentView.main);
+        display.setVisible();
+    }
+
+    class SelectBidListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            Contract.postContract(user.getId(), 
+						activeMessage.getPosterId(), 
+						activeBid.getSubject().getId(),
+						new ContractAddInfo(true, false));
+				Bid.closeDownBid(activeBid.getId());
+				Utils.SUCCESS_CONTRACT_CREATION.show();
+        }
+    }
+
+    class SignContractListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
+        
     }
 }

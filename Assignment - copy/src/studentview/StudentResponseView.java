@@ -1,27 +1,19 @@
 package studentview;
 import java.awt.BorderLayout;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
-import mainview.ListPanel;
 import mainview.MouseClickListener;
-import mainview.Utils;
 import model.Bid;
 import model.BidResponse;
-import model.Contract;
-import model.ContractAddInfo;
 import model.Message;
-import model.User;
 import java.awt.Component;
 
 /**
@@ -31,16 +23,14 @@ import java.awt.Component;
  */
 public class StudentResponseView extends JPanel {
 	private Bid bid;
-	private User user;
 	private JList<BidResponse> responseList;
 	private JList<Message> messageList;
 	private List<BidResponse> responses;
 	private List<Message> messages;
 	
-	public StudentResponseView(User user, Bid bid) {
+	public StudentResponseView(Bid bid) {
 		super(new BorderLayout());
 		this.bid = bid;
-		this.user = user;
 		placeComponents();
 	}
 	

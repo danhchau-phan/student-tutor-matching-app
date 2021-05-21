@@ -22,7 +22,7 @@ import model.Contract;
  */
 public class StudentAllContracts extends JPanel {
 	public static final int CONTRACT_QUOTA = 5; 
-	private JList<JPanel> contractList;
+	private JList<Contract> contractList;
 	List<Contract> contracts;
 	public StudentAllContracts(List<Contract> contracts) {
 		super(new BorderLayout());
@@ -83,7 +83,7 @@ public class StudentAllContracts extends JPanel {
 		this.add(scrollp);
 	}
 
-	public void setContractListener(MouseClickListener listener) {
+	public void setSignContractListener(MouseClickListener listener) {
 		contractList.addMouseListener(listener);
 	}
 }
