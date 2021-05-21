@@ -26,11 +26,10 @@ public class StudentAllContracts extends JPanel {
 		super(new BorderLayout());
 		this.setBackground(Color.CYAN);
 		this.contracts = contracts;
+		placeComponents();
 	}
 	
-	protected void placeComponents() {
-		// List<Contract> contracts = new ArrayList<Contract>();
-		// contracts = Contract.getAllContractsAsFirstParty(user.getId());
+	private void placeComponents() {
 		
 		List<JComponent> comp = new ArrayList<JComponent>();
 		

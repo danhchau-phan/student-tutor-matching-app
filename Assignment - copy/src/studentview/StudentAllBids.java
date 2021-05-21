@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 
 import mainview.ListPanel;
 import mainview.MouseClickListener;
-import model.User;
 import model.Bid;
 
 /**
@@ -22,19 +21,15 @@ import model.Bid;
  */
 public class StudentAllBids extends JPanel{
 	List<Bid> bids;
-	// User user;
 
 	public StudentAllBids(List<Bid> bids) {
 		super(new BorderLayout());
 		this.setBackground(Color.BLUE);
-		// this.user = user;
 		this.bids = bids;
 		placeComponents();
 	}
 	
 	private void placeComponents() {
-
-		// bids = user.getInitiatedBids();
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		for (Bid b : bids) {
 			String text = b.toString();
@@ -59,4 +54,7 @@ public class StudentAllBids extends JPanel{
 		this.add(scrollp);
 	}
 
+	public void setListListener(MouseClickListener listener) {
+		
+	}
 }

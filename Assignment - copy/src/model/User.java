@@ -19,7 +19,7 @@ import mainview.Application;
 /**
  * This class models a User
  */
-public class User implements Model {
+public class User extends Observable implements Model {
 	private String id;
 
 	private String givenName;

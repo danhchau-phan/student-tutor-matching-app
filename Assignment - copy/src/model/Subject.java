@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * This class models a Subject
  */
-public class Subject implements Model {
+public class Subject extends Observable implements Model {
     @JsonProperty("id")
     private String id;
     @JsonProperty("name")

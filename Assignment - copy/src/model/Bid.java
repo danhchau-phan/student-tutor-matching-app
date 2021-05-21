@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * This class models a Bid
  */
-public class Bid implements Model{
+public class Bid extends Observable implements Model{
     @JsonProperty("id")
     private String id;
     @JsonProperty("type")

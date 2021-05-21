@@ -1,17 +1,21 @@
 package mainview;
 
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.List;
 
 import model.Bid;
 import model.BidAddInfo;
 import model.Contract;
+import model.EventType;
 import model.Message;
 import model.Subject;
 import model.User;
 import studentview.CreateRequest;
 import studentview.StudentAllBids;
 import studentview.StudentAllContracts;
+import studentview.StudentMessageView;
+import studentview.StudentResponseView;
 import studentview.StudentView;
 
 public class Controller {
@@ -24,6 +28,13 @@ public class Controller {
     private StudentAllContracts studentAllContracts;
     private CreateRequest createRequest;
     private StudentView studentView;
+    private StudentResponseView studentResponse;
+    private StudentMessageView studentMessage;
+    private Bid activeBid;
+
+    
+    private HashMap<EventType, List<Observer>> observers;
+
     public Controller() {
         this.start();
     }

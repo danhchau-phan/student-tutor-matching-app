@@ -10,7 +10,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import mainview.Display;
 import mainview.ListPanel;
 import mainview.MouseClickListener;
 import mainview.Utils;
