@@ -25,7 +25,7 @@ public class TutorAllBidsView extends TutorView implements Observer {
 
 	protected void placeComponents() {
 		super.placeComponents();
-		bids = Bid.getAll();
+		bids = (new Bid()).getAll();
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		
 		for (Bid b : bids) {
@@ -50,7 +50,7 @@ public class TutorAllBidsView extends TutorView implements Observer {
 
 	@Override
 	public void update() {
-		this.bids = Bid.getAll();
+		this.bids = (new Bid()).getAll();
 		this.placeComponents();
 	}
 }

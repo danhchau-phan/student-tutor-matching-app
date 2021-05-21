@@ -73,7 +73,7 @@ public class Controller {
 
     private void initModels() {
         assert (this.user != null);
-        this.allBids = Bid.getAll();
+        this.allBids = tempBid.getAll();
         this.contractsAsFirstParty = Contract.getAllContractsAsFirstParty(this.user.getId());
         this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
     }
@@ -137,6 +137,7 @@ public class Controller {
     private void subscribeViews() {
         tempBid.subscribe(studentAllBids);
         // tempBid.subscribe(tutorAllBids);
+
     }
 
     class ResponseListener implements MouseClickListener{
@@ -148,11 +149,13 @@ public class Controller {
                 showStudentMessagePanel();
             } else {
                 BidResponse selectedResponse = studentResponse.getSelectedResponse();
+                if (selectedResponse == null)
+                    return;
                 Contract.postContract(user.getId(), 
 								selectedResponse.getBidderId(), 
 								activeBid.getSubject().getId(),
 								new ContractAddInfo(true, false));
-                Bid.closeDownBid(activeBid.getId());
+                tempBid.closeDownBid(activeBid.getId());
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             }
         }
@@ -189,7 +192,7 @@ public class Controller {
 						activeMessage.getPosterId(), 
 						activeBid.getSubject().getId(),
 						new ContractAddInfo(true, false));
-				Bid.closeDownBid(activeBid.getId());
+				tempBid.closeDownBid(activeBid.getId());
 				Utils.SUCCESS_CONTRACT_CREATION.show();
         }
     }
