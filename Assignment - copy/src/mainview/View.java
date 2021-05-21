@@ -44,7 +44,7 @@ public abstract class View {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				display.removePanel(panel);
-				view.display();
+				// view.display();
 			}
 		};
 		comp.addMouseListener(mouseListener);

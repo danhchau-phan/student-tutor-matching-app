@@ -70,10 +70,13 @@ public class Controller {
         this.studentAllBidsView = new StudentAllBidsView(display, user);
         this.studentAllContractsView = new StudentAllContractsView(display, user);
 
+        homeView.addSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
+
         studentView.addSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
         studentView.addSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBidsView);
         studentView.addSwitchPanelListener(studentView.main, studentView.viewContracts, studentAllContractsView);
         studentView.addSwitchPanelListener(studentView.main, studentView.createBid, new CreateRequestView(display, user));
+        
     }
 
 }

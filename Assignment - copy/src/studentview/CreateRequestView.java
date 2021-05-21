@@ -60,6 +60,7 @@ public class CreateRequestView extends StudentView {
 	
 	public CreateRequestView(Display display, User user) {
 		super(display, user);
+		display();
 	}
 	
 	protected void placeComponents() {

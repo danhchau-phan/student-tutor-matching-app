@@ -11,7 +11,7 @@ public class Display {
 	 * 
 	 */
 	public Display() {
-		frame = new JFrame("TimTam App");
+		frame = new JFrame("Assignment 3");
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
