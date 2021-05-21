@@ -12,7 +12,7 @@ import mainview.Application;
 /**
  * This class models a Message (used in close bidding)
  */
-public class Message implements Model{
+public class Message extends Observable implements Model{
 	
 	private String id;
 	private String bidId;

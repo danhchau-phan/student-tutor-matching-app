@@ -7,10 +7,10 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import mainview.Display;
 import mainview.ListPanel;
 import mainview.MouseClickListener;
 import mainview.Utils;
@@ -26,16 +26,20 @@ import model.User;
  * If the match request is type open, the student can View all bids.
  * If the match request is type close, the student can View all incoming messages..
  */
-public class StudentResponseView extends StudentView {
+public class StudentResponseView extends JPanel {
 	private Bid bid;
+	private User user;
+	private JList<BidResponse> responseList;
+	private JList<Message> messageList;
 	
-	public StudentResponseView(Display display, User user, Bid bid) {
-		super(display, user);
+	public StudentResponseView(User user, Bid bid) {
+		super(new BorderLayout());
 		this.bid = bid;
+		this.user = user;
+		placeComponents();
 	}
 	
-	protected void placeComponents() {
-		super.placeComponents();
+	private void placeComponents() {
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		
 		if (bid.getType() == Bid.BidType.open) {
@@ -72,21 +76,27 @@ public class StudentResponseView extends StudentView {
 				eP.setText(m.toString());
 				panel.add(eP);
 				panel.add(bT, BorderLayout.EAST);
-				bT.addMouseListener(new MouseClickListener() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						display.removePanel(main);
-						(new StudentMessageView(display, user, m, bid)).display();
-					}}); 
+				// bT.addMouseListener(new MouseClickListener() {
+				// 	@Override
+				// 	public void mouseClicked(MouseEvent e) {
+				// 		display.removePanel(main);
+				// 		(new StudentMessageView(display, user, m, bid)).display();
+				// 	}}); 
 				panels.add(panel);
 			}
 		}
 		
 		JPanel midPanel = new ListPanel(panels);
-        main.add(midPanel);
+        this.add(midPanel);
 		JScrollPane scrollp = new JScrollPane(midPanel);
-		main.add(scrollp);
-		this.display.setVisible();
+		this.add(scrollp);
 	}
 
+	public void setOpenBidListener(MouseClickListener listener) {
+		if (bid.getType() == Bid.BidType.close) {
+			this.messageList.addMouseListener(listener);
+		} else {
+			this.responseList.addMouseListener(listener);
+		}
+	}
 }

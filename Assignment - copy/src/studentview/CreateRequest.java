@@ -1,7 +1,6 @@
 package studentview;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.MouseEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -12,19 +11,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import mainview.Display;
 import mainview.MouseClickListener;
-import mainview.Utils;
 import model.Bid;
-import model.BidAddInfo;
-import model.User;
 import model.Subject;
 
 /**
  * View where the Student creates a match request
  */
 public class CreateRequest extends JPanel {
-	private User user;
 	public JRadioButton openBid = new JRadioButton("Open");
     public JRadioButton closeBid = new JRadioButton("Close");
     public ButtonGroup bidType = new ButtonGroup();
@@ -61,9 +55,8 @@ public class CreateRequest extends JPanel {
 
 	private JButton createRequest = new JButton("Create Request"); 
 	
-	public CreateRequest(User user) {
+	public CreateRequest() {
 		super(new BorderLayout());
-		this.user = user;
 		placeComponents();
 	}
 	

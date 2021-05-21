@@ -21,7 +21,7 @@ import model.ContractAddInfo;
 /**
  * The View where Student chats with the Tutor in close bidding
  */
-class StudentMessageView extends StudentView implements MessageView{
+public class StudentMessageView extends StudentView implements MessageView{
 
 	private Message message;
 	private Bid bid;

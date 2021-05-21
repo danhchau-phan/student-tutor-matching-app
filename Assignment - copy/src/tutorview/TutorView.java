@@ -27,9 +27,9 @@ public class TutorView extends View implements NavigationPane{
 	protected void placeComponents() {
 		main = createPanel(new BorderLayout());
 		this.display.setVisible();
-		addSwitchPanelListener(main, homeButton, new HomeView(display, user));
-		addSwitchPanelListener(main, viewAllBids, new TutorAllBidsView(display, user));
-		addSwitchPanelListener(main, viewContracts, new TutorAllContractsView(display, user));
+		setSwitchPanelListener(main, homeButton, new HomeView(display, user));
+		setSwitchPanelListener(main, viewAllBids, new TutorAllBidsView(display, user));
+		setSwitchPanelListener(main, viewContracts, new TutorAllContractsView(display, user));
 		showNavigationPane(display, main, new JButton[]{homeButton, viewAllBids, viewContracts});
 		this.display.setVisible();
 	}

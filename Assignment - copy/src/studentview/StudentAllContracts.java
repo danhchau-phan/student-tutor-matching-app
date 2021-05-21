@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -15,23 +16,22 @@ import mainview.ListPanel;
 import mainview.MouseClickListener;
 import mainview.Utils;
 import model.Contract;
-import model.User;
 
 /**
  * View that displays all contracts where this Student is first party
  */
 public class StudentAllContracts extends JPanel {
 	public static final int CONTRACT_QUOTA = 5; 
-	User user;
-	public StudentAllContracts(User user) {
+	private JList<JPanel> contractList;
+	List<Contract> contracts;
+	public StudentAllContracts(List<Contract> contracts) {
 		super(new BorderLayout());
 		this.setBackground(Color.CYAN);
-		this.user = user;
+		this.contracts = contracts;
+		placeComponents();
 	}
 	
-	protected void placeComponents() {
-		List<Contract> contracts = new ArrayList<Contract>();
-		contracts = Contract.getAllContractsAsFirstParty(user.getId());
+	private void placeComponents() {
 		
 		List<JComponent> comp = new ArrayList<JComponent>();
 		
@@ -83,4 +83,7 @@ public class StudentAllContracts extends JPanel {
 		this.add(scrollp);
 	}
 
+	public void setContractListener(MouseClickListener listener) {
+		contractList.addMouseListener(listener);
+	}
 }

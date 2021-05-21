@@ -12,7 +12,7 @@ import mainview.Utils;
 /**
  * Class that models a Contract
  */
-public class Contract implements Model {
+public class Contract extends Observable implements Model {
 	private String id;
 	private User firstParty, secondParty;
 	private Subject subject;

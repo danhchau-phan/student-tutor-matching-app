@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import mainview.BidsPanel;
 import mainview.Display;
 import mainview.ListPanel;
 import model.Bid;
@@ -16,7 +15,7 @@ import model.User;
 /**
  * This is the View for Tutor to see all available (unclosed, unexpired) mathc requests
  */
-public class TutorAllBidsView extends TutorView {
+class TutorAllBidsView extends TutorView {
 	List<Bid> bids;
 	
 	public TutorAllBidsView(Display display, User user) {
@@ -27,7 +26,7 @@ public class TutorAllBidsView extends TutorView {
 		super.placeComponents();
 		bids = Bid.getAll();
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
-
+		
 		for (Bid b : bids) {
 			String text = b.toString();
 			JPanel panel = new JPanel();
@@ -35,17 +34,16 @@ public class TutorAllBidsView extends TutorView {
 			tA.setText(text);
 			panel.add(tA);
 			tA.setEditable(false);
-
-			this.addSwitchPanelListener(main, tA, new TutorResponseView(display, user, b));
+			
+			this.setSwitchPanelListener(main, tA, new TutorResponseView(display, user, b));
 			panels.add(panel);
 		}
-
+		
 		JPanel midPanel = new ListPanel(panels);
         main.add(midPanel);
 		JScrollPane scrollp = new JScrollPane(midPanel);
 		main.add(scrollp);
 		this.display.setVisible();
-//
+		
 	}
-
 }

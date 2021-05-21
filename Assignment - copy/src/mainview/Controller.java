@@ -1,30 +1,40 @@
 package mainview;
 
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.List;
 
 import model.Bid;
 import model.BidAddInfo;
 import model.Contract;
+import model.EventType;
 import model.Message;
 import model.Subject;
 import model.User;
 import studentview.CreateRequest;
 import studentview.StudentAllBids;
 import studentview.StudentAllContracts;
+import studentview.StudentMessageView;
+import studentview.StudentResponseView;
 import studentview.StudentView;
 
 public class Controller {
     private Display display;
     private User user;
     private List<Bid> initiatedBids, allBids;
-    // private List<Message> messages;
     private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
     private HomeView homeView;
     private StudentAllBids studentAllBids;
     private StudentAllContracts studentAllContracts;
     private CreateRequest createRequest;
     private StudentView studentView;
+    private StudentResponseView studentResponse;
+    private StudentMessageView studentMessage;
+    private Bid activeBid;
+
+    
+    private HashMap<EventType, List<Observer>> observers;
+
     public Controller() {
         this.start();
     }
@@ -47,6 +57,7 @@ public class Controller {
                     display.removePanel(authView.panel);
                     initModels();
                     initViews();
+                    subscribeViews();
                     homeView.display();
     			} else {
 					Utils.INVALID_USER.show();
@@ -69,20 +80,20 @@ public class Controller {
         assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.studentView = new StudentView(display, user);
-        this.studentAllBids = new StudentAllBids(user);
-        this.studentAllContracts = new StudentAllContracts(user);
-        this.createRequest = new CreateRequest(user);
+        this.studentAllBids = new StudentAllBids(initiatedBids);
+        this.studentAllContracts = new StudentAllContracts(contractsAsFirstParty);
+        this.createRequest = new CreateRequest();
 
-        homeView.addSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
-
-        studentView.addSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
-        studentView.addSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
-        studentView.addSwitchPanelListener(studentView.main, studentView.viewContracts,studentAllContracts);
-        studentView.addSwitchPanelListener(studentView.main, studentView.createBid, createRequest);
+        homeView.setSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
+        studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
+        studentView.setSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
+        studentView.setSwitchPanelListener(studentView.main, studentView.viewContracts,studentAllContracts);
+        studentView.setSwitchPanelListener(studentView.main, studentView.createBid, createRequest);
 
         createRequest.setCreateRequestListener(new MouseClickListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e) { 
+                // needs refactoring
 				String c = (String) createRequest.competency.getSelectedItem();
 				String h = createRequest.hourPerLesson.getText();
 				String ss = createRequest.sessionsPerWeek.getText();
@@ -100,8 +111,26 @@ public class Controller {
 					Utils.PLEASE_FILL_IN.show();
 				}
 			}});
+
+        studentAllBids.setListListener(new MouseClickListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int id = studentAllBids.getSelectedIndex();
+                activeBid = initiatedBids.get(id);
+                studentResponse = new StudentResponseView(user, activeBid);
+                if (studentView.activePanel != null) {
+					studentView.main.remove(studentView.activePanel);
+				}
+				studentView.main.add(studentResponse);
+				studentView.activePanel = studentResponse;
+				display.createPanel(studentView.main);
+				display.setVisible();
+            }
+        });
     }
 
-    
+    private void subscribeViews() {
+        // user.subscribe(studentAllBids);
+    }
 
 }
