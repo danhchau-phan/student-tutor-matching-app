@@ -45,7 +45,7 @@ public abstract class View {
 	 * 	comp: the component where listener is attached to
 	 * 	view: the view to be displayed
 	 */
-	protected void addSwitchPanelListener(JPanel panel, Component comp, View newView) {
+	protected void setSwitchPanelListener(JPanel panel, Component comp, View newView) {
 		MouseListener mouseListener = new MouseClickListener() {
 
 			@Override
@@ -58,7 +58,7 @@ public abstract class View {
 		comp.addMouseListener(mouseListener);
 	}
 
-	protected void addSwitchPanelListener(JPanel main, Component comp, JPanel newPanel) {
+	protected void setSwitchPanelListener(JPanel main, Component comp, JPanel newPanel) {
 		MouseListener mouseListener = new MouseClickListener() {
 
 			@Override

@@ -18,7 +18,6 @@ public class Controller {
     private Display display;
     private User user;
     private List<Bid> initiatedBids, allBids;
-    // private List<Message> messages;
     private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
     private HomeView homeView;
     private StudentAllBids studentAllBids;
@@ -69,20 +68,20 @@ public class Controller {
         assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.studentView = new StudentView(display, user);
-        this.studentAllBids = new StudentAllBids(user);
-        this.studentAllContracts = new StudentAllContracts(user);
-        this.createRequest = new CreateRequest(user);
+        this.studentAllBids = new StudentAllBids(initiatedBids);
+        this.studentAllContracts = new StudentAllContracts(contractsAsFirstParty);
+        this.createRequest = new CreateRequest();
 
-        homeView.addSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
-
-        studentView.addSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
-        studentView.addSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
-        studentView.addSwitchPanelListener(studentView.main, studentView.viewContracts,studentAllContracts);
-        studentView.addSwitchPanelListener(studentView.main, studentView.createBid, createRequest);
+        homeView.setSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
+        studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
+        studentView.setSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
+        studentView.setSwitchPanelListener(studentView.main, studentView.viewContracts,studentAllContracts);
+        studentView.setSwitchPanelListener(studentView.main, studentView.createBid, createRequest);
 
         createRequest.setCreateRequestListener(new MouseClickListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e) { 
+                // needs refactoring
 				String c = (String) createRequest.competency.getSelectedItem();
 				String h = createRequest.hourPerLesson.getText();
 				String ss = createRequest.sessionsPerWeek.getText();
@@ -100,6 +99,8 @@ public class Controller {
 					Utils.PLEASE_FILL_IN.show();
 				}
 			}});
+
+        
     }
 
     

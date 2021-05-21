@@ -35,7 +35,7 @@ class TutorAllBidsView extends TutorView {
 			panel.add(tA);
 			tA.setEditable(false);
 			
-			this.addSwitchPanelListener(main, tA, new TutorResponseView(display, user, b));
+			this.setSwitchPanelListener(main, tA, new TutorResponseView(display, user, b));
 			panels.add(panel);
 		}
 		

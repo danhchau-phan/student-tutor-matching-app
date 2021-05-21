@@ -26,16 +26,19 @@ import model.User;
  * If the match request is type open, the student can View all bids.
  * If the match request is type close, the student can View all incoming messages..
  */
-public class StudentResponseView extends StudentView {
+public class StudentResponseView extends JPanel {
 	private Bid bid;
+	private User user;
 	
-	public StudentResponseView(Display display, User user, Bid bid) {
-		super(display, user);
+	public StudentResponseView(User user, Bid bid) {
+		// super(display, user);
+		super(new BorderLayout());
 		this.bid = bid;
+		this.user = user;
 	}
 	
 	protected void placeComponents() {
-		super.placeComponents();
+		// super.placeComponents();
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		
 		if (bid.getType() == Bid.BidType.open) {
@@ -72,21 +75,20 @@ public class StudentResponseView extends StudentView {
 				eP.setText(m.toString());
 				panel.add(eP);
 				panel.add(bT, BorderLayout.EAST);
-				bT.addMouseListener(new MouseClickListener() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						display.removePanel(main);
-						(new StudentMessageView(display, user, m, bid)).display();
-					}}); 
+				// bT.addMouseListener(new MouseClickListener() {
+				// 	@Override
+				// 	public void mouseClicked(MouseEvent e) {
+				// 		display.removePanel(main);
+				// 		(new StudentMessageView(display, user, m, bid)).display();
+				// 	}}); 
 				panels.add(panel);
 			}
 		}
 		
 		JPanel midPanel = new ListPanel(panels);
-        main.add(midPanel);
+        this.add(midPanel);
 		JScrollPane scrollp = new JScrollPane(midPanel);
-		main.add(scrollp);
-		this.display.setVisible();
+		this.add(scrollp);
 	}
 
 }

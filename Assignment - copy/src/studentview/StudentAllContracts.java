@@ -15,23 +15,22 @@ import mainview.ListPanel;
 import mainview.MouseClickListener;
 import mainview.Utils;
 import model.Contract;
-import model.User;
 
 /**
  * View that displays all contracts where this Student is first party
  */
 public class StudentAllContracts extends JPanel {
 	public static final int CONTRACT_QUOTA = 5; 
-	User user;
-	public StudentAllContracts(User user) {
+	List<Contract> contracts;
+	public StudentAllContracts(List<Contract> contracts) {
 		super(new BorderLayout());
 		this.setBackground(Color.CYAN);
-		this.user = user;
+		this.contracts = contracts;
 	}
 	
 	protected void placeComponents() {
-		List<Contract> contracts = new ArrayList<Contract>();
-		contracts = Contract.getAllContractsAsFirstParty(user.getId());
+		// List<Contract> contracts = new ArrayList<Contract>();
+		// contracts = Contract.getAllContractsAsFirstParty(user.getId());
 		
 		List<JComponent> comp = new ArrayList<JComponent>();
 		

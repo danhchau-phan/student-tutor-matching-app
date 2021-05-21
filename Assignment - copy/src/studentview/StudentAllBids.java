@@ -10,8 +10,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.MouseEvent;
 
 import mainview.ListPanel;
+import mainview.MouseClickListener;
 import model.User;
 import model.Bid;
 
@@ -20,18 +22,19 @@ import model.Bid;
  */
 public class StudentAllBids extends JPanel{
 	List<Bid> bids;
-	User user;
+	// User user;
 
-	public StudentAllBids(User user) {
+	public StudentAllBids(List<Bid> bids) {
 		super(new BorderLayout());
 		this.setBackground(Color.BLUE);
-		this.user = user;
+		// this.user = user;
+		this.bids = bids;
 		placeComponents();
 	}
 	
 	private void placeComponents() {
 
-		bids = user.getInitiatedBids();
+		// bids = user.getInitiatedBids();
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		for (Bid b : bids) {
 			String text = b.toString();
@@ -40,7 +43,13 @@ public class StudentAllBids extends JPanel{
 			tA.setText(text);
 			panel.add(tA);
 			tA.setEditable(false);
-			
+			tA.addMouseListener(new MouseClickListener(){
+				@Override
+				public void mouseClicked(MouseEvent e) {
+										
+				}
+			});
+			// this.addSwitchPanelListener(main, tA, new StudentResponseView(display, user, b));
 			panels.add(panel);
 		}
 		

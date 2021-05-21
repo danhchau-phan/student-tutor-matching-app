@@ -24,7 +24,6 @@ import model.Subject;
  * View where the Student creates a match request
  */
 public class CreateRequest extends JPanel {
-	private User user;
 	public JRadioButton openBid = new JRadioButton("Open");
     public JRadioButton closeBid = new JRadioButton("Close");
     public ButtonGroup bidType = new ButtonGroup();
@@ -61,9 +60,8 @@ public class CreateRequest extends JPanel {
 
 	private JButton createRequest = new JButton("Create Request"); 
 	
-	public CreateRequest(User user) {
+	public CreateRequest() {
 		super(new BorderLayout());
-		this.user = user;
 		placeComponents();
 	}
 	
