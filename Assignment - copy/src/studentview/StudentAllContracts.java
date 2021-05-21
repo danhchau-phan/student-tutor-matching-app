@@ -1,5 +1,6 @@
 package studentview;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import mainview.Display;
 import mainview.ListPanel;
 import mainview.MouseClickListener;
 import mainview.Utils;
@@ -20,15 +20,16 @@ import model.User;
 /**
  * View that displays all contracts where this Student is first party
  */
-class StudentAllContractsView extends StudentView {
+public class StudentAllContracts extends JPanel {
 	public static final int CONTRACT_QUOTA = 5; 
-	public StudentAllContractsView(Display display, User user) {
-		super(display, user);
+	User user;
+	public StudentAllContracts(User user) {
+		super(new BorderLayout());
+		this.setBackground(Color.CYAN);
+		this.user = user;
 	}
 	
 	protected void placeComponents() {
-		super.placeComponents();
-		
 		List<Contract> contracts = new ArrayList<Contract>();
 		contracts = Contract.getAllContractsAsFirstParty(user.getId());
 		
@@ -59,7 +60,7 @@ class StudentAllContractsView extends StudentView {
 				bT.addMouseListener(new MouseClickListener() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						if (contractCnt >= StudentAllContractsView.CONTRACT_QUOTA) {
+						if (contractCnt >= StudentAllContracts.CONTRACT_QUOTA) {
 							Utils.REACHED_CONTRACT_LIMIT.show();
 						}
 						else {
@@ -77,10 +78,9 @@ class StudentAllContractsView extends StudentView {
 		}
 		
 		JPanel midPanel = new ListPanel(comp);
-        main.add(midPanel);
 		JScrollPane scrollp = new JScrollPane(midPanel);
-		main.add(scrollp);
-		this.display.setVisible();
+		this.add(midPanel);
+		this.add(scrollp);
 	}
 
 }

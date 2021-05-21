@@ -8,8 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.Color;
 
-import mainview.Display;
 import mainview.ListPanel;
 import model.User;
 import model.Bid;
@@ -17,14 +18,19 @@ import model.Bid;
 /**
  * View that allows the Student to see all unexpired and unclosed match requests created by them
  */
-class StudentAllBidsView extends StudentView {
+public class StudentAllBids extends JPanel{
 	List<Bid> bids;
-	public StudentAllBidsView(Display display, User user) {
-		super(display, user);
+	User user;
+
+	public StudentAllBids(User user) {
+		super(new BorderLayout());
+		this.setBackground(Color.BLUE);
+		this.user = user;
+		placeComponents();
 	}
 	
-	protected void placeComponents() {
-		super.placeComponents();
+	private void placeComponents() {
+
 		bids = user.getInitiatedBids();
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		for (Bid b : bids) {
@@ -35,16 +41,13 @@ class StudentAllBidsView extends StudentView {
 			panel.add(tA);
 			tA.setEditable(false);
 			
-			this.addSwitchPanelListener(main, tA, new StudentResponseView(display, user, b));
 			panels.add(panel);
 		}
 		
 		JPanel midPanel = new ListPanel(panels);
-
-        main.add(midPanel);
 		JScrollPane scrollp = new JScrollPane(midPanel);
-		main.add(scrollp);
-		this.display.setVisible();
+		this.add(midPanel);
+		this.add(scrollp);
 	}
 
 }

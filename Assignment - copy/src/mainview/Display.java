@@ -11,14 +11,14 @@ public class Display {
 	 * 
 	 */
 	public Display() {
-		frame = new JFrame("TimTam App");
+		frame = new JFrame("Assignment 3");
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	public void createPanel(JComponent panel) {
-        frame.add(panel);
-
+        // frame.add(panel);
+		frame.setContentPane(panel);
 	}
 	
 	public void setVisible() {
@@ -27,5 +27,14 @@ public class Display {
 	
 	public void removePanel(JComponent panel) {
 		frame.remove(panel);
+		frame.revalidate();
+		frame.repaint();
+	}
+
+	public void removeAll() {
+		// frame.removeAll();
+		frame.getContentPane().removeAll();
+		// frame.revalidate();
+		// frame.repaint();
 	}
 }

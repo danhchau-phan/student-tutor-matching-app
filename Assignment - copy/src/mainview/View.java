@@ -4,22 +4,20 @@ import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 /**
  * Factory class for all views
  */
 public abstract class View {
-	private JFrame frame;
-	public static final int FRAME_WIDTH = 500;
-	public static final int FRAME_HEIGHT = 500;
+	protected Display display;
 	protected JButton homeButton = new JButton("Home");
+	public JPanel activePanel;
 	
-	public View() {
-//		this.display = display;
-		frame = new JFrame("TimTam App");
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public View(Display display) {
+		this.display = display;
 	}
 	
 	public void display() {
@@ -40,10 +38,44 @@ public abstract class View {
 	}
 	
 	protected abstract void placeComponents();
+	
+	/**
+	 * @params:
+	 * 	panel: the panel where to be removed
+	 * 	comp: the component where listener is attached to
+	 * 	view: the view to be displayed
+	 */
+	protected void addSwitchPanelListener(JPanel panel, Component comp, View newView) {
+		MouseListener mouseListener = new MouseClickListener() {
 
-	public void addSwitchPanelListener(JPanel panel, Component comp, View view) {
-
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				display.removePanel(panel);
+				// display.removeAll();
+				newView.display();
+			}
+		};
 		comp.addMouseListener(mouseListener);
 	}
 
+	protected void addSwitchPanelListener(JPanel main, Component comp, JPanel newPanel) {
+		MouseListener mouseListener = new MouseClickListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (activePanel != null) {
+					main.remove(activePanel);
+				}
+				main.add(newPanel);
+				activePanel = newPanel;
+				display.createPanel(main);
+				display.setVisible();
+			}
+		};
+		comp.addMouseListener(mouseListener);
+	}
+
+	protected void addMouseListener(JComponent component, MouseClickListener listener) {
+		component.addMouseListener(listener);
+	}
 }

@@ -1,0 +1,107 @@
+package mainview;
+
+import java.awt.event.MouseEvent;
+import java.util.List;
+
+import model.Bid;
+import model.BidAddInfo;
+import model.Contract;
+import model.Message;
+import model.Subject;
+import model.User;
+import studentview.CreateRequest;
+import studentview.StudentAllBids;
+import studentview.StudentAllContracts;
+import studentview.StudentView;
+
+public class Controller {
+    private Display display;
+    private User user;
+    private List<Bid> initiatedBids, allBids;
+    // private List<Message> messages;
+    private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
+    private HomeView homeView;
+    private StudentAllBids studentAllBids;
+    private StudentAllContracts studentAllContracts;
+    private CreateRequest createRequest;
+    private StudentView studentView;
+    public Controller() {
+        this.start();
+    }
+
+    public void start() {
+        this.display = new Display();
+        AuthenticationView authView = new AuthenticationView(display);
+        
+        authView.addMouseListener(authView.loginButton, new MouseClickListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+    			String username = authView.getUserName();
+                String password = authView.getPassword();
+    			try {
+    				user = User.logIn(username, password);
+    			} catch (Exception exception) {
+    				exception.printStackTrace();
+    			}
+    			if (!(user == null)) {
+                    display.removePanel(authView.panel);
+                    initModels();
+                    initViews();
+                    homeView.display();
+    			} else {
+					Utils.INVALID_USER.show();
+				}
+			}
+        });
+
+        authView.display();
+    }
+
+    private void initModels() {
+        assert (this.user != null);
+        this.initiatedBids = user.getInitiatedBids();
+        this.allBids = Bid.getAll();
+        this.contractsAsFirstParty = Contract.getAllContractsAsFirstParty(this.user.getId());
+        this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
+    }
+
+    private void initViews() {
+        assert (this.user != null);
+        this.homeView = new HomeView(display, user);
+        this.studentView = new StudentView(display, user);
+        this.studentAllBids = new StudentAllBids(user);
+        this.studentAllContracts = new StudentAllContracts(user);
+        this.createRequest = new CreateRequest(user);
+
+        homeView.addSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
+
+        studentView.addSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
+        studentView.addSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
+        studentView.addSwitchPanelListener(studentView.main, studentView.viewContracts,studentAllContracts);
+        studentView.addSwitchPanelListener(studentView.main, studentView.createBid, createRequest);
+
+        createRequest.setCreateRequestListener(new MouseClickListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String c = (String) createRequest.competency.getSelectedItem();
+				String h = createRequest.hourPerLesson.getText();
+				String ss = createRequest.sessionsPerWeek.getText();
+				String r = createRequest.rate.getText(); 
+				String rT = createRequest.rateType.getSelection().getActionCommand();
+				String sj = (String) createRequest.subject.getSelectedItem();
+				String t = createRequest.bidType.getSelection().getActionCommand();
+				try {
+					BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
+					Bid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
+					Utils.SUCCESS_MATCH_REQUEST.show();
+				} catch (NumberFormatException nfe) {
+					Utils.INVALID_FIELDS.show();
+				} catch (NullPointerException npe) {
+					Utils.PLEASE_FILL_IN.show();
+				}
+			}});
+    }
+
+    
+
+}

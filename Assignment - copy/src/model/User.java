@@ -20,32 +20,24 @@ import mainview.Application;
  * This class models a User
  */
 public class User implements Model {
-	@JsonProperty("id")
 	private String id;
 
-	@JsonProperty("givenName")
 	private String givenName;
 
-	@JsonProperty("familyName")
 	private String familyName;
 
-	@JsonProperty("userName")
 	private String userName;
 
-	@JsonProperty("isStudent")
-	private boolean isStudent;
+	private boolean isStudent, isTutor, isAdmin;
 
-	@JsonProperty("isTutor")
-	private boolean isTutor;
 
-	public User(String id, String givenName, String familyName, String username, Boolean isStudent, Boolean isTutor) {
+	public User(String id, String givenName, String familyName, String username, boolean isStudent, boolean isTutor) {
 		this.id = id;
 		this.givenName = givenName;
 		this.familyName = familyName;
 		this.userName = username;
 		this.isStudent = isStudent;
 		this.isTutor = isTutor;
-		
 	}
 
 	public User () {}

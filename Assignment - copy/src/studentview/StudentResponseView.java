@@ -26,7 +26,7 @@ import model.User;
  * If the match request is type open, the student can View all bids.
  * If the match request is type close, the student can View all incoming messages..
  */
-class StudentResponseView extends StudentView {
+public class StudentResponseView extends StudentView {
 	private Bid bid;
 	
 	public StudentResponseView(Display display, User user, Bid bid) {
