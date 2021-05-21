@@ -57,11 +57,13 @@ public class Controller {
                     display.removePanel(authView.panel);
                     initModels();
                     initViews();
+                    subscribeViews();
                     homeView.display();
     			} else {
 					Utils.INVALID_USER.show();
 				}
 			}
+
         });
 
         authView.display();
@@ -111,9 +113,25 @@ public class Controller {
 				}
 			}});
 
-        
+        studentAllBids.setListListener(new MouseClickListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int id = studentAllBids.getSelectedIndex();
+                activeBid = initiatedBids.get(id);
+                studentResponse = new StudentResponseView(user, activeBid);
+                if (studentView.activePanel != null) {
+					studentView.main.remove(studentView.activePanel);
+				}
+				studentView.main.add(studentResponse);
+				studentView.activePanel = studentResponse;
+				display.createPanel(studentView.main);
+				display.setVisible();
+            }
+        });
     }
 
-    
+    private void subscribeViews() {
+        // user.subscribe(studentAllBids);
+    }
 
 }
