@@ -6,7 +6,9 @@ import java.util.List;
 
 import model.Bid;
 import model.BidAddInfo;
+import model.BidResponse;
 import model.Contract;
+import model.ContractAddInfo;
 import model.EventType;
 import model.Message;
 import model.Subject;
@@ -31,9 +33,9 @@ public class Controller {
     private StudentResponseView studentResponse;
     private StudentMessageView studentMessage;
     private Bid activeBid;
-
+    private Message activeMessage;
     
-    private HashMap<EventType, List<Observer>> observers;
+    // private HashMap<EventType, List<Observer>> observers;
 
     public Controller() {
         this.start();
@@ -117,7 +119,9 @@ public class Controller {
             public void mouseClicked(MouseEvent e) {
                 int id = studentAllBids.getSelectedIndex();
                 activeBid = initiatedBids.get(id);
-                studentResponse = new StudentResponseView(user, activeBid);
+                studentResponse = new StudentResponseView(activeBid);
+                studentResponse.setResponseListener(new ResponseListener());
+
                 if (studentView.activePanel != null) {
 					studentView.main.remove(studentView.activePanel);
 				}
@@ -127,10 +131,86 @@ public class Controller {
 				display.setVisible();
             }
         });
+    
+        studentAllContracts.setSignContractListener(new SignContractListener());
     }
 
     private void subscribeViews() {
         // user.subscribe(studentAllBids);
     }
 
+    class ResponseListener implements MouseClickListener{
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (activeBid.getType() == Bid.BidType.close) {
+                activeMessage = studentResponse.getSelectedMessage();
+                showStudentMessagePanel();
+            } else {
+                BidResponse selectedResponse = studentResponse.getSelectedResponse();
+                Contract.postContract(user.getId(), 
+								selectedResponse.getBidderId(), 
+								activeBid.getSubject().getId(),
+								new ContractAddInfo(true, false));
+                Bid.closeDownBid(activeBid.getId());
+                Utils.SUCCESS_CONTRACT_CREATION.show();
+            }
+        }
+
+    }
+
+    class SendMessageListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            String content = studentMessage.getChatContent();
+            activeMessage.addNewMessage(content, user.getUsername());
+            showStudentMessagePanel();
+        }
+    }
+
+    private void showStudentMessagePanel() {
+        studentMessage = new StudentMessageView(user, activeMessage, activeBid);
+        studentMessage.setSendMessageListener(new SendMessageListener());
+        studentMessage.setSelectBidListener(new SelectBidListener());
+
+        if (studentView.activePanel != null) {
+            studentView.main.remove(studentView.activePanel);
+        }
+        studentView.main.add(studentMessage);
+        studentView.activePanel = studentMessage;
+        display.createPanel(studentView.main);
+        display.setVisible();
+    }
+
+    class SelectBidListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            Contract.postContract(user.getId(), 
+						activeMessage.getPosterId(), 
+						activeBid.getSubject().getId(),
+						new ContractAddInfo(true, false));
+				Bid.closeDownBid(activeBid.getId());
+				Utils.SUCCESS_CONTRACT_CREATION.show();
+        }
+    }
+
+    class SignContractListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+            if (studentAllContracts.getSignedContracts() >= StudentAllContracts.CONTRACT_QUOTA) {
+                Utils.REACHED_CONTRACT_LIMIT.show();
+            }
+            else {
+                Contract c = studentAllContracts.getSelectedContract();
+                c.firstPartySign(true);
+                if (c.isSigned()) {
+                    c.signContract();
+                    Utils.CONTRACT_SIGNED.show();
+                } else
+                    Utils.OTHER_PARTY_PENDING.show();
+            }
+        }
+        
+    }
 }

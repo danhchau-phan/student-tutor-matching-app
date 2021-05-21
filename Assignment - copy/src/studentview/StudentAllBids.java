@@ -1,10 +1,8 @@
 package studentview;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,9 +13,6 @@ import javax.swing.ListCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.MouseEvent;
-
-import mainview.ListPanel;
 import mainview.MouseClickListener;
 import mainview.Observer;
 import model.Bid;
@@ -28,7 +23,7 @@ import model.Model;
  */
 public class StudentAllBids extends JPanel implements Observer{
 	List<Bid> bids;
-	JList<JPanel> bidList;
+	JList<Bid> bidList;
 	public StudentAllBids(List<Bid> bids) {
 		super(new BorderLayout());
 		this.setBackground(Color.BLUE);
@@ -37,41 +32,13 @@ public class StudentAllBids extends JPanel implements Observer{
 	}
 	
 	private void placeComponents() {
-		DefaultListModel<JPanel> model = new DefaultListModel<JPanel>();
-		// ArrayList<JComponent> panels = new ArrayList<JComponent> ();
-		for (Bid b : bids) {
-			System.out.println(b);
-			String text = b.toString();
-			JPanel panel = new JPanel();
-			JTextArea tA = new JTextArea();
-			tA.setText(text);
-			panel.add(tA);
-			tA.setEditable(false);
-			// tA.addMouseListener(new MouseClickListener(){
-			// 	@Override
-			// 	public void mouseClicked(MouseEvent e) {
-										
-			// 	}
-			// });
-			// this.addSwitchPanelListener(main, tA, new StudentResponseView(display, user, b));
-			// panels.add(panel);
-			model.addElement(panel);
-		}
-		bidList = new JList<JPanel>(model);
-		// bidList.setCellRenderer(new ListCellRenderer<JPanel>(){
-		// 	@Override
-		// 	public Component getListCellRendererComponent(JList<? extends JPanel> list, JPanel value, int index,
-		// 			boolean isSelected, boolean cellHasFocus) {
-		// 		// TODO Auto-generated method stub
-		// 		return null;
-		// 	}
-		// });
+		DefaultListModel<Bid> model = new DefaultListModel<Bid>();
+		for (Bid b : bids)
+			model.addElement(b);
+		bidList = new JList<Bid>(model);
+		bidList.setCellRenderer(new CellRenderer());
 		JScrollPane scrollp = new JScrollPane(bidList);
 		this.add(scrollp);
-		// JPanel midPanel = new ListPanel(panels);
-		// JScrollPane scrollp = new JScrollPane(midPanel);
-		// this.add(midPanel);
-		// this.add(scrollp);
 	}
 
 	public int getSelectedIndex() {
@@ -85,6 +52,22 @@ public class StudentAllBids extends JPanel implements Observer{
 	@Override
 	public void update(Model model) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	private class CellRenderer extends JPanel implements ListCellRenderer<Bid> {
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Bid> list, Bid value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			this.removeAll();
+			String text = value.toString();
+			JTextArea tA = new JTextArea();
+			tA.setText(text);
+			tA.setEditable(false);
+			this.add(tA);
+			return this;
+		}
 		
 	}
 }

@@ -1,25 +1,20 @@
 package studentview;
 import java.awt.BorderLayout;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
 
-import mainview.ListPanel;
 import mainview.MouseClickListener;
-import mainview.Utils;
 import model.Bid;
 import model.BidResponse;
-import model.Contract;
-import model.ContractAddInfo;
 import model.Message;
-import model.User;
+import java.awt.Component;
 
 /**
  * The View where Student can view all responses to a specific match requests.
@@ -28,75 +23,106 @@ import model.User;
  */
 public class StudentResponseView extends JPanel {
 	private Bid bid;
-	private User user;
 	private JList<BidResponse> responseList;
 	private JList<Message> messageList;
+	private List<BidResponse> responses;
+	private List<Message> messages;
 	
-	public StudentResponseView(User user, Bid bid) {
+	public StudentResponseView(Bid bid) {
 		super(new BorderLayout());
 		this.bid = bid;
-		this.user = user;
 		placeComponents();
 	}
 	
 	private void placeComponents() {
-		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
-		
+		// renders JList
 		if (bid.getType() == Bid.BidType.open) {
-			Bid.updateBid(bid);
-			List<BidResponse> responses = bid.getResponse();
-			for (BidResponse r : responses) {
-				JPanel panel = new JPanel(new BorderLayout());
-				JEditorPane eP = new JEditorPane();
-				JButton bT = new JButton("Select Bid"); 
-				
-				eP.setText(r.toString());
-				panel.add(eP);
-				panel.add(bT, BorderLayout.EAST);
-				bT.addMouseListener(new MouseClickListener() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						Contract.postContract(user.getId(), 
-								r.getBidderId(), 
-								bid.getSubject().getId(),
-								new ContractAddInfo(true, false));
-						Bid.closeDownBid(bid.getId());
-						Utils.SUCCESS_CONTRACT_CREATION.show();
-						
-					}});
-				panels.add(panel);
-			}
+
+			DefaultListModel<BidResponse> model = new DefaultListModel<>();
+			responses = bid.getResponse();
+			for (BidResponse r : responses)
+				model.addElement(r);
+			responseList = new JList<>(model);
+			responseList.setCellRenderer(new ResponseCellRenderer());
+		
 		} else if (bid.getType() == Bid.BidType.close) {
-			List<Message> messages = bid.getMessages();
-			for (Message m : messages) {
-				JPanel panel = new JPanel(new BorderLayout());
-				JEditorPane eP = new JEditorPane();
-				JButton bT = new JButton("Start Conversation");
-				
-				eP.setText(m.toString());
-				panel.add(eP);
-				panel.add(bT, BorderLayout.EAST);
-				// bT.addMouseListener(new MouseClickListener() {
-				// 	@Override
-				// 	public void mouseClicked(MouseEvent e) {
-				// 		display.removePanel(main);
-				// 		(new StudentMessageView(display, user, m, bid)).display();
-				// 	}}); 
-				panels.add(panel);
-			}
+			DefaultListModel<Message> model = new DefaultListModel<>();
+			messages = bid.getMessages();
+
+			for (Message m : messages)
+				model.addElement(m);
+			messageList = new JList<>(model);
+			messageList.setCellRenderer(new MessageCellRenderer());
+		}
+		// adds JList to panel
+		if (bid.getType() == Bid.BidType.close) {
+			JScrollPane scrollp = new JScrollPane(messageList);
+			this.add(scrollp);
+		} else {
+			JScrollPane scrollp = new JScrollPane(responseList);
+			this.add(scrollp);
 		}
 		
-		JPanel midPanel = new ListPanel(panels);
-        this.add(midPanel);
-		JScrollPane scrollp = new JScrollPane(midPanel);
-		this.add(scrollp);
 	}
 
-	public void setOpenBidListener(MouseClickListener listener) {
+	public void setResponseListener(MouseClickListener listener) {
 		if (bid.getType() == Bid.BidType.close) {
 			this.messageList.addMouseListener(listener);
 		} else {
 			this.responseList.addMouseListener(listener);
 		}
+	}
+
+	public int getSelectedMessageIndex() {
+		return this.messageList.getSelectedIndex();
+	}
+
+	
+
+	public BidResponse getSelectedResponse() {
+		return responseList.getSelectedValue();
+	}
+
+	public Message getSelectedMessage() {
+		return messageList.getSelectedValue();
+	}
+
+	private class ResponseCellRenderer extends JPanel implements ListCellRenderer<BidResponse> {
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends BidResponse> list, BidResponse value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			this.removeAll();
+
+			JPanel panel = new JPanel(new BorderLayout());
+			JEditorPane eP = new JEditorPane();
+			JButton bT = new JButton("Select Bid"); 
+			
+			eP.setText(value.toString());
+			panel.add(eP);
+			panel.add(bT, BorderLayout.EAST);
+
+			this.add(panel);
+			return this;
+		}	
+	}
+
+	private class MessageCellRenderer extends JPanel implements ListCellRenderer<Message> {
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Message> list, Message value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			this.removeAll();
+
+			JPanel panel = new JPanel(new BorderLayout());
+			JEditorPane eP = new JEditorPane();
+			JButton bT = new JButton("Start Conversation");
+			
+			eP.setText(value.toString());
+			panel.add(eP);
+			panel.add(bT, BorderLayout.EAST);
+			this.add(panel);
+			return this;
+		}	
 	}
 }
