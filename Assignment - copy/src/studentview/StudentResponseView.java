@@ -80,11 +80,11 @@ public class StudentResponseView extends JPanel {
 	
 
 	public BidResponse getSelectedResponse() {
-		return responses.get(this.responseList.getSelectedIndex());
+		return responseList.getSelectedValue();
 	}
 
 	public Message getSelectedMessage() {
-		return messages.get(this.messageList.getSelectedIndex());
+		return messageList.getSelectedValue();
 	}
 
 	private class ResponseCellRenderer extends JPanel implements ListCellRenderer<BidResponse> {

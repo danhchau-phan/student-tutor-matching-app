@@ -198,6 +198,19 @@ public class Controller {
     class SignContractListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
+
+            if (studentAllContracts.getSignedContracts() >= StudentAllContracts.CONTRACT_QUOTA) {
+                Utils.REACHED_CONTRACT_LIMIT.show();
+            }
+            else {
+                Contract c = studentAllContracts.getSelectedContract();
+                c.firstPartySign(true);
+                if (c.isSigned()) {
+                    c.signContract();
+                    Utils.CONTRACT_SIGNED.show();
+                } else
+                    Utils.OTHER_PARTY_PENDING.show();
+            }
         }
         
     }

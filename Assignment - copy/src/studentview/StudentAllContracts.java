@@ -1,20 +1,17 @@
 package studentview;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import mainview.ListPanel;
+import javax.swing.ListCellRenderer;
+import java.awt.Component;
 import mainview.MouseClickListener;
-import mainview.Utils;
 import model.Contract;
 
 /**
@@ -32,16 +29,40 @@ public class StudentAllContracts extends JPanel {
 	}
 	
 	private void placeComponents() {
-		
-		List<JComponent> comp = new ArrayList<JComponent>();
-		
+		DefaultListModel<Contract> model = new DefaultListModel<Contract>();
+		for (Contract c : contracts)
+			model.addElement(c);
+		contractList = new JList<>(model);
+
+		contractList.setCellRenderer(new ContractCellRenderer());
+
+		JScrollPane scrollp = new JScrollPane(contractList);
+		this.add(scrollp);
+	}
+
+	public void setSignContractListener(MouseClickListener listener) {
+		contractList.addMouseListener(listener);
+	}
+
+	public Contract getSelectedContract() {
+		return contractList.getSelectedValue();
+	}
+
+	public int getSignedContracts() {
 		int cnt = 0;
 		for (Contract c : contracts) {
 			if (c.isSigned())
 				cnt++;
 		}
-		final int contractCnt = cnt; 
-		for (Contract c : contracts) {
+		return cnt;
+	}
+
+	private class ContractCellRenderer extends JPanel implements ListCellRenderer<Contract> {
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Contract> list, Contract c, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			this.removeAll();
 			JPanel panel = new JPanel();
 			if (c.firstPartySigned()) {
 				JTextArea tA = new JTextArea();
@@ -56,34 +77,10 @@ public class StudentAllContracts extends JPanel {
 				tA.setEditable(false);
 				panel.add(tA, BorderLayout.CENTER);
 				panel.add(bT, BorderLayout.EAST);
-
-				bT.addMouseListener(new MouseClickListener() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						if (contractCnt >= StudentAllContracts.CONTRACT_QUOTA) {
-							Utils.REACHED_CONTRACT_LIMIT.show();
-						}
-						else {
-							c.firstPartySign(true);
-							if (c.isSigned()) {
-								c.signContract();
-								Utils.CONTRACT_SIGNED.show();
-							} else
-								Utils.OTHER_PARTY_PENDING.show();
-						}
-					}
-				});
 			}
-			comp.add(panel);
+			this.add(panel);
+			return this;
 		}
 		
-		JPanel midPanel = new ListPanel(comp);
-		JScrollPane scrollp = new JScrollPane(midPanel);
-		this.add(midPanel);
-		this.add(scrollp);
-	}
-
-	public void setSignContractListener(MouseClickListener listener) {
-		contractList.addMouseListener(listener);
 	}
 }

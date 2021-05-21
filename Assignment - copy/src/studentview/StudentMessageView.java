@@ -1,6 +1,5 @@
 package studentview;
 import java.awt.BorderLayout;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -8,15 +7,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import mainview.Display;
 import mainview.MessageView;
 import mainview.MouseClickListener;
-import mainview.Utils;
 import model.Message;
 import model.User;
 import model.Bid;
-import model.Contract;
-import model.ContractAddInfo;
 
 /**
  * The View where Student chats with the Tutor in close bidding

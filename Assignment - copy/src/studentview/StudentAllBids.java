@@ -1,10 +1,8 @@
 package studentview;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,9 +13,6 @@ import javax.swing.ListCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.MouseEvent;
-
-import mainview.ListPanel;
 import mainview.MouseClickListener;
 import mainview.Observer;
 import model.Bid;
@@ -31,7 +26,7 @@ public class StudentAllBids extends JPanel implements Observer{
 	JList<Bid> bidList;
 	public StudentAllBids(List<Bid> bids) {
 		super(new BorderLayout());
-		// this.setBackground(Color.BLUE);
+		this.setBackground(Color.BLUE);
 		this.bids = bids;
 		placeComponents();
 	}
