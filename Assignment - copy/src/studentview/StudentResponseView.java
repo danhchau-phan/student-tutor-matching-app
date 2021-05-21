@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -28,16 +29,17 @@ import model.User;
 public class StudentResponseView extends JPanel {
 	private Bid bid;
 	private User user;
+	private JList<BidResponse> responseList;
+	private JList<Message> messageList;
 	
 	public StudentResponseView(User user, Bid bid) {
-		// super(display, user);
 		super(new BorderLayout());
 		this.bid = bid;
 		this.user = user;
+		placeComponents();
 	}
 	
-	protected void placeComponents() {
-		// super.placeComponents();
+	private void placeComponents() {
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		
 		if (bid.getType() == Bid.BidType.open) {
@@ -90,4 +92,11 @@ public class StudentResponseView extends JPanel {
 		this.add(scrollp);
 	}
 
+	public void setOpenBidListener(MouseClickListener listener) {
+		if (bid.getType() == Bid.BidType.close) {
+			this.messageList.addMouseListener(listener);
+		} else {
+			this.responseList.addMouseListener(listener);
+		}
+	}
 }

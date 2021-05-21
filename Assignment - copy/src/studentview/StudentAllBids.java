@@ -40,6 +40,7 @@ public class StudentAllBids extends JPanel implements Observer{
 		DefaultListModel<JPanel> model = new DefaultListModel<JPanel>();
 		// ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		for (Bid b : bids) {
+			System.out.println(b);
 			String text = b.toString();
 			JPanel panel = new JPanel();
 			JTextArea tA = new JTextArea();

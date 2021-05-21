@@ -129,8 +129,7 @@ public class Bid extends Observable implements Model{
     
     private boolean isExpired() {
     	if (this.type.toString().equals("open") 
-    			// && this.dateCreated.before(new Date(System.currentTimeMillis() - HALF_HOUR_IN_MILLIS))) {
-					&& this.dateCreated.before(new Date(System.currentTimeMillis() - MIN_IN_MILLIS))) {
+    			&& this.dateCreated.before(new Date(System.currentTimeMillis() - HALF_HOUR_IN_MILLIS))) {
     		return true;
     	} else if (this.type.toString().equals("close") 
     			&& this.dateCreated.before(new Date(System.currentTimeMillis() - WEEK_IN_MILLIS)))

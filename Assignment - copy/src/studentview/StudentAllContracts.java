@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -21,6 +22,7 @@ import model.Contract;
  */
 public class StudentAllContracts extends JPanel {
 	public static final int CONTRACT_QUOTA = 5; 
+	private JList<JPanel> contractList;
 	List<Contract> contracts;
 	public StudentAllContracts(List<Contract> contracts) {
 		super(new BorderLayout());
@@ -81,4 +83,7 @@ public class StudentAllContracts extends JPanel {
 		this.add(scrollp);
 	}
 
+	public void setContractListener(MouseClickListener listener) {
+		contractList.addMouseListener(listener);
+	}
 }
