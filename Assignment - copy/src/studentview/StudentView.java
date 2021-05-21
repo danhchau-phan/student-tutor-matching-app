@@ -15,36 +15,21 @@ import model.User;
  */
 public class StudentView extends View implements NavigationPane {
 	protected User user;
-	// public JButton createBid = new JButton("Create Match Request");
-	// public JButton viewAllBids = new JButton("View All Bids");
-	// public JButton viewContracts = new JButton("View Contracts");
-	// public JPanel main = createPanel(new BorderLayout());
-
-	public JButton createBid;
-	public JButton viewAllBids;
-	public JButton viewContracts;
-	public JPanel main;
+	public JButton createBid = new JButton("Create Match Request");
+	public JButton viewAllBids = new JButton("View All Bids");
+	public JButton viewContracts = new JButton("View Contracts");
+	public JPanel main = new JPanel(new BorderLayout());
 	
 	public StudentView(Display display, User user) {
 		super(display);
 		this.user = user;
-		createBid = new JButton("Create Match Request");
-		viewAllBids = new JButton("View All Bids");
-		viewContracts = new JButton("View Contracts");
-		main = createPanel(new BorderLayout());
-		showNavigationPane(display, main, new JButton[]{homeButton, createBid, viewAllBids, viewContracts});
-		this.display.setVisible();
 	}
 	
 	protected void placeComponents() {
-		// main = createPanel(new BorderLayout());
-		// this.display.setVisible();
-		// addSwitchPanelListener(main, homeButton, new HomeView(display, user));
-		// addSwitchPanelListener(main, createBid, new CreateRequestView(display, user));
-		// addSwitchPanelListener(main, viewAllBids, new StudentAllBidsView(display, user));
-		// addSwitchPanelListener(main, viewContracts, new StudentAllContractsView(display, user));
-		// showNavigationPane(display, main, new JButton[]{homeButton, createBid, viewAllBids, viewContracts});
-		// this.display.setVisible();
+		
+		showNavigationPane(display, main, new JButton[]{homeButton, createBid, viewAllBids, viewContracts});
+		display.createPanel(main);
+		this.display.setVisible();
 	}
 	
 	

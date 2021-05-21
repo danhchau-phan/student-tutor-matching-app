@@ -8,23 +8,36 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import javax.swing.JTextArea;
+import java.awt.BorderLayout;
 
 import mainview.Display;
 import mainview.ListPanel;
+import mainview.NavigationPane;
+import mainview.View;
 import model.User;
 import model.Bid;
 
 /**
  * View that allows the Student to see all unexpired and unclosed match requests created by them
  */
-public class StudentAllBidsView extends StudentView {
+public class StudentAllBids extends JPanel{
 	List<Bid> bids;
-	public StudentAllBidsView(Display display, User user) {
-		super(display, user);
+	User user;
+	// public JPanel main = new JPanel(new BorderLayout());
+	// public StudentAllBidsView(Display display, User user, NavigationPane navPane) {
+	// 	super(display);
+	// 	this.user = user;
+	// }
+
+	public StudentAllBids(User user) {
+		super(new BorderLayout());
+		this.user = user;
+		placeComponents();
 	}
 	
-	protected void placeComponents() {
-		super.placeComponents();
+	private void placeComponents() {
+		// super.placeComponents();
+
 		bids = user.getInitiatedBids();
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
 		for (Bid b : bids) {
@@ -35,16 +48,17 @@ public class StudentAllBidsView extends StudentView {
 			panel.add(tA);
 			tA.setEditable(false);
 			
-			this.addSwitchPanelListener(main, tA, new StudentResponseView(display, user, b));
+			// this.addSwitchPanelListener(main, tA, new StudentResponseView(display, user, b));
 			panels.add(panel);
 		}
 		
 		JPanel midPanel = new ListPanel(panels);
-
-        main.add(midPanel);
+        // main.add(midPanel);
 		JScrollPane scrollp = new JScrollPane(midPanel);
-		main.add(scrollp);
-		this.display.setVisible();
+		this.add(midPanel);
+		this.add(scrollp);
+		// main.add(scrollp);
+		// this.display.setVisible();
 	}
 
 }

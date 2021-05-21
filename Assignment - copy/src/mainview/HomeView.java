@@ -32,22 +32,16 @@ public class HomeView extends View {
 		studentButton = new JButton("Student site");
 		tutorButton = new JButton("Tutor site");
 		logOut = new JButton("Log out");
-		panel = createPanel(new FlowLayout());
-        
-        if (user.isStudent()) { 
+		panel = new JPanel(new FlowLayout());
+        if (user.isStudent())
         	panel.add(studentButton);
-        	// addSwitchPanelListener(panel, studentButton, new StudentView(display, user));
-        }
-        if (user.isTutor()) {
+        if (user.isTutor())
         	panel.add(tutorButton);
-        	// addSwitchPanelListener(panel, tutorButton, new TutorView(display, user));
-        }  
-        
         panel.add(logOut);
-        // addSwitchPanelListener(panel, logOut, new AuthenticationView(display));
-        this.display.setVisible();
 	}
 
 	protected void placeComponents() {
+		display.createPanel(panel);
+		this.display.setVisible();
 	}
 }

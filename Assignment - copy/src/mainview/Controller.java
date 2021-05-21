@@ -8,7 +8,7 @@ import model.Contract;
 import model.Message;
 import model.User;
 import studentview.CreateRequestView;
-import studentview.StudentAllBidsView;
+import studentview.StudentAllBids;
 import studentview.StudentAllContractsView;
 import studentview.StudentView;
 
@@ -19,7 +19,7 @@ public class Controller {
     // private List<Message> messages;
     private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
     private HomeView homeView;
-    private StudentAllBidsView studentAllBidsView;
+    private StudentAllBids studentAllBids;
     private StudentAllContractsView studentAllContractsView;
     private StudentView studentView;
     public Controller() {
@@ -67,15 +67,15 @@ public class Controller {
         assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.studentView = new StudentView(display, user);
-        this.studentAllBidsView = new StudentAllBidsView(display, user);
+        this.studentAllBids = new StudentAllBids(user);
         this.studentAllContractsView = new StudentAllContractsView(display, user);
 
         homeView.addSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
 
         studentView.addSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
-        studentView.addSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBidsView);
+        studentView.addSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
         studentView.addSwitchPanelListener(studentView.main, studentView.viewContracts, studentAllContractsView);
-        studentView.addSwitchPanelListener(studentView.main, studentView.createBid, new CreateRequestView(display, user));
+        // studentView.addSwitchPanelListener(studentView.main, studentView.createBid, new CreateRequestView(display, user));
         
     }
 

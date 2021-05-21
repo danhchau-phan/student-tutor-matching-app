@@ -17,8 +17,8 @@ public class Display {
 	}
 	
 	public void createPanel(JComponent panel) {
-        frame.add(panel);
-
+        // frame.add(panel);
+		frame.setContentPane(panel);
 	}
 	
 	public void setVisible() {
@@ -27,9 +27,14 @@ public class Display {
 	
 	public void removePanel(JComponent panel) {
 		frame.remove(panel);
+		frame.revalidate();
+		frame.repaint();
 	}
 
 	public void removeAll() {
-		frame.removeAll();
+		// frame.removeAll();
+		frame.getContentPane().removeAll();
+		// frame.revalidate();
+		// frame.repaint();
 	}
 }

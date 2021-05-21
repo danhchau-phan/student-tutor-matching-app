@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 public abstract class View {
 	protected Display display;
 	protected JButton homeButton = new JButton("Home");
+	public JPanel activePanel;
 	
 	public View(Display display) {
 		this.display = display;
@@ -38,13 +39,36 @@ public abstract class View {
 	
 	protected abstract void placeComponents();
 	
-	protected void addSwitchPanelListener(JPanel panel, Component comp, View view) {
+	/**
+	 * @params:
+	 * 	panel: the panel where to be removed
+	 * 	comp: the component where listener is attached to
+	 * 	view: the view to be displayed
+	 */
+	protected void addSwitchPanelListener(JPanel panel, Component comp, View newView) {
 		MouseListener mouseListener = new MouseClickListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				display.removePanel(panel);
-				// view.display();
+				// display.removeAll();
+				newView.display();
+			}
+		};
+		comp.addMouseListener(mouseListener);
+	}
+
+	protected void addSwitchPanelListener(JPanel main, Component comp, JPanel newPanel) {
+		MouseListener mouseListener = new MouseClickListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (activePanel != null) {
+					main.remove(activePanel);
+				}
+				main.add(newPanel);
+				activePanel = newPanel;
+				display.setVisible();
 			}
 		};
 		comp.addMouseListener(mouseListener);
