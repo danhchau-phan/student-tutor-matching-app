@@ -19,11 +19,12 @@ import studentview.StudentAllContracts;
 import studentview.StudentMessageView;
 import studentview.StudentResponseView;
 import studentview.StudentView;
+import tutorview.TutorAllBidsView;
 
 public class Controller {
     private Display display;
     private User user;
-    private List<Bid> initiatedBids, allBids;
+    private List<Bid> allBids;
     private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
     private HomeView homeView;
     private StudentAllBids studentAllBids;
@@ -32,10 +33,9 @@ public class Controller {
     private StudentView studentView;
     private StudentResponseView studentResponse;
     private StudentMessageView studentMessage;
-    private Bid activeBid;
+    private Bid activeBid, tempBid = new Bid();
     private Message activeMessage;
-    
-    // private HashMap<EventType, List<Observer>> observers;
+    // private TutorAllBidsView tutorAllBids;
 
     public Controller() {
         this.start();
@@ -73,7 +73,6 @@ public class Controller {
 
     private void initModels() {
         assert (this.user != null);
-        this.initiatedBids = user.getInitiatedBids();
         this.allBids = Bid.getAll();
         this.contractsAsFirstParty = Contract.getAllContractsAsFirstParty(this.user.getId());
         this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
@@ -83,7 +82,7 @@ public class Controller {
         assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.studentView = new StudentView(display, user);
-        this.studentAllBids = new StudentAllBids(initiatedBids);
+        this.studentAllBids = new StudentAllBids(user);
         this.studentAllContracts = new StudentAllContracts(contractsAsFirstParty);
         this.createRequest = new CreateRequest();
 
@@ -106,7 +105,7 @@ public class Controller {
 				String t = createRequest.bidType.getSelection().getActionCommand();
 				try {
 					BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
-					Bid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
+					tempBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
 					Utils.SUCCESS_MATCH_REQUEST.show();
 				} catch (NumberFormatException nfe) {
 					Utils.INVALID_FIELDS.show();
@@ -118,8 +117,7 @@ public class Controller {
         studentAllBids.setListListener(new MouseClickListener(){
             @Override
             public void mouseClicked(MouseEvent e) {
-                int id = studentAllBids.getSelectedIndex();
-                activeBid = initiatedBids.get(id);
+                activeBid = studentAllBids.getSelectedBid();
                 studentResponse = new StudentResponseView(activeBid);
                 studentResponse.setResponseListener(new ResponseListener());
 
@@ -137,7 +135,8 @@ public class Controller {
     }
 
     private void subscribeViews() {
-        // user.subscribe(studentAllBids);
+        tempBid.subscribe(studentAllBids);
+        // tempBid.subscribe(tutorAllBids);
     }
 
     class ResponseListener implements MouseClickListener{

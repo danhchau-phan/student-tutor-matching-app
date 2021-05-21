@@ -11,11 +11,12 @@ import mainview.Display;
 import mainview.ListPanel;
 import model.Bid;
 import model.User;
+import mainview.Observer;
 
 /**
  * This is the View for Tutor to see all available (unclosed, unexpired) mathc requests
  */
-class TutorAllBidsView extends TutorView {
+public class TutorAllBidsView extends TutorView implements Observer {
 	List<Bid> bids;
 	
 	public TutorAllBidsView(Display display, User user) {
@@ -45,5 +46,11 @@ class TutorAllBidsView extends TutorView {
 		main.add(scrollp);
 		this.display.setVisible();
 		
+	}
+
+	@Override
+	public void update() {
+		this.bids = Bid.getAll();
+		this.placeComponents();
 	}
 }

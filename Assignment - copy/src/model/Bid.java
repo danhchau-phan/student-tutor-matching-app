@@ -15,14 +15,10 @@ import java.util.List;
  * This class models a Bid
  */
 public class Bid extends Observable implements Model{
-    @JsonProperty("id")
     private String id;
-    @JsonProperty("type")
     private BidType type;
     private User initiator;
-    @JsonProperty("dateCreated")
     private Date dateCreated;
-    @JsonProperty("subject")
     private Subject subject;
 	private boolean closeddown;
 	private BidAddInfo addInfo;
@@ -112,7 +108,6 @@ public class Bid extends Observable implements Model{
     	return initiator.getGivenName() + " " + initiator.getFamilyName();
     }
     
-    
     @Override
     public String toString() {
         return (this.initiator == null ? 
@@ -166,7 +161,7 @@ public class Bid extends Observable implements Model{
 		return screenedBids;
 	}
 
-    public static void postBid(String type, String initiatorId, String subjectId, BidAddInfo addInfo) {
+    public void postBid(String type, String initiatorId, String subjectId, BidAddInfo addInfo) {
     	String url = Application.rootUrl + "/bid";
     	String jsonString = "{" +
   		"\"type\":\"" + type + "\"," +
@@ -176,6 +171,7 @@ public class Bid extends Observable implements Model{
   		"\"additionalInfo\":" + addInfo.toJson() + "}";
       
     	Model.post(url,  jsonString);
+		this.inform();
     } 
     
     public void patchBid() {
