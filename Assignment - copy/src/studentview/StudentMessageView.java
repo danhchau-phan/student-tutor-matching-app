@@ -21,19 +21,17 @@ import model.ContractAddInfo;
 /**
  * The View where Student chats with the Tutor in close bidding
  */
-public class StudentMessageView extends StudentView implements MessageView{
+public class StudentMessageView extends JPanel implements MessageView{
 
 	private Message message;
 	private Bid bid;
 	public StudentMessageView(Display display, User user, Message message, Bid bid) {
-		super(display, user);
 		this.bid = bid;
 		this.message = message;
 	}
 
 
 	protected void placeComponents() {
-		super.placeComponents();
 		
 		Message mS = this.message;
 	

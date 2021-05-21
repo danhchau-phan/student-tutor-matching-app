@@ -6,7 +6,9 @@ import java.util.List;
 
 import model.Bid;
 import model.BidAddInfo;
+import model.BidResponse;
 import model.Contract;
+import model.ContractAddInfo;
 import model.EventType;
 import model.Message;
 import model.Subject;
@@ -119,6 +121,8 @@ public class Controller {
                 int id = studentAllBids.getSelectedIndex();
                 activeBid = initiatedBids.get(id);
                 studentResponse = new StudentResponseView(user, activeBid);
+                studentResponse.setResponseListener(new ResponseListener());
+
                 if (studentView.activePanel != null) {
 					studentView.main.remove(studentView.activePanel);
 				}
@@ -134,4 +138,29 @@ public class Controller {
         // user.subscribe(studentAllBids);
     }
 
+    class ResponseListener implements MouseClickListener{
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (activeBid.getType() == Bid.BidType.close) {
+                studentMessage = new StudentMessageView(display, user, studentResponse.getSelectedMessage(), activeBid);
+                if (studentView.activePanel != null) {
+					studentView.main.remove(studentView.activePanel);
+				}
+				studentView.main.add(studentMessage);
+				studentView.activePanel = studentMessage;
+				display.createPanel(studentView.main);
+				display.setVisible();
+            } else {
+                BidResponse selectedResponse = studentResponse.getSelectedResponse();
+                Contract.postContract(user.getId(), 
+								selectedResponse.getBidderId(), 
+								activeBid.getSubject().getId(),
+								new ContractAddInfo(true, false));
+                Bid.closeDownBid(activeBid.getId());
+                Utils.SUCCESS_CONTRACT_CREATION.show();
+            }
+        }
+
+    }
 }
