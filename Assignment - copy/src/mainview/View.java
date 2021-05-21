@@ -68,6 +68,7 @@ public abstract class View {
 				}
 				main.add(newPanel);
 				activePanel = newPanel;
+				display.createPanel(main);
 				display.setVisible();
 			}
 		};

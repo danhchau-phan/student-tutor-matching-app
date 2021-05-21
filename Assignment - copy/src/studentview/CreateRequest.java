@@ -23,10 +23,11 @@ import model.Subject;
 /**
  * View where the Student creates a match request
  */
-public class CreateRequestView extends StudentView {
-	JRadioButton openBid = new JRadioButton("Open");
-    JRadioButton closeBid = new JRadioButton("Close");
-    ButtonGroup bidType = new ButtonGroup();
+public class CreateRequest extends JPanel {
+	private User user;
+	public JRadioButton openBid = new JRadioButton("Open");
+    public JRadioButton closeBid = new JRadioButton("Close");
+    public ButtonGroup bidType = new ButtonGroup();
     {
     openBid.setActionCommand(Bid.BidType.open.toString());
     closeBid.setActionCommand(Bid.BidType.close.toString());
@@ -35,9 +36,9 @@ public class CreateRequestView extends StudentView {
     openBid.setSelected(true);
     }
     
-    JRadioButton perSession = new JRadioButton("per session");
-    JRadioButton perHour = new JRadioButton("per hour");
-    ButtonGroup rateType = new ButtonGroup();
+    public JRadioButton perSession = new JRadioButton("per session");
+    public JRadioButton perHour = new JRadioButton("per hour");
+    public ButtonGroup rateType = new ButtonGroup();
     {
     perSession.setActionCommand("per session");
     perHour.setActionCommand("per hour");
@@ -45,11 +46,11 @@ public class CreateRequestView extends StudentView {
     rateType.add(perHour);
     perSession.setSelected(true);
     }
-    private JComboBox<String> subject = new JComboBox<String>(Subject.getAllSubjectsNames());
-	private JComboBox<String> competency = new JComboBox<String>(new String[] {"0","1","2","3","4","5","6","7","8","9","10"});
-	private JTextField hourPerLesson = new JTextField();
-	private JTextField sessionsPerWeek = new JTextField();
-	private JTextField rate = new JTextField();
+    public JComboBox<String> subject = new JComboBox<String>(Subject.getAllSubjectsNames());
+	public JComboBox<String> competency = new JComboBox<String>(new String[] {"0","1","2","3","4","5","6","7","8","9","10"});
+	public JTextField hourPerLesson = new JTextField();
+	public JTextField sessionsPerWeek = new JTextField();
+	public JTextField rate = new JTextField();
 	
 	private JLabel typeLb = new JLabel("Type");
 	private JLabel subjectLb = new JLabel("Subject");
@@ -57,19 +58,22 @@ public class CreateRequestView extends StudentView {
 	private JLabel hourPerLessonLb = new JLabel("Preferred Hour/Lesson");
 	private JLabel sessionsPerWeekLb = new JLabel("Preferred Sesions/Week");
 	private JLabel rateLb = new JLabel("Preferred Rate");
+
+	private JButton createRequest = new JButton("Create Request"); 
 	
-	public CreateRequestView(Display display, User user) {
-		super(display, user);
+	public CreateRequest(User user) {
+		super(new BorderLayout());
+		this.user = user;
+		placeComponents();
 	}
 	
-	protected void placeComponents() {
-		super.placeComponents();
-		JPanel midPanel = createPanel();
+	private void placeComponents() {
+		JPanel midPanel = new JPanel();
 		GroupLayout groupLayout = new GroupLayout(midPanel);
 		midPanel.setLayout(groupLayout);
 		midPanel.setBackground(Color.green);
 		
-		main.add(midPanel);
+		this.add(midPanel);
 		
 		groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup()
@@ -116,33 +120,15 @@ public class CreateRequestView extends StudentView {
 						.addComponent(perSession))
 				);
 	
-		JPanel bottomPanel = createPanel();
+		JPanel bottomPanel = new JPanel();
         bottomPanel.setBackground(Color.red);
-        main.add(bottomPanel, BorderLayout.SOUTH);
-        JButton createRequest = new JButton("Create Request"); 
+        this.add(bottomPanel, BorderLayout.SOUTH);
+        
 		bottomPanel.add(createRequest);
-		
-		createRequest.addMouseListener(new MouseClickListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String c = (String) competency.getSelectedItem();
-				String h = hourPerLesson.getText();
-				String ss = sessionsPerWeek.getText();
-				String r = rate.getText(); 
-				String rT = rateType.getSelection().getActionCommand();
-				String sj = (String) subject.getSelectedItem();
-				String t = bidType.getSelection().getActionCommand();
-				try {
-					BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
-					Bid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
-					Utils.SUCCESS_MATCH_REQUEST.show();
-				} catch (NumberFormatException nfe) {
-					Utils.INVALID_FIELDS.show();
-				} catch (NullPointerException npe) {
-					Utils.PLEASE_FILL_IN.show();
-				}
-			}});
-		this.display.setVisible();
+	}
+
+	public void setCreateRequestListener(MouseClickListener listener) {
+		this.createRequest.addMouseListener(listener);
 	}
 
 }

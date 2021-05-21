@@ -9,11 +9,9 @@ import javax.swing.JScrollPane;
 
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
+import java.awt.Color;
 
-import mainview.Display;
 import mainview.ListPanel;
-import mainview.NavigationPane;
-import mainview.View;
 import model.User;
 import model.Bid;
 
@@ -23,20 +21,15 @@ import model.Bid;
 public class StudentAllBids extends JPanel{
 	List<Bid> bids;
 	User user;
-	// public JPanel main = new JPanel(new BorderLayout());
-	// public StudentAllBidsView(Display display, User user, NavigationPane navPane) {
-	// 	super(display);
-	// 	this.user = user;
-	// }
 
 	public StudentAllBids(User user) {
 		super(new BorderLayout());
+		this.setBackground(Color.BLUE);
 		this.user = user;
 		placeComponents();
 	}
 	
 	private void placeComponents() {
-		// super.placeComponents();
 
 		bids = user.getInitiatedBids();
 		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
@@ -48,17 +41,13 @@ public class StudentAllBids extends JPanel{
 			panel.add(tA);
 			tA.setEditable(false);
 			
-			// this.addSwitchPanelListener(main, tA, new StudentResponseView(display, user, b));
 			panels.add(panel);
 		}
 		
 		JPanel midPanel = new ListPanel(panels);
-        // main.add(midPanel);
 		JScrollPane scrollp = new JScrollPane(midPanel);
 		this.add(midPanel);
 		this.add(scrollp);
-		// main.add(scrollp);
-		// this.display.setVisible();
 	}
 
 }

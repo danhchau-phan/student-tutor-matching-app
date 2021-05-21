@@ -5,7 +5,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import mainview.Display;
-import mainview.HomeView;
 import mainview.NavigationPane;
 import mainview.View;
 import model.User;
