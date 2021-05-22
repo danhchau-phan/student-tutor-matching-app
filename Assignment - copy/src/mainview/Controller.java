@@ -141,7 +141,10 @@ public class Controller {
             public void mouseClicked(MouseEvent e) {
                 activeBid = tutorAllBids.getSelectedBid();
                 tutorResponse = new TutorResponseView(activeBid);
-                tutorResponse.setResponseListener(new ResponseListener());
+                tutorResponse.setResponseListener(new TutorResponseListener());
+                tutorResponse.setCreateBidListener(new CreateBidListener());
+                tutorResponse.setBuyOutListener(new BuyOutListener());
+                tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
 
                 if (tutorView.activePanel != null) {
                     tutorView.main.remove(tutorView.activePanel);
@@ -257,6 +260,28 @@ public class Controller {
 
     }
 
+    class TutorResponseListener implements MouseClickListener{
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (activeBid.getType() == Bid.BidType.close) {
+                activeMessage = studentResponse.getSelectedMessage();
+                showStudentMessagePanel();
+            } else {
+                BidResponse selectedResponse = tutorResponse.getSelectedResponse();
+                if (selectedResponse == null)
+                    return;
+                subscriberContract.postContract(user.getId(),
+                        selectedResponse.getBidderId(),
+                        activeBid.getSubject().getId(),
+                        new ContractAddInfo(true, false));
+                subscriberBid.closeDownBid(activeBid.getId());
+                Utils.SUCCESS_CONTRACT_CREATION.show();
+            }
+
+        }
+
+    }
+
     class CreateBidListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
@@ -279,7 +304,7 @@ public class Controller {
         }
     }
 
-    class subscribeBidListener implements MouseClickListener{
+    class SubscribeBidListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
             // Notify View for update (check monitor)
