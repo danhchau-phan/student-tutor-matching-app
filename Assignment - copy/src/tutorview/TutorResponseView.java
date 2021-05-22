@@ -33,6 +33,10 @@ public class TutorResponseView extends JPanel {
 	}
 
 	private void placeComponents() {
+		this.createBid = new JButton("Create Bid");
+		this.buyOut = new JButton("Buy Out Bid");
+		this.subscribeBid = new JButton("Subscribe Bid");
+
 		if (bid.getType() == Bid.BidType.open) {
 
 			DefaultListModel<BidResponse> model = new DefaultListModel<>();
@@ -63,13 +67,13 @@ public class TutorResponseView extends JPanel {
 
 
 		// Bottom Panel with buttons - Create Bid Button and Subscribe Button (correspond to Request)
-		JPanel panel = new JPanel();
-		this.add(panel, BorderLayout.NORTH);
+		JPanel panel = new JPanel(new FlowLayout());
 		panel.add(createBid);
 		if (bid.getType() == Bid.BidType.open) {
 			panel.add(buyOut);
 			panel.add(subscribeBid);
 		}
+		this.add(panel, BorderLayout.SOUTH);
 
 
 //		for (JButton b : buttons) {
@@ -141,15 +145,15 @@ public class TutorResponseView extends JPanel {
 	}
 
 	public void setCreateBidListener(MouseClickListener listener) {
-		this.createBid.addMouseListener(listener);
+		this.getCreateBid().addMouseListener(listener);
 	}
 
 	public void setBuyOutListener(MouseClickListener listener) {
-		this.buyOut.addMouseListener(listener);
+		this.getBuyOut().addMouseListener(listener);
 	}
 
 	public void setSubscribeBidListener(MouseClickListener listener) {
-		this.subscribeBid.addMouseListener(listener);
+		this.getSubscribeBid().addMouseListener(listener);
 	}
 
 	public int getSelectedMessageIndex() {
@@ -201,5 +205,29 @@ public class TutorResponseView extends JPanel {
 			this.add(panel);
 			return this;
 		}
+	}
+
+	public JButton getCreateBid() {
+		return createBid;
+	}
+
+	public void setCreateBid(JButton createBid) {
+		this.createBid = createBid;
+	}
+
+	public JButton getBuyOut() {
+		return buyOut;
+	}
+
+	public void setBuyOut(JButton buyOut) {
+		this.buyOut = buyOut;
+	}
+
+	public JButton getSubscribeBid() {
+		return subscribeBid;
+	}
+
+	public void setSubscribeBid(JButton subscribeBid) {
+		this.subscribeBid = subscribeBid;
 	}
 }
