@@ -137,28 +137,39 @@ public class Controller {
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
 
-        // Display all Responses for request selected
+        /** Tutor Response Portal: Response Bid View and Message View*/
         tutorAllBids.setListListener(new MouseClickListener(){
             @Override
             public void mouseClicked(MouseEvent e) {
-                activeBid = tutorAllBids.getSelectedBid();
-                tutorResponse = new TutorResponseView(activeBid);
-                tutorResponse.setResponseListener(new TutorResponseListener());
-                tutorResponse.setCreateBidListener(new CreateBidListener());
-                tutorResponse.setBuyOutListener(new BuyOutListener());
-                tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
-
                 if (tutorView.activePanel != null) {
                     tutorView.main.remove(tutorView.activePanel);
                 }
-                tutorView.main.add(tutorResponse);
-                tutorView.activePanel = tutorResponse;
+
+                activeBid = tutorAllBids.getSelectedBid();
+
+                if (activeBid.getType() == Bid.BidType.open) {
+                    tutorResponse = new TutorResponseView(activeBid);
+                    tutorResponse.setResponseListener(new TutorResponseListener());
+                    tutorResponse.setCreateBidListener(new CreateBidListener());
+                    tutorResponse.setBuyOutListener(new BuyOutListener());
+                    tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
+                    tutorView.main.add(tutorResponse);
+                    tutorView.activePanel = tutorResponse;
+                } else {
+                    tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
+                    tutorMessage.setSendMessageListener(new SendTutorMessageListener());
+                    tutorView.main.add(tutorMessage);
+                    tutorView.activePanel = tutorMessage;
+                }
+
+
                 display.createPanel(tutorView.main);
                 display.setVisible();
+
             }
         });
 
-
+        tutorAllContracts.setSignContractListener(new SignContractListener());
     }
 
     private void initStudentViews() {
@@ -239,11 +250,26 @@ public class Controller {
         display.setVisible();
     }
 
+    private void showTutorMessagePanel() {
+        tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
+        tutorMessage.setSendMessageListener(new SendMessageListener());
+        tutorMessage.setSelectBidListener(new SelectBidListener());
+
+        if (tutorView.activePanel != null) {
+            tutorView.main.remove(tutorView.activePanel);
+        }
+        tutorView.main.add(tutorMessage);
+        tutorView.activePanel = tutorMessage;
+        display.createPanel(tutorView.main);
+        display.setVisible();
+    }
 
 
 
     /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
 
+
+    /** Response portals: MessageList View and Response View*/
     class ResponseListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -269,20 +295,15 @@ public class Controller {
     class TutorResponseListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (activeBid.getType() == Bid.BidType.close) {
-                activeMessage = tutorResponse.getSelectedMessage();
-                showStudentMessagePanel();
-            } else {
-                BidResponse selectedResponse = tutorResponse.getSelectedResponse();
-                if (selectedResponse == null)
-                    return;
-                subscriberContract.postContract(user.getId(),
-                        selectedResponse.getBidderId(),
-                        activeBid.getSubject().getId(),
-                        new ContractAddInfo(true, false));
-                subscriberBid.closeDownBid(activeBid.getId());
-                Utils.SUCCESS_CONTRACT_CREATION.show();
-            }
+            BidResponse selectedResponse = tutorResponse.getSelectedResponse();
+            if (selectedResponse == null)
+                return;
+            subscriberContract.postContract(user.getId(),
+                    selectedResponse.getBidderId(),
+                    activeBid.getSubject().getId(),
+                    new ContractAddInfo(true, false));
+            subscriberBid.closeDownBid(activeBid.getId());
+            Utils.SUCCESS_CONTRACT_CREATION.show();
 
         }
 
@@ -293,6 +314,7 @@ public class Controller {
         public void mouseClicked(MouseEvent mouseEvent) {
             if (activeBid.checkEligibility(user)) {
                 createBid = new CreateBid();
+
                 createBid.setCreateBidListener(new MouseClickListener(){
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -366,6 +388,15 @@ public class Controller {
             String content = studentMessage.getChatContent();
             activeMessage.addNewMessage(content, user.getUsername());
             showStudentMessagePanel();
+        }
+    }
+
+    class SendTutorMessageListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            String content = studentMessage.getChatContent();
+            activeMessage.addNewMessage(content, user.getUsername());
+            showTutorMessagePanel();
         }
     }
 

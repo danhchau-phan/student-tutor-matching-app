@@ -30,11 +30,16 @@ public class TutorMessageView extends JPanel implements MessageView, Observer {
 		this.bid = bid;
 		this.message = message;
 	}
-	
+
+//	public TutorMessageView(User user, Bid bid) {
+//		this.bid = bid;
+//	}
+
 	protected void placeComponents() {
 		Message mS = this.message;
 
-		JTextArea log = this.getLogArea(mS.getMessageLog());
+		JTextArea log = (mS == null? new JTextArea() : this.getLogArea(mS.getMessageLog()));
+//		JTextArea log = this.getLogArea(mS.getMessageLog());
 
 		JPanel chatArea = new JPanel();
 		chatArea.setLayout(new BorderLayout());

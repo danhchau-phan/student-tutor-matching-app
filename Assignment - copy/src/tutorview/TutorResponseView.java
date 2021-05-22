@@ -46,15 +46,19 @@ public class TutorResponseView extends JPanel {
 			responseList = new JList<>(model);
 			responseList.setCellRenderer(new ResponseCellRenderer());
 
-		} else if (bid.getType() == Bid.BidType.close) {
-			DefaultListModel<Message> model = new DefaultListModel<>();
-			messages = bid.getMessages();
-
-			for (Message m : messages)
-				model.addElement(m);
-			messageList = new JList<>(model);
-			messageList.setCellRenderer(new MessageCellRenderer());
 		}
+//		else if (bid.getType() == Bid.BidType.close) {
+////			display.removePanel(this.main);
+//			new TutorMessageView(user, );
+////
+////			DefaultListModel<Message> model = new DefaultListModel<>();
+////			messages = bid.getMessages();
+////
+////			for (Message m : messages)
+////				model.addElement(m);
+////			messageList = new JList<>(model);
+////			messageList.setCellRenderer(new MessageCellRenderer());
+//		}
 
 		// adds JList to panel
 		if (bid.getType() == Bid.BidType.close) {
@@ -68,8 +72,9 @@ public class TutorResponseView extends JPanel {
 
 		// Bottom Panel with buttons - Create Bid Button and Subscribe Button (correspond to Request)
 		JPanel panel = new JPanel(new FlowLayout());
-		panel.add(createBid);
+//		panel.add(createBid);
 		if (bid.getType() == Bid.BidType.open) {
+			panel.add(createBid);
 			panel.add(buyOut);
 			panel.add(subscribeBid);
 		}

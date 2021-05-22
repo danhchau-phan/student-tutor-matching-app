@@ -1,6 +1,5 @@
 package tutorview;
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 
 import javax.swing.*;
 
@@ -104,9 +103,10 @@ public class CreateBid extends JPanel {
 						.addComponent(addInfoLb)
 						.addComponent(addInfo))
 		);
-		JPanel bottomPanel = new JPanel();
+		JPanel bottomPanel = new JPanel(new FlowLayout());
 		bottomPanel.setBackground(Color.red);
 		bottomPanel.add(createBid);
+		this.add(bottomPanel, BorderLayout.SOUTH);
 //
 //		createBid.addMouseListener(new MouseClickListener() {
 //			@Override
