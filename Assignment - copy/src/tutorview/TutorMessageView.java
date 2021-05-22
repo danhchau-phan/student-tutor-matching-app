@@ -29,6 +29,7 @@ public class TutorMessageView extends JPanel implements MessageView, Observer {
 	public TutorMessageView(User user, Message message, Bid bid) {
 		this.bid = bid;
 		this.message = message;
+		placeComponents();
 	}
 
 //	public TutorMessageView(User user, Bid bid) {

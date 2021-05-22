@@ -26,6 +26,7 @@ public interface MessageView {
     public default JTextField getChatBox() {
         JTextField chatBox = new JTextField();
 		chatBox.setBounds(0, Display.FRAME_HEIGHT-100, Display.FRAME_WIDTH * 2 / 3, 100);
+        chatBox.setMinimumSize(chatBox.getPreferredSize());
         return chatBox;
     }
 }

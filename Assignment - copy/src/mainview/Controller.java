@@ -4,15 +4,7 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.List;
 
-import model.Bid;
-import model.BidAddInfo;
-import model.BidResponse;
-import model.Contract;
-import model.ContractAddInfo;
-import model.EventType;
-import model.Message;
-import model.Subject;
-import model.User;
+import model.*;
 import studentview.CreateRequest;
 import studentview.StudentAllBids;
 import studentview.StudentAllContracts;
@@ -158,6 +150,7 @@ public class Controller {
                 } else {
                     tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
                     tutorMessage.setSendMessageListener(new SendTutorMessageListener());
+                    tutorMessage.setSelectBidListener(new SelectBidListener());
                     tutorView.main.add(tutorMessage);
                     tutorView.activePanel = tutorMessage;
                 }
@@ -252,7 +245,7 @@ public class Controller {
 
     private void showTutorMessagePanel() {
         tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
-        tutorMessage.setSendMessageListener(new SendMessageListener());
+        tutorMessage.setSendMessageListener(new SendTutorMessageListener());
         tutorMessage.setSelectBidListener(new SelectBidListener());
 
         if (tutorView.activePanel != null) {
@@ -394,8 +387,12 @@ public class Controller {
     class SendTutorMessageListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            String content = studentMessage.getChatContent();
-            activeMessage.addNewMessage(content, user.getUsername());
+            String content = tutorMessage.getChatContent();
+            if (activeMessage != null) {
+                activeMessage.addNewMessage(content, user.getUsername());
+            } else {
+                activeMessage.postMessage(activeBid.getId(), user.getId(), content, new MessageAddInfo(content, user.getUsername()));
+            }
             showTutorMessagePanel();
         }
     }
