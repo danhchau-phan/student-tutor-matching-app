@@ -45,8 +45,8 @@ public class Controller {
 
     //Tutor Fields
     private TutorAllBidsView tutorAllBids;
-    private TutorAllContractsView tutorAllContracts;
-    private CreateBidView createBid;
+    private TutorAllContracts tutorAllContracts;
+    private CreateBid createBid;
     private TutorView tutorView;
     private TutorResponseView tutorResponse;
     private TutorMessageView tutorMessage;

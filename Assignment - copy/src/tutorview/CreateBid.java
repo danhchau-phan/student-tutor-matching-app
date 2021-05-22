@@ -9,7 +9,7 @@ import mainview.MouseClickListener;
 /**
  * This is the View where the Tutor creates the bid in open bidding
  */
-public class CreateBidView extends JPanel {
+public class CreateBid extends JPanel {
 	public JRadioButton perSession = new JRadioButton("per session");
 	public JRadioButton perHour = new JRadioButton("per hour");
 	public ButtonGroup rateType = new ButtonGroup();
@@ -46,7 +46,7 @@ public class CreateBidView extends JPanel {
 
 	private JButton createBid = new JButton("Create Bid");
 
-	public CreateBidView() {
+	public CreateBid() {
 		super(new BorderLayout());
 		placeComponents();
 	}
