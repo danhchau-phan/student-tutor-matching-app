@@ -44,7 +44,7 @@ public class Controller {
     private StudentMessageView studentMessage;
 
     //Tutor Fields
-    private TutorAllBidsView tutorAllBids;
+    private TutorAllBids tutorAllBids;
     private TutorAllContracts tutorAllContracts;
     private CreateBid createBid;
     private TutorView tutorView;
@@ -125,11 +125,9 @@ public class Controller {
 
     private void initTutorViews() {
         assert (this.user != null);
-
-
         this.homeView = new HomeView(display, user);
         this.tutorView = new TutorView(display, user);
-        this.studentAllBids = new StudentAllBids(user);
+        this.tutorAllBids = new TutorAllBids(user, new Bid().getAll());
         this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
 
         homeView.setSwitchPanelListener(homeView.panel, homeView.tutorButton, tutorView);
@@ -158,14 +156,11 @@ public class Controller {
 
     private void initStudentViews() {
         assert (this.user != null);
-
-        assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.studentView = new StudentView(display, user);
         this.studentAllBids = new StudentAllBids(user);
         this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
         this.createRequest = new CreateRequest();
-
 
         homeView.setSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
         studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);

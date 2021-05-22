@@ -1,58 +1,53 @@
 package tutorview;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
-import java.awt.Component;
 
 import java.awt.BorderLayout;
-import model.Bid;
-import model.User;
+import java.awt.Color;
+import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
+import model.Bid;
+import model.Model;
+import model.User;
 
 /**
  * This is the View for Tutor to see all available (unclosed, unexpired) mathc requests
  */
 public class TutorAllBids extends JPanel implements Observer {
-	private List<Bid> bids;
 	private User user;
-	private Bid subscriber;
+	private List<Bid> bids;
 	private JList<Bid> bidList;
-	
-	public TutorAllBids(User user, Bid subscriber) {
+
+//	public TutorAllBidsView(Display display, User user) {
+//		super(display, user);
+//	}
+
+	public TutorAllBids(User user) {
 		super(new BorderLayout());
+		this.setBackground(Color.BLUE);
 		this.user = user;
-		this.bids = subscriber.getAll();
+		this.bids = user.getInitiatedBids();
+		placeComponents();
+	}
+
+	public TutorAllBids(User user, List<Bid> bids) {
+		super(new BorderLayout());
+		this.setBackground(Color.BLUE);
+		this.user = user;
+		this.bids = bids;
 		placeComponents();
 	}
 
 	protected void placeComponents() {
-		// ArrayList<JComponent> panels = new ArrayList<JComponent> ();
-		
-		// for (Bid b : bids) {
-		// 	String text = b.toString();
-		// 	JPanel panel = new JPanel();
-		// 	JTextArea tA = new JTextArea();
-		// 	tA.setText(text);
-		// 	panel.add(tA);
-		// 	tA.setEditable(false);
-			
-		// 	this.setSwitchPanelListener(main, tA, new TutorResponseView(display, user, b));
-		// 	panels.add(panel);
-		// }
-		
-		// JPanel midPanel = new ListPanel(panels);
-        // this.add(midPanel);
-		// JScrollPane scrollp = new JScrollPane(midPanel);
-		// this.add(scrollp);
-
 		DefaultListModel<Bid> model = new DefaultListModel<Bid>();
 		for (Bid b : bids)
 			model.addElement(b);
@@ -60,23 +55,50 @@ public class TutorAllBids extends JPanel implements Observer {
 		bidList.setCellRenderer(new CellRenderer());
 		JScrollPane scrollp = new JScrollPane(bidList);
 		this.add(scrollp);
+//		super.placeComponents();
+//		bids = Bid.getAll();
+//		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
+//
+//		for (Bid b : bids) {
+//			String text = b.toString();
+//			JPanel panel = new JPanel();
+//			JTextArea tA = new JTextArea();
+//			tA.setText(text);
+//			panel.add(tA);
+//			tA.setEditable(false);
+//
+//			this.setSwitchPanelListener(main, tA, new TutorResponseView(display, user, b));
+//			panels.add(panel);
+//		}
+//
+//		JPanel midPanel = new ListPanel(panels);
+//        main.add(midPanel);
+//		JScrollPane scrollp = new JScrollPane(midPanel);
+//		main.add(scrollp);
+//		this.display.setVisible();
+
+	}
+
+	public Bid getSelectedBid() {
+		return this.bidList.getSelectedValue();
+	}
+
+	// Listener for tutor response
+	public void setListListener(MouseClickListener listener) {
+		this.bidList.addMouseListener(listener);
 	}
 
 	@Override
 	public void update() {
-		this.bids = subscriber.getAll();
-		this.placeComponents();
+
 	}
 
-	public void setListListener(MouseClickListener listener) {
-		this.bidList.addMouseListener(listener);
-	}
-	
+
 	private class CellRenderer extends JPanel implements ListCellRenderer<Bid> {
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends Bid> list, Bid value, int index,
-				boolean isSelected, boolean cellHasFocus) {
+													  boolean isSelected, boolean cellHasFocus) {
 			this.removeAll();
 			String text = value.toString();
 			JTextArea tA = new JTextArea();
@@ -85,5 +107,6 @@ public class TutorAllBids extends JPanel implements Observer {
 			this.add(tA);
 			return this;
 		}
+
 	}
 }

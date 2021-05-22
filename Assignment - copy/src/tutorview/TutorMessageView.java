@@ -3,14 +3,12 @@ package tutorview;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import mainview.Display;
 import mainview.MessageView;
 import mainview.MouseClickListener;
+import mainview.Observer;
 import model.Bid;
 import model.Message;
 import model.MessageAddInfo;
@@ -19,44 +17,57 @@ import model.User;
 /**
  * This is the View where Tutor messages Student in close bidding
  */
-public class TutorMessageView extends TutorView implements MessageView{
+public class TutorMessageView extends JPanel implements MessageView, Observer {
+
+	private Message message;
 	private Bid bid;
-	public TutorMessageView(Display display, User user, Bid bid) {
-		super(display, user);
+	private JButton send = new JButton("Send");
+	private JButton selectBid = new JButton("Select bid");
+	private User user;
+	private JTextField chatBox;
+
+	public TutorMessageView(User user, Message message, Bid bid) {
 		this.bid = bid;
+		this.message = message;
 	}
 	
 	protected void placeComponents() {
-		super.placeComponents();
-		
-		Message mS = Message.getMessagebyId(user.getId(), this.bid);
-		
-		JTextArea log = (mS == null? new JTextArea() : this.getLogArea(mS.getMessageLog()));
-		main.add(log, BorderLayout.CENTER);
-		
-		JPanel chatArea = new JPanel(new BorderLayout());
-		JButton send = new JButton("Send");
-		
-		JTextField chatBox = this.getChatBox();
+		Message mS = this.message;
+
+		JTextArea log = this.getLogArea(mS.getMessageLog());
+
+		JPanel chatArea = new JPanel();
+		chatArea.setLayout(new BorderLayout());
+
+		chatBox = this.getChatBox();
 		chatArea.add(chatBox);
-		chatArea.add(send, BorderLayout.EAST);
-		
-		send.addMouseListener(new MouseClickListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String content = chatBox.getText();
-				if (mS != null)
-					mS.addNewMessage(content, user.getUsername());
-				else {
-					Message.postMessage(bid.getId(), user.getId(), content, new MessageAddInfo(content, user.getUsername()));
-					
-				}
-				chatBox.setText("");
-				display.removePanel(main);
-				(new TutorMessageView(display, user, bid)).display();
-			}});
-		
-		main.add(chatArea, BorderLayout.SOUTH);
-		this.display.setVisible();
+
+		JPanel bTs = new JPanel();
+		bTs.setLayout(new BoxLayout(bTs, BoxLayout.Y_AXIS));
+		bTs.add(send);
+		bTs.add(selectBid);
+
+		chatArea.add(bTs, BorderLayout.EAST);
+
+		this.add(log, BorderLayout.CENTER);
+		this.add(chatArea, BorderLayout.SOUTH);
+	}
+
+	public String getChatContent() {
+		return this.chatBox.getText();
+	}
+
+	public void setSendMessageListener(MouseClickListener listener) {
+		this.send.addMouseListener(listener);
+	}
+
+	public void setSelectBidListener(MouseClickListener listener) {
+		this.selectBid.addMouseListener(listener);
+	}
+
+
+	@Override
+	public void update() {
+
 	}
 }
