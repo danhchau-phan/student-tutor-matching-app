@@ -15,14 +15,10 @@ import java.util.List;
  * This class models a Bid
  */
 public class Bid extends Observable implements Model{
-    @JsonProperty("id")
     private String id;
-    @JsonProperty("type")
     private BidType type;
     private User initiator;
-    @JsonProperty("dateCreated")
     private Date dateCreated;
-    @JsonProperty("subject")
     private Subject subject;
 	private boolean closeddown;
 	private BidAddInfo addInfo;
@@ -112,7 +108,6 @@ public class Bid extends Observable implements Model{
     	return initiator.getGivenName() + " " + initiator.getFamilyName();
     }
     
-    
     @Override
     public String toString() {
         return (this.initiator == null ? 
@@ -137,7 +132,7 @@ public class Bid extends Observable implements Model{
     	return false;
     }
     
-    public static List<Bid> getAll() {
+    public List<Bid> getAll() {
 		List<Bid> bids = new ArrayList<Bid> ();
 		for (ObjectNode node : Model.getAll("/bid")) {
 			bids.add(new Bid(node));
@@ -145,7 +140,7 @@ public class Bid extends Observable implements Model{
 		return screenClosedBid(bids);
 	}
     
-	public static List<Bid> screenClosedBid(List<Bid> bids) {
+	public List<Bid> screenClosedBid(List<Bid> bids) {
 		List<Bid> screenedBids = new ArrayList<Bid>();
 
 		for (Bid b : bids) {
@@ -159,14 +154,14 @@ public class Bid extends Observable implements Model{
 								b.getSubject().getId(),
 								new ContractAddInfo(false, false));
 				}
-				Bid.closeDownBid(b.id);
+				closeDownBid(b.id);
 			} else if (!b.closeddown)
 				screenedBids.add(b);
 		}
 		return screenedBids;
 	}
 
-    public static void postBid(String type, String initiatorId, String subjectId, BidAddInfo addInfo) {
+    public void postBid(String type, String initiatorId, String subjectId, BidAddInfo addInfo) {
     	String url = Application.rootUrl + "/bid";
     	String jsonString = "{" +
   		"\"type\":\"" + type + "\"," +
@@ -176,6 +171,7 @@ public class Bid extends Observable implements Model{
   		"\"additionalInfo\":" + addInfo.toJson() + "}";
       
     	Model.post(url,  jsonString);
+		this.inform();
     } 
     
     public void patchBid() {
@@ -184,6 +180,7 @@ public class Bid extends Observable implements Model{
     	String jsonString = "{" + "\"additionalInfo\":" + this.addInfo.toJson() + "}";
     	
     	Model.patch(url, jsonString);
+		this.inform();
     }
     
     public static Bid updateBid(String bidId) {
@@ -197,13 +194,13 @@ public class Bid extends Observable implements Model{
     	bid = new Bid(Model.get("/bid/", bid.id));
     }
     
-    public static void closeDownBid(String bidId) {
+    public void closeDownBid(String bidId) {
     	String url = Application.rootUrl + "/bid/" + bidId + "/close-down";
     	String jsonString = "{" +
     	  		"\"dateClosedDown\":\"" + Utils.format.format(new Date()) + "\"}";
     	
     	Model.post(url, jsonString);
-    	
+    	this.inform();
     }   
     
 	public List<Message> getMessages() {

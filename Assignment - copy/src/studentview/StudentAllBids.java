@@ -16,18 +16,19 @@ import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
 import model.Bid;
-import model.Model;
+import model.User;
 
 /**
  * View that allows the Student to see all unexpired and unclosed match requests created by them
  */
 public class StudentAllBids extends JPanel implements Observer{
-	List<Bid> bids;
-	JList<Bid> bidList;
-	public StudentAllBids(List<Bid> bids) {
+	private User user;
+	private List<Bid> bids;
+	private JList<Bid> bidList;
+	public StudentAllBids(User user) {
 		super(new BorderLayout());
 		this.setBackground(Color.BLUE);
-		this.bids = bids;
+		this.bids = user.getInitiatedBids();
 		placeComponents();
 	}
 	
@@ -41,8 +42,8 @@ public class StudentAllBids extends JPanel implements Observer{
 		this.add(scrollp);
 	}
 
-	public int getSelectedIndex() {
-		return this.bidList.getSelectedIndex();
+	public Bid getSelectedBid() {
+		return this.bidList.getSelectedValue();
 	}
 
 	public void setListListener(MouseClickListener listener) {
@@ -50,9 +51,9 @@ public class StudentAllBids extends JPanel implements Observer{
 	}
 
 	@Override
-	public void update(Model model) {
-		// TODO Auto-generated method stub
-		
+	public void update() {
+		this.bids = user.getInitiatedBids();
+		this.placeComponents();
 	}
 
 	private class CellRenderer extends JPanel implements ListCellRenderer<Bid> {
@@ -68,6 +69,7 @@ public class StudentAllBids extends JPanel implements Observer{
 			this.add(tA);
 			return this;
 		}
-		
 	}
+
+
 }

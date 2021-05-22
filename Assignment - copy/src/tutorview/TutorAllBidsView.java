@@ -68,8 +68,8 @@ public class TutorAllBidsView extends JPanel implements Observer {
 		
 	}
 
-	public int getSelectedIndex() {
-		return this.bidList.getSelectedIndex();
+	public Bid getSelectedBid() {
+		return this.bidList.getSelectedValue();
 	}
 
 	// Listener for tutor response
@@ -78,9 +78,10 @@ public class TutorAllBidsView extends JPanel implements Observer {
 	}
 
 	@Override
-	public void update(Model model) {
+	public void update() {
 
 	}
+
 
 	private class CellRenderer extends JPanel implements ListCellRenderer<Bid> {
 

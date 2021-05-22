@@ -1,19 +1,10 @@
 package tutorview;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.util.List;
 
 import javax.swing.*;
 
-import mainview.BidsPanel;
-import mainview.Display;
 import mainview.MouseClickListener;
-import mainview.Utils;
-import model.BidResponse;
-import model.Subject;
-import model.User;
-import model.Bid;
 
 /**
  * This is the View where the Tutor creates the bid in open bidding
@@ -87,7 +78,8 @@ public class CreateBidView extends JPanel {
 						.addGroup(groupLayout.createSequentialGroup()
 								.addComponent(yes)
 								.addComponent(no))
-						.addComponent(addInfo)));
+//						.addComponent(addInfo)
+				));
 
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup()
@@ -108,9 +100,9 @@ public class CreateBidView extends JPanel {
 						.addComponent(freeLessonLb)
 						.addComponent(yes)
 						.addComponent(no))
-				.addGroup(groupLayout.createParallelGroup()
-						.addComponent(addInfoLb)
-						.addComponent(addInfo))
+//				.addGroup(groupLayout.createParallelGroup()
+//						.addComponent(addInfoLb)
+//						.addComponent(addInfo))
 		);
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setBackground(Color.red);

@@ -22,6 +22,10 @@ public class TutorResponseView extends JPanel {
 	private List<BidResponse> responses;
 	private List<Message> messages;
 
+	public JButton createBid;
+	public JButton buyOut;
+	public JButton subscribeBid;
+
 	public TutorResponseView(Bid bid) {
 		super(new BorderLayout());
 		this.bid = bid;
@@ -47,6 +51,7 @@ public class TutorResponseView extends JPanel {
 			messageList = new JList<>(model);
 			messageList.setCellRenderer(new MessageCellRenderer());
 		}
+
 		// adds JList to panel
 		if (bid.getType() == Bid.BidType.close) {
 			JScrollPane scrollp = new JScrollPane(messageList);
@@ -54,7 +59,20 @@ public class TutorResponseView extends JPanel {
 		} else {
 			JScrollPane scrollp = new JScrollPane(responseList);
 			this.add(scrollp);
+		}
+
+
+		// Bottom Panel with buttons - Create Bid Button and Subscribe Button (correspond to Request)
+		JPanel panel = new JPanel();
+		this.add(panel, BorderLayout.NORTH);
+		panel.add(createBid);
+		panel.add(buyOut);
+		panel.add(subscribeBid);
+
+//		for (JButton b : buttons) {
+//			panel.add(b);
 //		}
+
 //		if (bid.getType() == Bid.BidType.open) {
 //			JButton createBid = new JButton("Create Bid");
 //			JButton buyOut = new JButton("Buy Out Bid");
@@ -109,7 +127,6 @@ public class TutorResponseView extends JPanel {
 //			display.removePanel(this.main);
 //			(new TutorMessageView(display, user, bid)).display();
 //		}
-		}
 	}
 
 	public void setResponseListener(MouseClickListener listener) {
@@ -123,8 +140,6 @@ public class TutorResponseView extends JPanel {
 	public int getSelectedMessageIndex() {
 		return this.messageList.getSelectedIndex();
 	}
-
-
 
 	public BidResponse getSelectedResponse() {
 		return responseList.getSelectedValue();

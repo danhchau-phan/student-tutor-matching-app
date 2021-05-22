@@ -24,25 +24,32 @@ import tutorview.*;
 public class Controller {
     private Display display;
     private User user;
-    private List<Bid> initiatedBids, allBids;
-    private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
+//    private List<Bid> initiatedBids, allBids;
+//    private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
+
+    private Bid activeBid, subscriberBid = new Bid();
+    private Contract activeContract, subscriberContract = new Contract();
+    private Message activeMessage;
+
     private HomeView homeView;
+//    private Bid activeBid;
+//    private Message activeMessage;
+
+    //Student Fields
     private StudentAllBids studentAllBids;
     private StudentAllContracts studentAllContracts;
     private CreateRequest createRequest;
     private StudentView studentView;
     private StudentResponseView studentResponse;
     private StudentMessageView studentMessage;
-    private Bid activeBid;
-    private Message activeMessage;
+
     //Tutor Fields
     private TutorAllBidsView tutorAllBids;
-    private TutorResponseView tutorResponse;
     private TutorAllContractsView tutorAllContracts;
     private CreateBidView createBid;
     private TutorView tutorView;
-//    private StudentResponseView studentResponse;
-//    private StudentMessageView studentMessage;
+    private TutorResponseView tutorResponse;
+    private TutorMessageView tutorMessage;
 
 
 
@@ -56,12 +63,15 @@ public class Controller {
     public void start() {
         this.display = new Display();
         AuthenticationView authView = new AuthenticationView(display);
-        
+
+
+        // Login listener
         authView.addMouseListener(authView.loginButton, new MouseClickListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-    			String username = authView.getUserName();
+                String username = authView.getUserName();
                 String password = authView.getPassword();
+
     			try {
     				user = User.logIn(username, password);
     			} catch (Exception exception) {
@@ -71,23 +81,17 @@ public class Controller {
                     // maybe admin??
                     if (user.isStudent()) {
                         display.removePanel(authView.panel);
-                        initModels();
+//                        initModels();
                         initStudentViews();
-                        subscribeViews();
+//                        subscribeViews();
                         homeView.display();
                     } else if (user.isTutor()) {
                         display.removePanel(authView.panel);
-                        initModels();
+//                        initModels();
                         initTutorViews();
-                        subscribeViews();
+//                        subscribeViews();
                         homeView.display();
                     }
-
-//                    display.removePanel(authView.panel);
-//                    initModels();
-//                    initViews();
-//                    subscribeViews();
-//                    homeView.display();
     			} else {
 					Utils.INVALID_USER.show();
 				}
@@ -97,75 +101,90 @@ public class Controller {
         authView.display();
     }
 
-    private void initModels() {
-        assert (this.user != null);
-        this.initiatedBids = user.getInitiatedBids();
-        this.allBids = Bid.getAll();
-        this.contractsAsFirstParty = Contract.getAllContractsAsFirstParty(this.user.getId());
-        this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
-    }
+//
+//    private void initModels() {
+//        assert (this.user != null);
+//        this.initiatedBids = user.getInitiatedBids();
+//        this.allBids = Bid.getAll();
+//        this.contractsAsFirstParty = Contract.getAllContractsAsFirstParty(this.user.getId());
+//        this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
+//    }
+
+//    private void initViews() {
+//        assert (this.user != null);
+//        // this.allBids = tempBid.getAll();
+//        // this.contractsAsFirstParty = (new Contract()).getAllContractsAsFirstParty(this.user.getId());
+//        // this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
+//
+//        initStudentViews();
+//        subscribeStudentViews();
+//        initTutorViews();
+//        subscribeTutorViews();
+//    }
+
 
     private void initTutorViews() {
-//        assert (this.user != null);
-//
-//        this.homeView = new HomeView(display, user);
-//        this.tutorView = new TutorView(display, user);
-//        this.tutorAllBids = new TutorAllBidsView(allBids);
-//        this.tutorAllContracts = new TutorAllContractsView(contractsAsFirstParty);
-////        this.createRequest = new CreateRequest();
-//
-//        homeView.setSwitchPanelListener(homeView.panel, homeView.tutorButton, tutorView);
-//        tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
-//        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
-//        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
-////        tutorView.setSwitchPanelListener(tutorView.main, tutorView.createBid, createRequest);
-//
-//        createBid.setCreateBidListener(new MouseClickListener() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-////                if (bid.checkEligibility(user)) {
-////                    display.removePanel(main);
-////                    View cBV = new CreateBidView(display, user, bid);
-////                    cBV.display();
-////                } else {
-////                    Utils.INSUFFICIENT_COMPETENCY.show();
-////                }
-//
-//                // needs refactoring
-////                String h = createBid.duration.getText();
-////                String ss = createBid.sessionsPerWeek.getText();
-////                String r = createBid.rate.getText();
-////                String tD = createBid.timeDate.getText();
-////                String rT = createBid.rateType.getSelection().getActionCommand();
-////                String t = createBid.freeLesson.getSelection().getActionCommand();
-////                try {
-////                    BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
-////                    Bid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
-////                    Utils.SUCCESS_MATCH_REQUEST.show();
-////                } catch (NumberFormatException nfe) {
-////                    Utils.INVALID_FIELDS.show();
-////                } catch (NullPointerException npe) {
-////                    Utils.PLEASE_FILL_IN.show();
-////                }
-//            }});
-//
-//        tutorAllBids.setListListener(new MouseClickListener(){
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                int id = studentAllBids.getSelectedIndex();
-//                activeBid = initiatedBids.get(id);
-//                studentResponse = new StudentResponseView(activeBid);
-//                studentResponse.setResponseListener(new ResponseListener());
-//
-//                if (studentView.activePanel != null) {
-//                    studentView.main.remove(studentView.activePanel);
+        assert (this.user != null);
+
+        this.homeView = new HomeView(display, user);
+        this.tutorView = new TutorView(display, user);
+        this.tutorAllBids = new TutorAllBidsView(allBids);
+        this.tutorAllContracts = new TutorAllContractsView(contractsAsFirstParty);
+//        this.createRequest = new CreateRequest();
+
+        homeView.setSwitchPanelListener(homeView.panel, homeView.tutorButton, tutorView);
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
+//        tutorView.setSwitchPanelListener(tutorView.main, tutorView.createBid, createBid);
+
+        createBid.setCreateBidListener(new MouseClickListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+//                String c = (String) createBid.competency.getSelectedItem();
+//                String sj = (String) createBid.subject.getSelectedItem();
+                String r = createBid.rate.getText();
+                String h = createBid.duration.getText();
+                String h = createBid.timeDate.getText();
+                String ss = createBid.sessionsPerWeek.getText();
+                String rT = createBid.rateType.getSelection().getActionCommand();
+                String t = createBid.freeLesson.getSelection().getActionCommand();
+                try {
+                    BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
+                    subscriberBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
+                    Utils.SUCCESS_BID_CREATION.show();
+                } catch (NumberFormatException nfe) {
+                    Utils.INVALID_FIELDS.show();
+                } catch (NullPointerException npe) {
+                    Utils.PLEASE_FILL_IN.show();
+                }
+//                if (bid.checkEligibility(user)) {
+//                    display.removePanel(main);
+//                    View cBV = new CreateBidView(display, user, bid);
+//                    cBV.display();
+//                } else {
+//                    Utils.INSUFFICIENT_COMPETENCY.show();
 //                }
-//                studentView.main.add(studentResponse);
-//                studentView.activePanel = studentResponse;
-//                display.createPanel(studentView.main);
-//                display.setVisible();
-//            }
-//        });
+            }});
+
+
+        // Display all Responses for request selected
+        tutorAllBids.setListListener(new MouseClickListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                activeBid = tutorAllBids.getSelectedBid();
+                tutorResponse = new TutorResponseView(activeBid);
+                tutorResponse.setResponseListener(new ResponseListener());
+
+                if (tutorView.activePanel != null) {
+                    tutorView.main.remove(tutorView.activePanel);
+                }
+                tutorView.main.add(tutorResponse);
+                tutorView.activePanel = tutorResponse;
+                display.createPanel(tutorView.main);
+                display.setVisible();
+            }
+        });
     }
 
     private void initStudentViews() {
@@ -187,39 +206,39 @@ public class Controller {
 			@Override
 			public void mouseClicked(MouseEvent e) { 
                 // needs refactoring
-				String c = (String) createRequest.competency.getSelectedItem();
-				String h = createRequest.hourPerLesson.getText();
-				String ss = createRequest.sessionsPerWeek.getText();
-				String r = createRequest.rate.getText(); 
-				String rT = createRequest.rateType.getSelection().getActionCommand();
-				String sj = (String) createRequest.subject.getSelectedItem();
-				String t = createRequest.bidType.getSelection().getActionCommand();
-				try {
-					BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
-					Bid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
-					Utils.SUCCESS_MATCH_REQUEST.show();
-				} catch (NumberFormatException nfe) {
-					Utils.INVALID_FIELDS.show();
-				} catch (NullPointerException npe) {
-					Utils.PLEASE_FILL_IN.show();
-				}
-			}});
+                String c = (String) createRequest.competency.getSelectedItem();
+                String h = createRequest.hourPerLesson.getText();
+                String ss = createRequest.sessionsPerWeek.getText();
+                String r = createRequest.rate.getText();
+                String rT = createRequest.rateType.getSelection().getActionCommand();
+                String sj = (String) createRequest.subject.getSelectedItem();
+                String t = createRequest.bidType.getSelection().getActionCommand();
+                try {
+                    BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
+                    subscriberBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
+                    Utils.SUCCESS_MATCH_REQUEST.show();
+                } catch (NumberFormatException nfe) {
+                    Utils.INVALID_FIELDS.show();
+                } catch (NullPointerException npe) {
+                    Utils.PLEASE_FILL_IN.show();
+                }
+            }});
 
         studentAllBids.setListListener(new MouseClickListener(){
             @Override
             public void mouseClicked(MouseEvent e) {
-                int id = studentAllBids.getSelectedIndex();
-                activeBid = initiatedBids.get(id);
+                activeBid = studentAllBids.getSelectedBid();
                 studentResponse = new StudentResponseView(activeBid);
                 studentResponse.setResponseListener(new ResponseListener());
 
                 if (studentView.activePanel != null) {
-					studentView.main.remove(studentView.activePanel);
-				}
-				studentView.main.add(studentResponse);
-				studentView.activePanel = studentResponse;
-				display.createPanel(studentView.main);
-				display.setVisible();
+                    studentView.main.remove(studentView.activePanel);
+                }
+                studentView.main.add(studentResponse);
+                studentView.activePanel = studentResponse;
+                display.createPanel(studentView.main);
+                display.setVisible();
+
             }
         });
     
@@ -230,6 +249,23 @@ public class Controller {
         // user.subscribe(studentAllBids);
     }
 
+    // Display the Active Message SubPanel correspond to the ActiveBid
+    private void showStudentMessagePanel() {
+        studentMessage = new StudentMessageView(user, activeMessage, activeBid);
+        studentMessage.setSendMessageListener(new SendMessageListener());
+        studentMessage.setSelectBidListener(new SelectBidListener());
+
+        if (studentView.activePanel != null) {
+            studentView.main.remove(studentView.activePanel);
+        }
+        studentView.main.add(studentMessage);
+        studentView.activePanel = studentMessage;
+        display.createPanel(studentView.main);
+        display.setVisible();
+    }
+
+
+    /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
     class ResponseListener implements MouseClickListener{
 
         @Override
@@ -250,6 +286,27 @@ public class Controller {
 
     }
 
+    class CreateBidListener implements MouseClickListener{
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
+
+        }
+    }
+
+    class BuyOutListener implements MouseClickListener{
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+    }
+
+    class subscribeBidListener implements MouseClickListener{
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
+
+        }
+    }
+
     class SendMessageListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -259,19 +316,7 @@ public class Controller {
         }
     }
 
-    private void showStudentMessagePanel() {
-        studentMessage = new StudentMessageView(user, activeMessage, activeBid);
-        studentMessage.setSendMessageListener(new SendMessageListener());
-        studentMessage.setSelectBidListener(new SelectBidListener());
 
-        if (studentView.activePanel != null) {
-            studentView.main.remove(studentView.activePanel);
-        }
-        studentView.main.add(studentMessage);
-        studentView.activePanel = studentMessage;
-        display.createPanel(studentView.main);
-        display.setVisible();
-    }
 
     class SelectBidListener implements MouseClickListener {
         @Override
