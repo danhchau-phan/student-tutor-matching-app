@@ -78,20 +78,22 @@ public class Controller {
     				exception.printStackTrace();
     			}
     			if (!(user == null)) {
+    			    display.removePanel(authView.panel);
                     // maybe admin??
                     if (user.isStudent()) {
-                        display.removePanel(authView.panel);
 //                        initModels();
                         initStudentViews();
 //                        subscribeViews();
-                        homeView.display();
-                    } else if (user.isTutor()) {
-                        display.removePanel(authView.panel);
+//                        homeView.display();
+                    }
+                    if (user.isTutor()) {
+//                        display.removePanel(authView.panel);
 //                        initModels();
                         initTutorViews();
 //                        subscribeViews();
-                        homeView.display();
                     }
+
+                    homeView.display();
     			} else {
 					Utils.INVALID_USER.show();
 				}
@@ -155,6 +157,8 @@ public class Controller {
                 display.setVisible();
             }
         });
+
+
     }
 
     private void initStudentViews() {
@@ -214,6 +218,8 @@ public class Controller {
         studentAllContracts.setSignContractListener(new SignContractListener());
     }
 
+//    public void
+
     private void subscribeViews() {
         // user.subscribe(studentAllBids);
     }
@@ -264,7 +270,7 @@ public class Controller {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (activeBid.getType() == Bid.BidType.close) {
-                activeMessage = studentResponse.getSelectedMessage();
+                activeMessage = tutorResponse.getSelectedMessage();
                 showStudentMessagePanel();
             } else {
                 BidResponse selectedResponse = tutorResponse.getSelectedResponse();
@@ -286,7 +292,46 @@ public class Controller {
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
             if (activeBid.checkEligibility(user)) {
-                // Notify View for update (add a bid)
+                createBid = new CreateBid();
+                createBid.setCreateBidListener(new MouseClickListener(){
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        String r = createBid.rate.getText();
+                        String d = createBid.duration.getText();
+                        String tD = createBid.timeDate.getText();
+                        String s = createBid.sessionsPerWeek.getText();
+                        String rT = createBid.rateType.getSelection().getActionCommand();
+                        String a = createBid.addInfo.getText();
+                        boolean f = createBid.freeLesson.getSelection().getActionCommand() == "yes"? true : false;
+                        try {
+                            BidResponse response = new BidResponse(
+                                    user.getId(),
+                                    user.getFullName(),
+                                    r,
+                                    rT,
+                                    d,
+                                    tD,
+                                    s,
+                                    a,
+                                    f);
+
+                            activeBid.addResponse(response);
+                            Utils.SUCCESS_BID_CREATION.show();
+                        } catch (NumberFormatException nfe) {
+                            Utils.INVALID_FIELDS.show();
+                        } catch (NullPointerException npe) {
+                            Utils.PLEASE_FILL_IN.show();
+                        }
+                    }
+                });
+
+                if (tutorView.activePanel != null) {
+                    tutorView.main.remove(tutorView.activePanel);
+                }
+                tutorView.main.add(createBid);
+                tutorView.activePanel = createBid;
+                display.createPanel(tutorView.main);
+                display.setVisible();
             } else {
                 Utils.INSUFFICIENT_COMPETENCY.show();
             }

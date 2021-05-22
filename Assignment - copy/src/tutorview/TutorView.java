@@ -16,7 +16,7 @@ import mainview.View;
  */
 public class TutorView extends View implements NavigationPane{
 	protected User user;
-//	public JButton createBid = new JButton("Create Match Request");
+	public JButton createBid = new JButton("Create Response Bid");
 	public JButton viewAllBids = new JButton("View All Bids");
 	public JButton viewContracts = new JButton("View Contracts");
 	public JPanel main = new JPanel(new BorderLayout());

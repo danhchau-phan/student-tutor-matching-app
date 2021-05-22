@@ -78,7 +78,7 @@ public class CreateBid extends JPanel {
 						.addGroup(groupLayout.createSequentialGroup()
 								.addComponent(yes)
 								.addComponent(no))
-//						.addComponent(addInfo)
+						.addComponent(addInfo)
 				));
 
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
@@ -100,9 +100,9 @@ public class CreateBid extends JPanel {
 						.addComponent(freeLessonLb)
 						.addComponent(yes)
 						.addComponent(no))
-//				.addGroup(groupLayout.createParallelGroup()
-//						.addComponent(addInfoLb)
-//						.addComponent(addInfo))
+				.addGroup(groupLayout.createParallelGroup()
+						.addComponent(addInfoLb)
+						.addComponent(addInfo))
 		);
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setBackground(Color.red);
