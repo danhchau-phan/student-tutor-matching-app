@@ -1,6 +1,7 @@
 package mainview;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import java.awt.*;
 
 public class Display {
 	private JFrame frame;
