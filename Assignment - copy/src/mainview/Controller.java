@@ -19,13 +19,19 @@ import studentview.StudentAllContracts;
 import studentview.StudentMessageView;
 import studentview.StudentResponseView;
 import studentview.StudentView;
-import tutorview.TutorAllBidsView;
+import tutorview.TutorAllBids;
+import tutorview.TutorAllContracts;
+import tutorview.TutorView;
 
 public class Controller {
     private Display display;
     private User user;
-    private List<Bid> allBids;
-    private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
+    // private List<Bid> allBids;
+    // private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
+    private Bid activeBid, subscriberBid = new Bid();
+    private Contract activeContract, subscriberContract = new Contract();
+    private Message activeMessage;
+
     private HomeView homeView;
     private StudentAllBids studentAllBids;
     private StudentAllContracts studentAllContracts;
@@ -33,10 +39,9 @@ public class Controller {
     private StudentView studentView;
     private StudentResponseView studentResponse;
     private StudentMessageView studentMessage;
-    private Bid activeBid, tempBid = new Bid();
-    private Contract tempContract = new Contract();
-    private Message activeMessage;
-    // private TutorAllBidsView tutorAllBids;
+    private TutorView tutorView;
+    private TutorAllBids tutorAllBids;
+    private TutorAllContracts tutorAllContracts;
 
     public Controller() {
         this.start();
@@ -58,9 +63,8 @@ public class Controller {
     			}
     			if (!(user == null)) {
                     display.removePanel(authView.panel);
-                    initModels();
                     initViews();
-                    subscribeViews();
+                    
                     homeView.display();
     			} else {
 					Utils.INVALID_USER.show();
@@ -72,19 +76,24 @@ public class Controller {
         authView.display();
     }
 
-    private void initModels() {
+    private void initViews() {
         assert (this.user != null);
-        this.allBids = tempBid.getAll();
-        this.contractsAsFirstParty = (new Contract()).getAllContractsAsFirstParty(this.user.getId());
-        this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
+        // this.allBids = tempBid.getAll();
+        // this.contractsAsFirstParty = (new Contract()).getAllContractsAsFirstParty(this.user.getId());
+        // this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
+
+        initStudentViews();
+        subscribeStudentViews();
+        initTutorViews();
+        subscribeTutorViews();
     }
 
-    private void initViews() {
+    private void initStudentViews() {
         assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.studentView = new StudentView(display, user);
         this.studentAllBids = new StudentAllBids(user);
-        this.studentAllContracts = new StudentAllContracts(user);
+        this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
         this.createRequest = new CreateRequest();
 
         homeView.setSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
@@ -106,7 +115,7 @@ public class Controller {
 				String t = createRequest.bidType.getSelection().getActionCommand();
 				try {
 					BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
-					tempBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
+					subscriberBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
 					Utils.SUCCESS_MATCH_REQUEST.show();
 				} catch (NumberFormatException nfe) {
 					Utils.INVALID_FIELDS.show();
@@ -135,13 +144,30 @@ public class Controller {
         studentAllContracts.setSignContractListener(new SignContractListener());
     }
 
-    private void subscribeViews() {
-        tempBid.subscribe(studentAllBids);
-        // tempBid.subscribe(tutorAllBids);
-        tempContract.subscribe(studentAllContracts);
-        
+    private void subscribeStudentViews() {
+        subscriberBid.subscribe(studentAllBids);
+        subscriberContract.subscribe(studentAllContracts);
     }
 
+    private void initTutorViews() {
+        assert (this.user != null);
+        this.homeView = new HomeView(display, user);
+        this.tutorView = new TutorView(display, user);
+        this.tutorAllBids = new TutorAllBids(user, subscriberBid);
+        this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
+        this.createBid = new CreateBid();
+
+        homeView.setSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
+        studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
+        studentView.setSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
+        studentView.setSwitchPanelListener(studentView.main, studentView.viewContracts,studentAllContracts);
+        studentView.setSwitchPanelListener(studentView.main, studentView.createBid, createRequest);
+    }
+
+    private void subscribeTutorViews() {
+        subscriberBid.subscribe(tutorAllBids);
+        subscriberContract.subscribe(tutorAllContracts);
+    }
     class ResponseListener implements MouseClickListener{
 
         @Override
@@ -153,11 +179,11 @@ public class Controller {
                 BidResponse selectedResponse = studentResponse.getSelectedResponse();
                 if (selectedResponse == null)
                     return;
-                (new Contract()).postContract(user.getId(), 
+                subscriberContract.postContract(user.getId(), 
 								selectedResponse.getBidderId(), 
 								activeBid.getSubject().getId(),
 								new ContractAddInfo(true, false));
-                tempBid.closeDownBid(activeBid.getId());
+                subscriberBid.closeDownBid(activeBid.getId());
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             }
         }
@@ -190,11 +216,11 @@ public class Controller {
     class SelectBidListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            (new Contract()).postContract(user.getId(), 
+            subscriberContract.postContract(user.getId(), 
 						activeMessage.getPosterId(), 
 						activeBid.getSubject().getId(),
 						new ContractAddInfo(true, false));
-				tempBid.closeDownBid(activeBid.getId());
+                subscriberBid.closeDownBid(activeBid.getId());
 				Utils.SUCCESS_CONTRACT_CREATION.show();
         }
     }

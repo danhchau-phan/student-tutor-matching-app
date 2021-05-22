@@ -27,7 +27,7 @@ import java.awt.FlowLayout;
  * If the match request is type open, the Tutor sees all competing bids from other Tutors.
  * If the match request is type close, the Tutor is redirected to TutorMessageView.
  */
-class TutorResponseView extends TutorView {
+public class TutorResponseView extends TutorView {
 	private Bid bid;
 
 	public TutorResponseView(Display display, User user, Bid bid) {
@@ -65,7 +65,7 @@ class TutorResponseView extends TutorView {
 				public void mouseClicked(MouseEvent e) {
 					if (bid.checkEligibility(user)) {
 						display.removePanel(main);
-						View cBV = new CreateBidView(display, user, bid);
+						View cBV = new CreateBid(display, user, bid);
 						cBV.display();
 					} else {
 						Utils.INSUFFICIENT_COMPETENCY.show();
@@ -77,7 +77,7 @@ class TutorResponseView extends TutorView {
 				public void mouseClicked(MouseEvent e) {
 					if (bid.checkEligibility(user)) {
 
-						Contract.postContract(bid.getInitiatorId(), user.getId(), 
+						(new Contract()).postContract(bid.getInitiatorId(), user.getId(), 
 								bid.getSubject().getId(),
 								new ContractAddInfo(true, true));
 						bid.closeDownBid(bid.getId());

@@ -19,7 +19,7 @@ import model.User;
 /**
  * This is the View where Tutor messages Student in close bidding
  */
-class TutorMessageView extends TutorView implements MessageView{
+public class TutorMessageView extends TutorView implements MessageView{
 	private Bid bid;
 	public TutorMessageView(Display display, User user, Bid bid) {
 		super(display, user);

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -13,6 +14,7 @@ import javax.swing.JTextArea;
 import mainview.Display;
 import mainview.ListPanel;
 import mainview.MouseClickListener;
+import mainview.Observer;
 import mainview.Utils;
 import model.Contract;
 import model.User;
@@ -20,17 +22,24 @@ import model.User;
 /**
  * This is the View for the Tutor to see all the contracts that involves them as the second party
  */
-class TutorAllContractsView extends TutorView {
-	public TutorAllContractsView(Display display, User user) {
-		super(display, user);
+public class TutorAllContracts extends JPanel implements Observer {
+	private JList<Contract> contractList;
+	private List<Contract> contracts;
+	private Contract subscriber;
+	private User user;
+	
+	public TutorAllContracts(User user, Contract subscriber) {
+		super(new BorderLayout());
+		this.user = user;
+		this.contracts = subscriber.getAllContractsAsSecondParty(user.getId());
+		placeComponents();
 	}
 
 	@Override
-	protected void placeComponents() {
-		super.placeComponents();
+	private void placeComponents() {
 		
-		List<Contract> contracts = new ArrayList<Contract>();
-		contracts = Contract.getAllContractsAsSecondParty(user.getId());
+		// List<Contract> contracts = new ArrayList<Contract>();
+		// contracts = Contract.getAllContractsAsSecondParty(user.getId());
 		
 		List<JComponent> comp = new ArrayList<JComponent>();
 		
@@ -66,11 +75,17 @@ class TutorAllContractsView extends TutorView {
 		}
 		
 		JPanel midPanel = new ListPanel(comp);
-        main.add(midPanel);
+        this.add(midPanel);
 		JScrollPane scrollp = new JScrollPane(midPanel);
-		main.add(scrollp);
-		this.display.setVisible();
+		this.add(scrollp);
+		// this.display.setVisible();
 
+	}
+
+	@Override
+	public void update() {
+		this.contracts = subscriber.getAllContractsAsSecondParty(user.getId());
+		placeComponents();
 	}
 
 }
