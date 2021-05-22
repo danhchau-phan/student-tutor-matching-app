@@ -130,7 +130,7 @@ public class Controller {
         this.homeView = new HomeView(display, user);
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(user, new Bid().getAll());
-        this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
+        this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
 
         homeView.setSwitchPanelListener(homeView.panel, homeView.tutorButton, tutorView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
@@ -342,7 +342,11 @@ public class Controller {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (activeBid.checkEligibility(user)) {
-                // Notify View for update (create contract)
+                subscriberContract.postContract(user.getId(), activeBid.getInitiatorId(),
+                        activeBid.getSubject().getId(),
+                        new ContractAddInfo(true, true));
+                activeBid.closeDownBid(activeBid.getId());
+                Utils.SUCCESS_CONTRACT_CREATION.show();
             } else {
                 Utils.INSUFFICIENT_COMPETENCY.show();
             }
