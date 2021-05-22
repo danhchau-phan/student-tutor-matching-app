@@ -126,47 +126,16 @@ public class Controller {
     private void initTutorViews() {
         assert (this.user != null);
 
+
         this.homeView = new HomeView(display, user);
         this.tutorView = new TutorView(display, user);
-        this.tutorAllBids = new TutorAllBidsView(allBids);
-        this.tutorAllContracts = new TutorAllContractsView(contractsAsFirstParty);
-//        this.createRequest = new CreateRequest();
+        this.studentAllBids = new StudentAllBids(user);
+        this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
 
         homeView.setSwitchPanelListener(homeView.panel, homeView.tutorButton, tutorView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
-//        tutorView.setSwitchPanelListener(tutorView.main, tutorView.createBid, createBid);
-
-        createBid.setCreateBidListener(new MouseClickListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-//                String c = (String) createBid.competency.getSelectedItem();
-//                String sj = (String) createBid.subject.getSelectedItem();
-                String r = createBid.rate.getText();
-                String h = createBid.duration.getText();
-                String h = createBid.timeDate.getText();
-                String ss = createBid.sessionsPerWeek.getText();
-                String rT = createBid.rateType.getSelection().getActionCommand();
-                String t = createBid.freeLesson.getSelection().getActionCommand();
-                try {
-                    BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
-                    subscriberBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
-                    Utils.SUCCESS_BID_CREATION.show();
-                } catch (NumberFormatException nfe) {
-                    Utils.INVALID_FIELDS.show();
-                } catch (NullPointerException npe) {
-                    Utils.PLEASE_FILL_IN.show();
-                }
-//                if (bid.checkEligibility(user)) {
-//                    display.removePanel(main);
-//                    View cBV = new CreateBidView(display, user, bid);
-//                    cBV.display();
-//                } else {
-//                    Utils.INSUFFICIENT_COMPETENCY.show();
-//                }
-            }});
-
 
         // Display all Responses for request selected
         tutorAllBids.setListListener(new MouseClickListener(){
@@ -190,11 +159,13 @@ public class Controller {
     private void initStudentViews() {
         assert (this.user != null);
 
+        assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.studentView = new StudentView(display, user);
-        this.studentAllBids = new StudentAllBids(initiatedBids);
-        this.studentAllContracts = new StudentAllContracts(contractsAsFirstParty);
+        this.studentAllBids = new StudentAllBids(user);
+        this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
         this.createRequest = new CreateRequest();
+
 
         homeView.setSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
         studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
@@ -265,9 +236,11 @@ public class Controller {
     }
 
 
-    /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
-    class ResponseListener implements MouseClickListener{
 
+
+    /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
+
+    class ResponseListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent e) {
             if (activeBid.getType() == Bid.BidType.close) {
@@ -275,13 +248,16 @@ public class Controller {
                 showStudentMessagePanel();
             } else {
                 BidResponse selectedResponse = studentResponse.getSelectedResponse();
-                Contract.postContract(user.getId(), 
-								selectedResponse.getBidderId(), 
-								activeBid.getSubject().getId(),
-								new ContractAddInfo(true, false));
-                Bid.closeDownBid(activeBid.getId());
+                if (selectedResponse == null)
+                    return;
+                subscriberContract.postContract(user.getId(),
+                        selectedResponse.getBidderId(),
+                        activeBid.getSubject().getId(),
+                        new ContractAddInfo(true, false));
+                subscriberBid.closeDownBid(activeBid.getId());
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             }
+
         }
 
     }
@@ -289,21 +265,29 @@ public class Controller {
     class CreateBidListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
-
+            if (activeBid.checkEligibility(user)) {
+                // Notify View for update (add a bid)
+            } else {
+                Utils.INSUFFICIENT_COMPETENCY.show();
+            }
         }
     }
 
     class BuyOutListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent e) {
-
+            if (activeBid.checkEligibility(user)) {
+                // Notify View for update (create contract)
+            } else {
+                Utils.INSUFFICIENT_COMPETENCY.show();
+            }
         }
     }
 
     class subscribeBidListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
-
+            // Notify View for update (check monitor)
         }
     }
 
@@ -321,19 +305,19 @@ public class Controller {
     class SelectBidListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            Contract.postContract(user.getId(), 
-						activeMessage.getPosterId(), 
-						activeBid.getSubject().getId(),
-						new ContractAddInfo(true, false));
-				Bid.closeDownBid(activeBid.getId());
-				Utils.SUCCESS_CONTRACT_CREATION.show();
+            subscriberContract.postContract(user.getId(),
+                    activeMessage.getPosterId(),
+                    activeBid.getSubject().getId(),
+                    new ContractAddInfo(true, false));
+            subscriberBid.closeDownBid(activeBid.getId());
+            Utils.SUCCESS_CONTRACT_CREATION.show();
+
         }
     }
 
     class SignContractListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-
             if (studentAllContracts.getSignedContracts() >= StudentAllContracts.CONTRACT_QUOTA) {
                 Utils.REACHED_CONTRACT_LIMIT.show();
             }

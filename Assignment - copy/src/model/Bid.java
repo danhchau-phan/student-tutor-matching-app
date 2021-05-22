@@ -149,7 +149,7 @@ public class Bid extends Observable implements Model{
 				if (b.addInfo != null && b.type == Bid.BidType.open
 					&& !b.getResponse().isEmpty()) {
 					BidResponse winner = b.getResponse().get(0);
-					Contract.postContract(b.initiator.getId(), 
+					(new Contract()).postContract(b.initiator.getId(), 
 								winner.getBidderId(), 
 								b.getSubject().getId(),
 								new ContractAddInfo(false, false));

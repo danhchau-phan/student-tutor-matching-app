@@ -80,7 +80,7 @@ public class Contract extends Observable implements Model {
 		return allContracts;
 	}
 	
-	public static List<Contract> getAllContractsAsSecondParty(String userId) {
+	public List<Contract> getAllContractsAsSecondParty(String userId) {
 		List<Contract> allContracts = new ArrayList<Contract>();
 		for (ObjectNode node : Model.getAll("/contract")) {
 			Contract c = new Contract(node);

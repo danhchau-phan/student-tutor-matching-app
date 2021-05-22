@@ -28,6 +28,7 @@ public class StudentAllBids extends JPanel implements Observer{
 	public StudentAllBids(User user) {
 		super(new BorderLayout());
 		this.setBackground(Color.BLUE);
+		this.user = user;
 		this.bids = user.getInitiatedBids();
 		placeComponents();
 	}
