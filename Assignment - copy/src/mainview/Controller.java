@@ -99,7 +99,6 @@ public class Controller implements Observer{
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
             b.subscribe(EventType.BID_NEWRESPONSE, studentResponse);
-            // System.out.println(b);
         }
     }
 
@@ -126,7 +125,7 @@ public class Controller implements Observer{
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
-
+        this.tutorResponse = new TutorResponseView();
         
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
@@ -141,9 +140,10 @@ public class Controller implements Observer{
                 }
 
                 activeBid = tutorAllBids.getSelectedBid();
-
+                
                 if (activeBid.getType() == Bid.BidType.open) {
-                    tutorResponse = new TutorResponseView(activeBid);
+                    // tutorResponse = new TutorResponseView(activeBid);
+                    tutorResponse.setBid(activeBid);
                     subscribeBidNewResponse();
                     tutorResponse.setResponseListener(new TutorResponseListener());
                     tutorResponse.setCreateBidListener(new CreateBidListener());
@@ -307,7 +307,7 @@ public class Controller implements Observer{
             initTutorViews();
             subscribeBidCreation();
             display.removePanel(homeView.panel);
-            studentView.display();
+            tutorView.display();
         }}
     /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
     /** Response portals: MessageList View and Response View*/
@@ -384,6 +384,7 @@ public class Controller implements Observer{
                         } catch (NumberFormatException nfe) {
                             Utils.INVALID_FIELDS.show();
                         } catch (NullPointerException npe) {
+                            npe.printStackTrace();
                             Utils.PLEASE_FILL_IN.show();
                         }
                     }

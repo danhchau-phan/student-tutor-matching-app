@@ -29,11 +29,15 @@ public class TutorResponseView extends JPanel implements Observer {
 		placeComponents();
 	}
 
+	public TutorResponseView() {
+		super(new BorderLayout());
+	}
+
 	private void placeComponents() {
 		this.createBid = new JButton("Create Bid");
 		this.buyOut = new JButton("Buy Out Bid");
 		this.subscribeBid = new JButton("Subscribe Bid");
-
+		System.out.println(this.bid);
 		if (bid.getType() == Bid.BidType.open) {
 
 			DefaultListModel<BidResponse> model = new DefaultListModel<>();
@@ -162,6 +166,11 @@ public class TutorResponseView extends JPanel implements Observer {
 
 	@Override
 	public void update(EventType e) {
+		placeComponents();
+	}
+
+	public void setBid(Bid b) {
+		this.bid = b;
 		placeComponents();
 	}
 }
