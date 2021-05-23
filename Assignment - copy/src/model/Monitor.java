@@ -1,26 +1,40 @@
 package model;
 
 import mainview.Observer;
-import java.util.List;
+
+import java.util.*;
 
 /** Monitor store all the Subscribed Bid Request by tutor*/
 public class Monitor implements Observer {
-    private List<Bid> subscribedBids;
+    private List<BidResponse> newResponses;
+    private Map<Bid, List<BidResponse>> subscribedBidsMap;
     private List<Bid> bidAllRequests;
+    private List<Bid> activeMonitorBids;
     private Bid bidObserved;
     private boolean isChanged;
 
-    public Monitor(List<Bid> subscribedBids, Bid bidsToObserved) {
-        this.subscribedBids = subscribedBids;
-        this.bidObserved = bidsToObserved;
+    public Monitor() {
     }
 
+//    public Monitor(List<Bid> subscribedBids, Bid bidsToObserved) {
+////        this.subscribedBidsMap = subscribedBids;
+//        this.bidObserved = bidsToObserved;
+//        subscribedBidsMap = new HashMap<>();
+//    }
+
     public void addSubscribe(Bid bid) {
-        this.subscribedBids.add(bid);
+        newResponses.clear();
+        if (bid.getResponse() == null) {
+            newResponses = new ArrayList<>();
+        }
+        else {
+            newResponses = bid.getResponse();
+        }
+        this.subscribedBidsMap.put(bid, newResponses);
     }
 
     public void unSubscribe(Bid bid) {
-        this.subscribedBids.remove(bid);
+        this.subscribedBidsMap.remove(bid);
     }
 
     public boolean hasChanged() {
@@ -31,36 +45,45 @@ public class Monitor implements Observer {
         this.isChanged = false;
     }
 
-    /** Check any changes happen on the responses for relevent subscribed bid request*/
-    public void checkResponses(Bid bid) {
+    /** Check any changes happen on the responses for relevant subscribed bid request*/
+    public void checkResponses(Bid bidModel) {
+        List<BidResponse> previousBidResponses = subscribedBidsMap.get(bidModel);
+        // Check Any New Responses
+        if (previousBidResponses.size() != bidModel.getResponse().size()) {
+            setChanged(true);
+            subscribedBidsMap.replace(bidModel, bidModel.getResponse());
+        }
+    }
 
+    public boolean isChanged() {
+        return isChanged;
+    }
+
+    public void setChanged(boolean changed) {
+        isChanged = changed;
+    }
+
+    public Map<Bid, List<BidResponse>> getSubscribedBidsMap() {
+        return subscribedBidsMap;
+    }
+
+    public Set<Bid> getSubscribedBids() {
+        return subscribedBidsMap.keySet();
     }
 
 
     @Override
     public void update(EventType e) {
-        bidAllRequests= bidObserved.getAll();   // get all updated bids
+        bidAllRequests= Bid.getAll();   // get all updated bids
+        activeMonitorBids.clear();
 
-        for (Bid bid: subscribedBids) {
-            if (bidAllRequests.contains(bid)) {
-                checkResponses(bid);
-            } else {
-                // Expired Bid should be removed from monitor
-                subscribedBids.remove(bid);
+        for (Bid bidModel: bidAllRequests) {
+            if (subscribedBidsMap.containsKey(bidModel)) {
+                activeMonitorBids.add(bidModel);
+                checkResponses(bidModel);
             }
         }
 
-
-        for (Bid bid: bidAllRequests) {
-            // Make sure these bids exist in subscribed bid to ensure it remain active
-            if (subscribedBids.contains(bid)) {
-                List<BidResponse> latestResponses = bid.getResponse();
-            }
-            else {
-
-            }
-
-        }
-
+        subscribedBidsMap.keySet().retainAll(activeMonitorBids);    // Only retain the bid request that is active
     }
 }

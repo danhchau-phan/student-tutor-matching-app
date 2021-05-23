@@ -1,5 +1,7 @@
 package mainview;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,15 @@ import studentview.StudentResponseView;
 import studentview.StudentView;
 import tutorview.*;
 
+import javax.swing.*;
+
 public class Controller implements Observer{
+    private Timer timer;
+    private static final int threadSleep = 10000;
+    private static final int monitorIntervalCheck = 5000;
+    private boolean isLogOut;
+
+    private Monitor monitor;
     private Display display;
     private User user;
     private List<Bid> initiatedBids = new ArrayList<Bid>();
@@ -40,6 +50,7 @@ public class Controller implements Observer{
     private CreateBid createBid;
     private TutorView tutorView;
     private TutorResponseView tutorResponse;
+    private TutorMonitorView tutorMonitor;
     private TutorMessageView tutorMessage;
     private enum Role {
         student,
@@ -68,6 +79,7 @@ public class Controller implements Observer{
     				exception.printStackTrace();
     			}
     			if (!(user == null)) {
+    			    isLogOut = false;
                     // should be a separate function
     			    display.removePanel(authView.panel);
                     homeView = new HomeView(display, user);
@@ -127,17 +139,50 @@ public class Controller implements Observer{
         }
     }
 
+    /** Initialise the Monitor and Stop running when tutor logged out*/
+    private void startTutorMonitor() {
+        try {
+            monitor = new Monitor();
+            ActionListener taskPerformer = new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    if (monitor.hasChanged()) {
+                        tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
+                        monitor.confirmChanges();
+                    }
+
+                    if (isLogOut) {
+                        timer.stop();
+                    }
+                    System.out.println("Looping Monitor every 5 seconds");
+                }
+            };
+
+            timer = new Timer(monitorIntervalCheck ,taskPerformer);
+            timer.setRepeats(true);
+            timer.start();
+
+            Thread.sleep(threadSleep);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initTutorViews() {
         assert (this.user != null);
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(this.allContracts);
         this.tutorResponse = new TutorResponseView();
+        this.tutorMonitor = new TutorMonitorView(this.allBids);
         this.createBid = new CreateBid();
+
+        /** Run the Tutor Monitor before setting the panels*/
+        startTutorMonitor();
         
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
 
         /** Tutor Response Portal: Response Bid View and Message View*/
         tutorAllBids.setListListener(new MouseClickListener(){
@@ -167,6 +212,7 @@ public class Controller implements Observer{
                 display.setVisible();
             }
         });
+
 
         tutorAllContracts.setSignContractListener(new SignContractListener());
 
@@ -325,6 +371,7 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent e) {
             display.closeWindow();
+            isLogOut = true;
             new Controller();
         }
         
@@ -431,6 +478,7 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
             // Notify View for update (check monitor)
+            monitor.addSubscribe(activeBid);
         }
     }
 
