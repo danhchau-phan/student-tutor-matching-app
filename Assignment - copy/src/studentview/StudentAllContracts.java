@@ -24,15 +24,6 @@ public class StudentAllContracts extends JPanel implements Observer {
 	public static final int CONTRACT_QUOTA = 5; 
 	private JList<Contract> contractList;
 	List<Contract> contracts;
-	// private Contract subscriber;
-	// private User user;
-	// public StudentAllContracts(User user, Contract subsriber) {
-	// 	super(new BorderLayout());
-	// 	this.user = user;
-	// 	this.subscriber = subsriber;
-	// 	this.contracts = subscriber.getAllContractsAsFirstParty(user.getId());
-	// 	placeComponents();
-	// }
 
 	public StudentAllContracts(List<Contract> contracts) {
 		super(new BorderLayout());

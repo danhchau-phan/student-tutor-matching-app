@@ -97,7 +97,6 @@ public class Controller implements Observer{
             this.initiatedBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
-            // b.subscribe(EventType.BID_NEWRESPONSE, studentResponse);
         }
     }
 
@@ -107,23 +106,32 @@ public class Controller implements Observer{
             this.allBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
-            // b.subscribe(EventType.BID_NEWRESPONSE, tutorResponse);
         }
     }
 
     private void fetchAllContractAsFirstParty() {
-        this.allContracts = Contract.getAllContractsAsFirstParty(this.user.getId());
+        this.allContracts.clear();
+        for (Contract c : Contract.getAllContractsAsFirstParty(this.user.getId())) {
+            this.allContracts.add(c);
+            c.subscribe(EventType.CONTRACT_SIGN, this);
+            c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
+        }
     }
 
     private void fetchAllContractAsSecondParty() {
-        this.allContracts = Contract.getAllContractsAsSecondParty(this.user.getId());
+        this.allContracts.clear();
+        for (Contract c : Contract.getAllContractsAsSecondParty(this.user.getId())) {
+            this.allContracts.add(c);
+            c.subscribe(EventType.CONTRACT_SIGN, this);
+            c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
+        }
     }
 
     private void initTutorViews() {
         assert (this.user != null);
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
-        this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
+        this.tutorAllContracts = new TutorAllContracts(this.allContracts);
         this.tutorResponse = new TutorResponseView();
         this.createBid = new CreateBid();
         
@@ -200,7 +208,7 @@ public class Controller implements Observer{
         assert (this.user != null);
         this.studentView = new StudentView(display, user);
         this.studentAllBids = new StudentAllBids(this.initiatedBids);
-        this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
+        this.studentAllContracts = new StudentAllContracts(this.allContracts);
         this.createRequest = new CreateRequest();
 
         
@@ -471,7 +479,6 @@ public class Controller implements Observer{
                 Contract c = studentAllContracts.getSelectedContract();
                 c.firstPartySign(true);
                 if (c.isSigned()) {
-                    c.signContract();
                     Utils.CONTRACT_SIGNED.show();
                 } else
                     Utils.OTHER_PARTY_PENDING.show();

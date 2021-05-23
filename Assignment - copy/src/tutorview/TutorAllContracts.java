@@ -15,19 +15,8 @@ import model.User;
  * This is the View for the Tutor to see all the contracts that involves them as the second party
  */
 public class TutorAllContracts extends JPanel implements Observer {
-//	public static final int CONTRACT_QUOTA = 5;
 	private JList<Contract> contractList;
-	private Contract subscriber;
 	List<Contract> contracts;
-	private User user;
-
-	// public TutorAllContracts(User user, Contract subsriber) {
-	// 	super(new BorderLayout());
-	// 	this.user = user;
-	// 	this.subscriber = subsriber;
-	// 	this.contracts = subscriber.getAllContractsAsFirstParty(user.getId());
-	// 	placeComponents();
-	// }
 
 	public TutorAllContracts(List<Contract> contracts) {
 		super(new BorderLayout());
