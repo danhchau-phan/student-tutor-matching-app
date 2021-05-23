@@ -6,6 +6,7 @@ import java.util.*;
 
 /** Monitor store all the Subscribed Bid Request by tutor*/
 public class Monitor implements Observer {
+    private List<BidResponse> newResponses;
     private Map<Bid, List<BidResponse>> subscribedBidsMap;
     private List<Bid> bidAllRequests;
     private List<Bid> activeMonitorBids;
@@ -15,14 +16,21 @@ public class Monitor implements Observer {
     public Monitor() {
     }
 
-    public Monitor(List<Bid> subscribedBids, Bid bidsToObserved) {
-//        this.subscribedBidsMap = subscribedBids;
-        this.bidObserved = bidsToObserved;
-        subscribedBidsMap = new HashMap<>();
-    }
+//    public Monitor(List<Bid> subscribedBids, Bid bidsToObserved) {
+////        this.subscribedBidsMap = subscribedBids;
+//        this.bidObserved = bidsToObserved;
+//        subscribedBidsMap = new HashMap<>();
+//    }
 
     public void addSubscribe(Bid bid) {
-        this.subscribedBidsMap.put(bid, bid.getResponse());
+        newResponses.clear();
+        if (bid.getResponse() == null) {
+            newResponses = new ArrayList<>();
+        }
+        else {
+            newResponses = bid.getResponse();
+        }
+        this.subscribedBidsMap.put(bid, newResponses);
     }
 
     public void unSubscribe(Bid bid) {
@@ -39,8 +47,6 @@ public class Monitor implements Observer {
 
     /** Check any changes happen on the responses for relevant subscribed bid request*/
     public void checkResponses(Bid bidModel) {
-        activeMonitorBids.add(bidModel);
-
         List<BidResponse> previousBidResponses = subscribedBidsMap.get(bidModel);
         // Check Any New Responses
         if (previousBidResponses.size() != bidModel.getResponse().size()) {
@@ -73,14 +79,11 @@ public class Monitor implements Observer {
 
         for (Bid bidModel: bidAllRequests) {
             if (subscribedBidsMap.containsKey(bidModel)) {
+                activeMonitorBids.add(bidModel);
                 checkResponses(bidModel);
             }
         }
 
         subscribedBidsMap.keySet().retainAll(activeMonitorBids);    // Only retain the bid request that is active
-
-
-
-//        subscribedBidsMap.keySet().removeAll(expiredBidList);
     }
 }

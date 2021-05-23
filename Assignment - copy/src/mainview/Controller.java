@@ -131,7 +131,7 @@ public class Controller implements Observer{
         this.allContracts = Contract.getAllContractsAsSecondParty(this.user.getId());
     }
 
-    /** Initialise the Monitor*/
+    /** Initialise the Monitor and Stop running when tutor logged out*/
     private void startTutorMonitor() {
         try {
             monitor = new Monitor();
@@ -139,6 +139,7 @@ public class Controller implements Observer{
                 public void actionPerformed(ActionEvent evt) {
                     if (monitor.hasChanged()) {
                         tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
+                        monitor.confirmChanges();
                     }
 
                     if (isLogOut) {
@@ -469,6 +470,7 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
             // Notify View for update (check monitor)
+            monitor.addSubscribe(activeBid);
         }
     }
 

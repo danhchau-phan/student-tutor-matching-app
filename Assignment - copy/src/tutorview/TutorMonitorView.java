@@ -62,7 +62,10 @@ public class TutorMonitorView extends JPanel {
             responseList.setCellRenderer(new ResponseCellRenderer());
 
 
-            activeBidPanel.add(new JLabel(activeBid.getId(), JLabel.LEFT));
+            JPanel bidRequestPanel = new JPanel();
+            bidRequestPanel.add(new JLabel(activeBid.getId(), JLabel.LEFT));
+
+            activeBidPanel.add(bidRequestPanel);
             activeBidPanel.add(responseList);
 
             AllBidContainer.add(activeBidPanel);
@@ -84,11 +87,10 @@ public class TutorMonitorView extends JPanel {
 
             JPanel panel = new JPanel(new BorderLayout());
             JEditorPane eP = new JEditorPane();
-            JButton bT = new JButton("Select Bid");
 
             eP.setText(value.toString());
             panel.add(eP);
-            panel.add(bT, BorderLayout.EAST);
+
 
             this.add(panel);
             return this;
@@ -105,7 +107,8 @@ public class TutorMonitorView extends JPanel {
 
     /** Update the latest Bid Response or expired Bid Request*/
     public void setLatestMonitorView(Set<Bid> bids) {
-
+        activeBidList.clear();
+        activeBidList.addAll(bids);
     }
 
     public void addMonitorRunnableListener(ActionListener listener) {
