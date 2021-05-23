@@ -9,6 +9,7 @@ import javax.swing.JScrollPane;
 
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
+import model.EventType;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,7 +24,6 @@ import model.User;
  * This is the View for Tutor to see all available (unclosed, unexpired) mathc requests
  */
 public class TutorAllBids extends JPanel implements Observer {
-	private User user;
 	private List<Bid> bids;
 	private JList<Bid> bidList;
 
@@ -31,18 +31,17 @@ public class TutorAllBids extends JPanel implements Observer {
 //		super(display, user);
 //	}
 
-	public TutorAllBids(User user) {
-		super(new BorderLayout());
-		this.setBackground(Color.BLUE);
-		this.user = user;
-		this.bids = user.getInitiatedBids();
-		placeComponents();
-	}
+	// public TutorAllBids(User user) {
+	// 	super(new BorderLayout());
+	// 	this.setBackground(Color.BLUE);
+	// 	this.user = user;
+	// 	this.bids = user.getInitiatedBids();
+	// 	placeComponents();
+	// }
 
-	public TutorAllBids(User user, List<Bid> bids) {
+	public TutorAllBids(List<Bid> bids) {
 		super(new BorderLayout());
 		this.setBackground(Color.BLUE);
-		this.user = user;
 		this.bids = bids;
 		placeComponents();
 	}
@@ -89,8 +88,8 @@ public class TutorAllBids extends JPanel implements Observer {
 	}
 
 	@Override
-	public void update() {
-
+	public void update(EventType e) {
+		placeComponents();
 	}
 
 

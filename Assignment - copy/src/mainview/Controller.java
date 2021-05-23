@@ -91,6 +91,7 @@ public class Controller implements Observer{
             this.initiatedBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
+            b.subscribe(EventType.BID_NEWRESPONSE, studentAllBids);
         }
     }
 
@@ -99,7 +100,8 @@ public class Controller implements Observer{
         for (Bid b : Bid.getAll()) {
             this.allBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
-            b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
+            b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
+            b.subscribe(EventType.BID_NEWRESPONSE, tutorAllBids);
         }
     }
 
@@ -107,7 +109,7 @@ public class Controller implements Observer{
         assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.tutorView = new TutorView(display, user);
-        this.tutorAllBids = new TutorAllBids(user, new Bid().getAll());
+        this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
 
         homeView.setSwitchPanelListener(homeView.panel, homeView.tutorButton, tutorView);
@@ -209,9 +211,9 @@ public class Controller implements Observer{
     }
 
     private void subscribeViews() {
-        // user.subscribe(studentAllBids);
         subscriberBid.subscribe(EventType.BID_CREATED, this);
         subscriberBid.subscribe(EventType.BID_CREATED, studentAllBids);
+        subscriberBid.subscribe(EventType.BID_CREATED, tutorAllBids);
     }
 
     // private void addSubscription(Bid b) {
@@ -418,8 +420,8 @@ public class Controller implements Observer{
     @Override
     public void update(EventType e) {
         if (e == EventType.BID_CREATED) {
-            // must only be created by a student hence only initiatedbids is updated
             fetchInitiatedBids();
+            fetchAllBids();
         }
         if (e == EventType.BID_CLOSEDDOWN) {
             try {

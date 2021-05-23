@@ -2,6 +2,7 @@ package studentview;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.List;
+import model.EventType;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -90,7 +91,7 @@ public class StudentAllContracts extends JPanel implements Observer {
 	}
 
 	@Override
-	public void update() {
+	public void update(EventType e) {
 		this.contracts = this.subscriber.getAllContractsAsFirstParty(this.user.getId());
 		this.placeComponents();
 	}

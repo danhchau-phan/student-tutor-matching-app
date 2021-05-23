@@ -1,17 +1,14 @@
 package tutorview;
 
 import java.awt.BorderLayout;
-import java.awt.event.MouseEvent;
 
 import javax.swing.*;
-
-import mainview.Display;
+import model.EventType;
 import mainview.MessageView;
 import mainview.MouseClickListener;
 import mainview.Observer;
 import model.Bid;
 import model.Message;
-import model.MessageAddInfo;
 import model.User;
 
 /**
@@ -73,7 +70,7 @@ public class TutorMessageView extends JPanel implements MessageView, Observer {
 
 
 	@Override
-	public void update() {
+	public void update(EventType e) {
 
 	}
 }

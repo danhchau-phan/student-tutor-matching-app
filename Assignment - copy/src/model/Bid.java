@@ -224,6 +224,7 @@ public class Bid extends Observable implements Model{
 	public void addResponse(BidResponse r) {
 		this.addInfo.addResponse(r);
 		this.patchBid();
+		this.inform(EventType.BID_NEWRESPONSE);
 	}
 	
 	public boolean checkEligibility(User tutor) {
