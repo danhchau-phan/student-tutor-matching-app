@@ -218,7 +218,7 @@ public class Controller implements Observer{
         });
 
 
-        tutorAllContracts.setSignContractListener(new SignContractListener());
+        tutorAllContracts.setSignContractListener(new TutorSignContractListener());
 
         createBid.setCreateBidListener(new MouseClickListener(){
             @Override
@@ -308,7 +308,7 @@ public class Controller implements Observer{
             }
         });
     
-        studentAllContracts.setSignContractListener(new SignContractListener());
+        studentAllContracts.setSignContractListener(new StudentSignContractListener());
     }
 
     private void subscribeBidCreation() {
@@ -523,7 +523,7 @@ public class Controller implements Observer{
         }
     }
 
-    class SignContractListener implements MouseClickListener {
+    class StudentSignContractListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (studentAllContracts.getSignedContracts() >= StudentAllContracts.CONTRACT_QUOTA) {
@@ -537,6 +537,21 @@ public class Controller implements Observer{
                 } else
                     Utils.OTHER_PARTY_PENDING.show();
             }
+        }
+        
+    }
+
+    class TutorSignContractListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            
+            Contract c = tutorAllContracts.getSelectedContract();
+            c.secondPartySign(true);
+            if (c.isSigned()) {
+                Utils.CONTRACT_SIGNED.show();
+            } else
+                Utils.OTHER_PARTY_PENDING.show();
+            
         }
         
     }
