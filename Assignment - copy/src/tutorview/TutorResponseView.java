@@ -78,7 +78,7 @@ public class TutorResponseView extends JPanel implements Observer {
 	}
 
 	public void setCreateBidListener(MouseClickListener listener) {
-		this.getCreateBid().addMouseListener(listener);
+		this.createBid.addMouseListener(listener);
 	}
 
 	public void setBuyOutListener(MouseClickListener listener) {

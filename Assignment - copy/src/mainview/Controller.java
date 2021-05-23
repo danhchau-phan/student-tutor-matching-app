@@ -2,7 +2,6 @@ package mainview;
 
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import model.*;
@@ -126,10 +125,16 @@ public class Controller implements Observer{
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
         this.tutorResponse = new TutorResponseView();
+        this.createBid = new CreateBid();
         
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
+
+        // tutorResponse.setResponseListener(new TutorResponseListener());
+        // tutorResponse.setCreateBidListener(new CreateBidListener());
+        // tutorResponse.setBuyOutListener(new BuyOutListener());
+        // tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
 
         /** Tutor Response Portal: Response Bid View and Message View*/
         tutorAllBids.setListListener(new MouseClickListener(){
@@ -140,7 +145,7 @@ public class Controller implements Observer{
                 }
 
                 activeBid = tutorAllBids.getSelectedBid();
-                
+
                 if (activeBid.getType() == Bid.BidType.open) {
                     // tutorResponse = new TutorResponseView(activeBid);
                     tutorResponse.setBid(activeBid);
@@ -166,6 +171,39 @@ public class Controller implements Observer{
         });
 
         tutorAllContracts.setSignContractListener(new SignContractListener());
+
+        createBid.setCreateBidListener(new MouseClickListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String r = createBid.rate.getText();
+                String d = createBid.duration.getText();
+                String tD = createBid.timeDate.getText();
+                String s = createBid.sessionsPerWeek.getText();
+                String rT = createBid.rateType.getSelection().getActionCommand();
+                String a = createBid.addInfo.getText();
+                boolean f = createBid.freeLesson.getSelection().getActionCommand() == "yes"? true : false;
+                try {
+                    BidResponse response = new BidResponse(
+                            user.getId(),
+                            user.getFullName(),
+                            r,
+                            rT,
+                            d,
+                            tD,
+                            s,
+                            a,
+                            f);
+
+                    activeBid.addResponse(response);
+                    Utils.SUCCESS_BID_CREATION.show();
+                } catch (NumberFormatException nfe) {
+                    Utils.INVALID_FIELDS.show();
+                } catch (NullPointerException npe) {
+                    npe.printStackTrace();
+                    Utils.PLEASE_FILL_IN.show();
+                }
+            }
+        });
     }
 
     private void initStudentViews() {
@@ -354,40 +392,40 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
             if (activeBid.checkEligibility(user)) {
-                createBid = new CreateBid();
+                // createBid = new CreateBid();
 
-                createBid.setCreateBidListener(new MouseClickListener(){
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        String r = createBid.rate.getText();
-                        String d = createBid.duration.getText();
-                        String tD = createBid.timeDate.getText();
-                        String s = createBid.sessionsPerWeek.getText();
-                        String rT = createBid.rateType.getSelection().getActionCommand();
-                        String a = createBid.addInfo.getText();
-                        boolean f = createBid.freeLesson.getSelection().getActionCommand() == "yes"? true : false;
-                        try {
-                            BidResponse response = new BidResponse(
-                                    user.getId(),
-                                    user.getFullName(),
-                                    r,
-                                    rT,
-                                    d,
-                                    tD,
-                                    s,
-                                    a,
-                                    f);
+                // createBid.setCreateBidListener(new MouseClickListener(){
+                //     @Override
+                //     public void mouseClicked(MouseEvent e) {
+                //         String r = createBid.rate.getText();
+                //         String d = createBid.duration.getText();
+                //         String tD = createBid.timeDate.getText();
+                //         String s = createBid.sessionsPerWeek.getText();
+                //         String rT = createBid.rateType.getSelection().getActionCommand();
+                //         String a = createBid.addInfo.getText();
+                //         boolean f = createBid.freeLesson.getSelection().getActionCommand() == "yes"? true : false;
+                //         try {
+                //             BidResponse response = new BidResponse(
+                //                     user.getId(),
+                //                     user.getFullName(),
+                //                     r,
+                //                     rT,
+                //                     d,
+                //                     tD,
+                //                     s,
+                //                     a,
+                //                     f);
 
-                            activeBid.addResponse(response);
-                            Utils.SUCCESS_BID_CREATION.show();
-                        } catch (NumberFormatException nfe) {
-                            Utils.INVALID_FIELDS.show();
-                        } catch (NullPointerException npe) {
-                            npe.printStackTrace();
-                            Utils.PLEASE_FILL_IN.show();
-                        }
-                    }
-                });
+                //             activeBid.addResponse(response);
+                //             Utils.SUCCESS_BID_CREATION.show();
+                //         } catch (NumberFormatException nfe) {
+                //             Utils.INVALID_FIELDS.show();
+                //         } catch (NullPointerException npe) {
+                //             npe.printStackTrace();
+                //             Utils.PLEASE_FILL_IN.show();
+                //         }
+                //     }
+                // });
 
                 if (tutorView.activePanel != null) {
                     tutorView.main.remove(tutorView.activePanel);
