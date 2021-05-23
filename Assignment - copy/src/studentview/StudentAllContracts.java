@@ -23,18 +23,25 @@ import model.User;
 public class StudentAllContracts extends JPanel implements Observer {
 	public static final int CONTRACT_QUOTA = 5; 
 	private JList<Contract> contractList;
-	private Contract subscriber;
 	List<Contract> contracts;
-	private User user;
-	public StudentAllContracts(User user, Contract subsriber) {
+	// private Contract subscriber;
+	// private User user;
+	// public StudentAllContracts(User user, Contract subsriber) {
+	// 	super(new BorderLayout());
+	// 	this.user = user;
+	// 	this.subscriber = subsriber;
+	// 	this.contracts = subscriber.getAllContractsAsFirstParty(user.getId());
+	// 	placeComponents();
+	// }
+
+	public StudentAllContracts(List<Contract> contracts) {
 		super(new BorderLayout());
-		this.user = user;
-		this.subscriber = subsriber;
-		this.contracts = subscriber.getAllContractsAsFirstParty(user.getId());
+		this.contracts = contracts;
 		placeComponents();
 	}
 	
 	private void placeComponents() {
+		this.removeAll();
 		DefaultListModel<Contract> model = new DefaultListModel<Contract>();
 		for (Contract c : contracts)
 			model.addElement(c);
@@ -92,7 +99,6 @@ public class StudentAllContracts extends JPanel implements Observer {
 
 	@Override
 	public void update(EventType e) {
-		this.contracts = this.subscriber.getAllContractsAsFirstParty(this.user.getId());
 		this.placeComponents();
 	}
 }

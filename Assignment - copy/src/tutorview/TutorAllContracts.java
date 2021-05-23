@@ -21,15 +21,22 @@ public class TutorAllContracts extends JPanel implements Observer {
 	List<Contract> contracts;
 	private User user;
 
-	public TutorAllContracts(User user, Contract subsriber) {
+	// public TutorAllContracts(User user, Contract subsriber) {
+	// 	super(new BorderLayout());
+	// 	this.user = user;
+	// 	this.subscriber = subsriber;
+	// 	this.contracts = subscriber.getAllContractsAsFirstParty(user.getId());
+	// 	placeComponents();
+	// }
+
+	public TutorAllContracts(List<Contract> contracts) {
 		super(new BorderLayout());
-		this.user = user;
-		this.subscriber = subsriber;
-		this.contracts = subscriber.getAllContractsAsFirstParty(user.getId());
+		this.contracts = contracts;
 		placeComponents();
 	}
 
 	private void placeComponents() {
+		this.removeAll();
 		DefaultListModel<Contract> model = new DefaultListModel<Contract>();
 		for (Contract c : contracts)
 			model.addElement(c);
@@ -39,47 +46,6 @@ public class TutorAllContracts extends JPanel implements Observer {
 
 		JScrollPane scrollp = new JScrollPane(contractList);
 		this.add(scrollp);
-//		List<Contract> contracts = new ArrayList<Contract>();
-//		contracts = Contract.getAllContractsAsSecondParty(user.getId());
-//
-//		List<JComponent> comp = new ArrayList<JComponent>();
-//
-//		for (Contract c : contracts) {
-//			JPanel panel = new JPanel();
-//			if (c.secondPartySigned()) {
-//				JTextArea tA = new JTextArea();
-//				tA.setText(c.toString());
-//				tA.setEditable(false);
-//				panel.add(tA);
-//			} else if (c.secondPartySigned() == false) {
-//				JTextArea tA = new JTextArea();
-//				JButton bT = new JButton("Sign");
-//
-//				tA.setText(c.toString());
-//				tA.setEditable(false);
-//				panel.add(tA, BorderLayout.WEST);
-//				panel.add(bT, BorderLayout.EAST);
-//
-//				bT.addMouseListener(new MouseClickListener() {
-//					@Override
-//					public void mouseClicked(MouseEvent e) {
-//						c.secondPartySign(true);
-//						if (c.isSigned()) {
-//							c.signContract();
-//							Utils.CONTRACT_SIGNED.show();
-//						} else
-//							Utils.OTHER_PARTY_PENDING.show();
-//					}
-//				});
-//			}
-//			comp.add(panel);
-//		}
-//
-//		JPanel midPanel = new ListPanel(comp);
-//        main.add(midPanel);
-//		JScrollPane scrollp = new JScrollPane(midPanel);
-//		main.add(scrollp);
-//		this.display.setVisible();
 	}
 
 	public void setSignContractListener(MouseClickListener listener) {
@@ -129,6 +95,6 @@ public class TutorAllContracts extends JPanel implements Observer {
 
 	@Override
 	public void update(EventType e) {
-
+		this.placeComponents();
 	}
 }
