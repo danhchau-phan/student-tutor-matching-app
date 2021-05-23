@@ -60,6 +60,7 @@ public class Message extends Observable implements Model{
 	public void addNewMessage(String content, String username) {
 		this.addInfo.addNewMessage(content, username);
 		this.patchMessage(content, addInfo);
+		this.inform(EventType.MESSAGE_PATCH);
 	}
 	
 	private static List<Message> getMessageArray(JsonNode node) {
@@ -103,7 +104,7 @@ public class Message extends Observable implements Model{
     	Model.post(url, jsonString);
 	}
 	
-	public void patchMessage(String newContent, MessageAddInfo addInfo) {
+	private void patchMessage(String newContent, MessageAddInfo addInfo) {
 		String url = Application.rootUrl + "/message/" + this.id;
     	
     	String jsonString = "{" +

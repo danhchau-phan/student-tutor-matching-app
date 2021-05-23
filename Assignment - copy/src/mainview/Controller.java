@@ -42,7 +42,12 @@ public class Controller implements Observer{
     private TutorView tutorView;
     private TutorResponseView tutorResponse;
     private TutorMessageView tutorMessage;
-
+    private enum Role {
+        student,
+        tutor,
+        admin
+    }
+    private Role activeRole;
     public Controller() {
         this.start();
     }
@@ -91,7 +96,7 @@ public class Controller implements Observer{
             this.initiatedBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
-            b.subscribe(EventType.BID_NEWRESPONSE, studentAllBids);
+            b.subscribe(EventType.BID_NEWRESPONSE, studentResponse);
         }
     }
 
@@ -101,7 +106,7 @@ public class Controller implements Observer{
             this.allBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
-            b.subscribe(EventType.BID_NEWRESPONSE, tutorAllBids);
+            b.subscribe(EventType.BID_NEWRESPONSE, tutorResponse);
         }
     }
 
@@ -112,7 +117,15 @@ public class Controller implements Observer{
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
 
-        homeView.setSwitchPanelListener(homeView.panel, homeView.tutorButton, tutorView);
+        // homeView.setSwitchPanelListener(homeView.panel, homeView.tutorButton, tutorView);
+        homeView.studentButton.addMouseListener(new MouseClickListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                activeRole = Role.student;
+                display.removePanel(homeView.panel);
+				studentView.display();
+            }
+        });;
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
@@ -161,7 +174,15 @@ public class Controller implements Observer{
         this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
         this.createRequest = new CreateRequest();
 
-        homeView.setSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
+        // homeView.setSwitchPanelListener(homeView.panel, homeView.studentButton, studentView);
+        homeView.studentButton.addMouseListener(new MouseClickListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                activeRole = Role.student;
+                display.removePanel(homeView.panel);
+				studentView.display();
+            }
+        });;
         studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
         studentView.setSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
         studentView.setSwitchPanelListener(studentView.main, studentView.viewContracts, studentAllContracts);
@@ -219,8 +240,13 @@ public class Controller implements Observer{
     // private void addSubscription(Bid b) {
     // }
 
+    private void subscribeMessage() {
+        activeMessage.subscribe(EventType.MESSAGE_PATCH, this);
+    }
+
     // Display the Active Message SubPanel correspond to the ActiveBid
     private void showStudentMessagePanel() {
+        
         studentMessage = new StudentMessageView(user, activeMessage, activeBid);
         studentMessage.setSendMessageListener(new SendMessageListener());
         studentMessage.setSelectBidListener(new SelectBidListener());
@@ -249,13 +275,13 @@ public class Controller implements Observer{
     }
 
     /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
-
     /** Response portals: MessageList View and Response View*/
     class ResponseListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent e) {
             if (activeBid.getType() == Bid.BidType.close) {
                 activeMessage = studentResponse.getSelectedMessage();
+                subscribeMessage();
                 showStudentMessagePanel();
             } else {
                 BidResponse selectedResponse = studentResponse.getSelectedResponse();
@@ -424,14 +450,17 @@ public class Controller implements Observer{
             fetchAllBids();
         }
         if (e == EventType.BID_CLOSEDDOWN) {
-            try {
+            if (activeRole == Role.student)
                 this.initiatedBids.remove(activeBid);
-            } catch (NullPointerException e1) {};
-            try {
+            else if (activeRole == Role.tutor)
                 this.allBids.remove(activeBid);
-            } catch (NullPointerException e2) {};
             activeBid = null;
         }
-        
+        if (e == EventType.MESSAGE_PATCH) {
+            if (activeRole == Role.student)
+                showStudentMessagePanel();
+            else if (activeRole == Role.tutor)
+                showTutorMessagePanel();
+        }
     }
 }

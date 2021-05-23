@@ -11,8 +11,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
 import mainview.MouseClickListener;
+import mainview.Observer;
 import model.Bid;
 import model.BidResponse;
+import model.EventType;
 import model.Message;
 import java.awt.Component;
 
@@ -21,7 +23,7 @@ import java.awt.Component;
  * If the match request is type open, the student can View all bids.
  * If the match request is type close, the student can View all incoming messages..
  */
-public class StudentResponseView extends JPanel {
+public class StudentResponseView extends JPanel implements Observer {
 	private Bid bid;
 	private JList<BidResponse> responseList;
 	private JList<Message> messageList;
@@ -77,8 +79,6 @@ public class StudentResponseView extends JPanel {
 		return this.messageList.getSelectedIndex();
 	}
 
-	
-
 	public BidResponse getSelectedResponse() {
 		return responseList.getSelectedValue();
 	}
@@ -124,5 +124,10 @@ public class StudentResponseView extends JPanel {
 			this.add(panel);
 			return this;
 		}	
+	}
+
+	@Override
+	public void update(EventType e) {
+		placeComponents();
 	}
 }

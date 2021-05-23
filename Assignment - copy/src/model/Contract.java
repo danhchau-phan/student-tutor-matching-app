@@ -150,7 +150,6 @@ public class Contract extends Observable implements Model {
 		  		"\"additionalInfo\":" + addInfo.toJson() + "}";
 		    	
 		Model.patch(url, jsonString);
-		// this.inform();
 	}
 	
 }
