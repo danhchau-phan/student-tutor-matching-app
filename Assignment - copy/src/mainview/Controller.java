@@ -107,7 +107,7 @@ public class Controller implements Observer{
             this.initiatedBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
-            b.subscribe(EventType.BID_NEWRESPONSE, studentResponse);
+            // b.subscribe(EventType.BID_NEWRESPONSE, studentResponse);
         }
     }
 
@@ -117,7 +117,7 @@ public class Controller implements Observer{
             this.allBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
-            b.subscribe(EventType.BID_NEWRESPONSE, tutorResponse);
+            // b.subscribe(EventType.BID_NEWRESPONSE, tutorResponse);
         }
     }
 
@@ -169,11 +169,6 @@ public class Controller implements Observer{
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
 
-        // tutorResponse.setResponseListener(new TutorResponseListener());
-        // tutorResponse.setCreateBidListener(new CreateBidListener());
-        // tutorResponse.setBuyOutListener(new BuyOutListener());
-        // tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
-
         /** Tutor Response Portal: Response Bid View and Message View*/
         tutorAllBids.setListListener(new MouseClickListener(){
             @Override
@@ -183,9 +178,7 @@ public class Controller implements Observer{
                 }
 
                 activeBid = tutorAllBids.getSelectedBid();
-                System.out.println(activeBid);
                 if (activeBid.getType() == Bid.BidType.open) {
-                    // tutorResponse = new TutorResponseView(activeBid);
                     tutorResponse.setBid(activeBid);
                     subscribeBidNewResponse();
                     tutorResponse.setResponseListener(new TutorResponseListener());
@@ -200,11 +193,8 @@ public class Controller implements Observer{
                     tutorView.main.add(tutorMessage);
                     tutorView.activePanel = tutorMessage;
                 }
-
-
                 display.createPanel(tutorView.main);
                 display.setVisible();
-
             }
         });
 
@@ -432,41 +422,6 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
             if (activeBid.checkEligibility(user)) {
-                // createBid = new CreateBid();
-
-                // createBid.setCreateBidListener(new MouseClickListener(){
-                //     @Override
-                //     public void mouseClicked(MouseEvent e) {
-                //         String r = createBid.rate.getText();
-                //         String d = createBid.duration.getText();
-                //         String tD = createBid.timeDate.getText();
-                //         String s = createBid.sessionsPerWeek.getText();
-                //         String rT = createBid.rateType.getSelection().getActionCommand();
-                //         String a = createBid.addInfo.getText();
-                //         boolean f = createBid.freeLesson.getSelection().getActionCommand() == "yes"? true : false;
-                //         try {
-                //             BidResponse response = new BidResponse(
-                //                     user.getId(),
-                //                     user.getFullName(),
-                //                     r,
-                //                     rT,
-                //                     d,
-                //                     tD,
-                //                     s,
-                //                     a,
-                //                     f);
-
-                //             activeBid.addResponse(response);
-                //             Utils.SUCCESS_BID_CREATION.show();
-                //         } catch (NumberFormatException nfe) {
-                //             Utils.INVALID_FIELDS.show();
-                //         } catch (NullPointerException npe) {
-                //             npe.printStackTrace();
-                //             Utils.PLEASE_FILL_IN.show();
-                //         }
-                //     }
-                // });
-
                 if (tutorView.activePanel != null) {
                     tutorView.main.remove(tutorView.activePanel);
                 }
