@@ -21,6 +21,7 @@ public class Contract extends Observable implements Model {
 	private ContractAddInfo addInfo;
 	private static final int YEAR_IN_MILLIS = 3600 * 24 * 365 * 1000;
 	private static final int ONE_MONTH_IN_MILLIS = 3600 * 24 * 30 * 1000;
+	public static final int DEFAULT_CONTRACT_DURATION = 6;
 
 	private static final int MONTH_TO_MILLIS (int months) {
 		return ONE_MONTH_IN_MILLIS * months;
@@ -58,6 +59,26 @@ public class Contract extends Observable implements Model {
 		    	
 		Model.post(url, jsonString);
 	}
+
+	// waiting for requirement2 is finished, don't delete
+	// public void postContract(String firstPartyId,
+	// 		String secondPartyId,
+	// 		String subjectId,
+	// 		ContractAddInfo addInfo,
+	// 		int duration) { // duration is number of months the contract lasts
+	// 	String url = Application.rootUrl + "/contract";
+	// 	String jsonString = "{" +
+	// 	  		"\"firstPartyId\":\"" + firstPartyId + "\"," +
+	// 	  		"\"secondPartyId\":\"" + secondPartyId + "\"," +
+	// 			"\"subjectId\":\"" + subjectId + "\"," +
+	// 	  		"\"dateCreated\":\"" + Utils.format.format(new Date()) + "\"," +
+	// 	  		"\"expiryDate\":\"" + Utils.format.format(new Date(System.currentTimeMillis() + MONTH_TO_MILLIS(duration))) + "\"," +
+	// 	  		"\"paymentInfo\":{}," +
+	// 	  		"\"lessonInfo\":{}," +
+	// 	  		"\"additionalInfo\":" + addInfo.toJson() + "}";
+		    	
+	// 	Model.post(url, jsonString);
+	// }
 	
 
 	public void signContract() {

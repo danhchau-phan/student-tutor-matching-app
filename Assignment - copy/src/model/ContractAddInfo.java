@@ -8,10 +8,24 @@ public class ContractAddInfo {
 	
 	private boolean firstPartySigned,
 		secondPartySigned;
+	private String competency;
+	private String hourPerLesson;
+	private String sessionsPerWeek;
+	private String rate;
 	
 	public ContractAddInfo(boolean firstPartySigned, boolean secondPartySigned) {
 		this.firstPartySigned = firstPartySigned;
 		this.secondPartySigned = secondPartySigned;
+	}
+
+	public ContractAddInfo(boolean firstPartySigned, boolean secondPartySigned,
+		String competency, String hourPerLesson, String sessionsPerWeek, String rate) {
+		this.firstPartySigned = firstPartySigned;
+		this.secondPartySigned = secondPartySigned;
+		this.competency = competency;
+		this.hourPerLesson = hourPerLesson;
+		this.sessionsPerWeek = sessionsPerWeek;
+		this.rate = rate;
 	}
 	
 	public ContractAddInfo(JsonNode node) {
