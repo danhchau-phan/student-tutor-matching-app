@@ -37,9 +37,9 @@ public class TutorResponseView extends JPanel implements Observer {
 		this.createBid = new JButton("Create Bid");
 		this.buyOut = new JButton("Buy Out Bid");
 		this.subscribeBid = new JButton("Subscribe Bid");
-		// System.out.println(this.bid);
+		// System.out.println("Size " + this.bid.getResponse().size());
 		if (bid.getType() == Bid.BidType.open) {
-
+			
 			DefaultListModel<BidResponse> model = new DefaultListModel<>();
 			responses = bid.getResponse();
 			for (BidResponse r : responses)

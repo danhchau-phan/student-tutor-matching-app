@@ -28,6 +28,8 @@ public abstract class Observable {
     }
 
     public void emptySubscription(EventType e) {
+        if (!this.observers.containsKey(e))
+            return;
         this.observers.get(e).clear();
     }
 }
