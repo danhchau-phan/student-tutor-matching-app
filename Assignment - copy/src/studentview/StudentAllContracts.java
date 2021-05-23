@@ -15,7 +15,6 @@ import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
 import model.Contract;
-import model.User;
 
 /**
  * View that displays all contracts where this Student is first party

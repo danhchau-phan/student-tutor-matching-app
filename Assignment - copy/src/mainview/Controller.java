@@ -28,7 +28,7 @@ public class Controller implements Observer{
     private User user;
     private List<Bid> initiatedBids = new ArrayList<Bid>();
     private List<Bid> allBids = new ArrayList<Bid>();
-   private List<Contract> allContracts;
+    private List<Contract> allContracts = new ArrayList<Contract>();
 
     private Bid activeBid, subscriberBid = new Bid();
     private Contract activeContract, subscriberContract = new Contract();
@@ -127,6 +127,8 @@ public class Controller implements Observer{
             this.allContracts.add(c);
             c.subscribe(EventType.CONTRACT_SIGN, this);
             c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, studentAllContracts);
         }
     }
 
@@ -136,6 +138,8 @@ public class Controller implements Observer{
             this.allContracts.add(c);
             c.subscribe(EventType.CONTRACT_SIGN, this);
             c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, tutorAllContracts);
         }
     }
 
@@ -385,6 +389,7 @@ public class Controller implements Observer{
             fetchAllContractAsFirstParty();
             initStudentViews();
             subscribeBidCreation();
+            subscribeContractCreation();
             display.removePanel(homeView.panel);
             studentView.display();
         }}
@@ -397,6 +402,7 @@ public class Controller implements Observer{
             fetchAllContractAsSecondParty();
             initTutorViews();
             subscribeBidCreation();
+            subscribeContractCreation();
             display.removePanel(homeView.panel);
             tutorView.display();
         }}
@@ -564,6 +570,12 @@ public class Controller implements Observer{
                 fetchAllContractAsFirstParty();
             else if (activeRole == Role.tutor)
                 fetchAllContractAsSecondParty();
+        }
+        case CONTRACT_SIGN: {
+
+        }
+        case CONTRACT_ONE_PARTY_SIGN: {
+
         }
         }
     }
