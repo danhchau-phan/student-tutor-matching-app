@@ -160,6 +160,17 @@ public class Bid extends Observable implements Model{
 		return screenedBids;
 	}
 
+	public String toJson() {
+		String jsonString = "{" +
+				"\"id\":\"" + id + "\"," +
+				"\"type\":\"" + type + "\"," +
+				"\"dateCreated\":\"" + dateCreated + "\"," +
+				"\"dateClosedDown\":\"" + closeddown + "\"," +
+				"\"subject\":\"" + subject + "\"," +
+				"\"additionalInfo\":\"" + addInfo + "\"" + "}";
+		return jsonString;
+	}
+
     public void postBid(String type, String initiatorId, String subjectId, BidAddInfo addInfo) {
     	String url = Application.rootUrl + "/bid";
     	String jsonString = "{" +

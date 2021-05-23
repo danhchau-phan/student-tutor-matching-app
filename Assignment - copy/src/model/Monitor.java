@@ -1,26 +1,60 @@
 package model;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import mainview.Observer;
 
 import java.util.*;
 
 /** Monitor store all the Subscribed Bid Request by tutor*/
 public class Monitor implements Observer {
+    private List<Bid> bidAllRequests;
+
     private List<BidResponse> newResponses = new ArrayList<>();
     private Map<Bid, List<BidResponse>> subscribedBidsMap = new HashMap<>();
-    private List<Bid> bidAllRequests;
     private List<Bid> activeMonitorBids;
-    private Bid bidObserved;
     private boolean isChanged;
+
+    public Monitor(List<Bid> bidAllRequests) {
+        if (bidAllRequests == null)
+            bidAllRequests = new ArrayList<>();
+        this.bidAllRequests = bidAllRequests;
+    }
 
     public Monitor() {
     }
 
-//    public Monitor(List<Bid> subscribedBids, Bid bidsToObserved) {
-////        this.subscribedBidsMap = subscribedBids;
-//        this.bidObserved = bidsToObserved;
-//        subscribedBidsMap = new HashMap<>();
-//    }
+    public Monitor(JsonNode node) {
+        assert (node.get("bidSubscribed").isArray());
+        this.bidAllRequests = getBidsSubscribed(node.get("bidSubscribed").iterator());
+        for (Bid bid: bidAllRequests) {
+            subscribedBidsMap.put(bid, bid.getResponse());
+        }
+    }
+
+    public List<Bid> getBidsSubscribed(Iterator<JsonNode> iter) {
+        List<Bid> list = new ArrayList<Bid>();
+        while (iter.hasNext()) {
+            list.add(new Bid(iter.next()));
+        }
+        return list;
+    }
+
+    public String getBidSubscribedJson() {
+        String jsonString = "[";
+        String comma = "";
+        for (Bid bid : bidAllRequests) {
+            jsonString = jsonString + comma + bid.toJson();
+            comma = ",";
+        }
+        jsonString = jsonString + "]";
+        return jsonString;
+    }
+
+    public String toJson() {
+        String jsonString = "{" +
+                "\"bidSubscribed\":" + getBidSubscribedJson() + "}";
+        return jsonString;
+    }
 
     public void addSubscribe(Bid bid) {
         System.out.println("Adding Bid Subscription..." + bid.getId());
@@ -44,6 +78,13 @@ public class Monitor implements Observer {
 
     public void confirmChanges() {
         this.isChanged = false;
+    }
+
+    public List<Bid> getBidAllRequests() {
+        if (!subscribedBidsMap.isEmpty()) {
+            bidAllRequests.addAll(subscribedBidsMap.keySet());
+        }
+        return bidAllRequests;
     }
 
     /** Check any changes happen on the responses for relevant subscribed bid request*/

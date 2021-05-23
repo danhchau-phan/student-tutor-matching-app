@@ -146,7 +146,6 @@ public class Controller implements Observer{
     /** Initialise the Monitor and Stop running when tutor logged out*/
     private void startTutorMonitor() {
         try {
-            monitor = new Monitor();
             ActionListener taskPerformer = new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     if (monitor.hasChanged()) {
@@ -182,13 +181,16 @@ public class Controller implements Observer{
         this.tutorMonitor = new TutorMonitorView();
         this.createBid = new CreateBid();
 
-        /** Run the Tutor Monitor before setting the panels*/
-        startTutorMonitor();
-        
+        monitor = user.getMonitor();
+        tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
+
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
+
+        /** Run the Tutor Monitor before setting the panels*/
+        startTutorMonitor();
 
         /** Tutor Response Portal: Response Bid View and Message View*/
         tutorAllBids.setListListener(new MouseClickListener(){
@@ -378,6 +380,7 @@ public class Controller implements Observer{
         public void mouseClicked(MouseEvent e) {
             display.closeWindow();
             isLogOut = true;
+            user.stopMonitor();
             new Controller();
         }
         

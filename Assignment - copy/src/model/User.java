@@ -30,6 +30,8 @@ public class User extends Observable implements Model {
 
 	private boolean isStudent, isTutor, isAdmin;
 
+	private Monitor monitor;
+
 
 	public User(String id, String givenName, String familyName, String username, boolean isStudent, boolean isTutor) {
 		this.id = id;
@@ -50,6 +52,29 @@ public class User extends Observable implements Model {
     	this.userName = (node.get("userName") != null) ?node.get("userName").textValue() : null;
     	this.isTutor = (node.get("isTutor") != null) ?node.get("isTutor").asBoolean() : null;
     	this.isStudent = (node.get("isStudent") != null) ?node.get("isStudent").asBoolean() : null;
+		if (node.get("additionalInfo").isEmpty())
+			this.monitor = new Monitor((List<Bid>) null);
+		else
+			this.monitor = new Monitor(node.get("additionalInfo"));
+	}
+
+	public void patchMonitor() {
+		String url = Application.rootUrl + "/user/" + this.id;
+
+		String jsonString = "{" + "\"additionalInfo\":" + this.monitor.toJson() + "}";
+
+		Model.patch(url, jsonString);
+	}
+
+	public Monitor getMonitor() {
+		assert (this.monitor != null);
+		return this.monitor;
+	}
+
+	public void stopMonitor() {
+		if (monitor.getBidAllRequests() != null) {
+			this.patchMonitor();
+		}
 	}
 
 	public static User logIn(String username, String password) {
@@ -148,6 +173,11 @@ public class User extends Observable implements Model {
 		}
 
 		return Bid.screenClosedBid(bids);
+	}
+
+
+	public void addMonitor() {
+
 	}
 	
 	public static User getUserbyId(String userId) {
