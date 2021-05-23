@@ -150,7 +150,6 @@ public class Controller {
                 } else {
                     tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
                     tutorMessage.setSendMessageListener(new SendTutorMessageListener());
-                    tutorMessage.setSelectBidListener(new SelectBidListener());
                     tutorView.main.add(tutorMessage);
                     tutorView.activePanel = tutorMessage;
                 }
@@ -246,7 +245,7 @@ public class Controller {
     private void showTutorMessagePanel() {
         tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
         tutorMessage.setSendMessageListener(new SendTutorMessageListener());
-        tutorMessage.setSelectBidListener(new SelectBidListener());
+//        tutorMessage.setSelectBidListener(new SelectBidListener());
 
         if (tutorView.activePanel != null) {
             tutorView.main.remove(tutorView.activePanel);
