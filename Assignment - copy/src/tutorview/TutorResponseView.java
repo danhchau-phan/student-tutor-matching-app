@@ -1,14 +1,11 @@
 package tutorview;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 
 import mainview.*;
 import model.*;
-import studentview.StudentResponseView;
 
 /**
  * This is the View where Tutor view the response to a specific match request.
