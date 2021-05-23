@@ -34,6 +34,7 @@ public class TutorResponseView extends JPanel implements Observer {
 	}
 
 	private void placeComponents() {
+		this.removeAll();
 		this.createBid = new JButton("Create Bid");
 		this.buyOut = new JButton("Buy Out Bid");
 		this.subscribeBid = new JButton("Subscribe Bid");

@@ -155,11 +155,8 @@ public class Controller implements Observer{
                     tutorView.main.add(tutorMessage);
                     tutorView.activePanel = tutorMessage;
                 }
-
-
                 display.createPanel(tutorView.main);
                 display.setVisible();
-
             }
         });
 
