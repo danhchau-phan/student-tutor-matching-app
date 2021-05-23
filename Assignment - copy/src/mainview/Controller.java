@@ -1,5 +1,7 @@
 package mainview;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,14 @@ import studentview.StudentResponseView;
 import studentview.StudentView;
 import tutorview.*;
 
+import javax.swing.*;
+
 public class Controller implements Observer{
+    private Timer timer;
+    private static final int threadSleep = 10000;
+    private static final int monitorIntervalCheck = 5000;
+
+    private Monitor monitor;
     private Display display;
     private User user;
     private List<Bid> initiatedBids = new ArrayList<Bid>();
@@ -40,6 +49,7 @@ public class Controller implements Observer{
     private CreateBid createBid;
     private TutorView tutorView;
     private TutorResponseView tutorResponse;
+    private TutorMonitorView tutorMonitor;
     private TutorMessageView tutorMessage;
     private enum Role {
         student,
@@ -119,17 +129,45 @@ public class Controller implements Observer{
         this.allContracts = Contract.getAllContractsAsSecondParty(this.user.getId());
     }
 
+    /** Initialise the Monitor*/
+    private void startTutorMonitor() {
+        try {
+            monitor = new Monitor();
+            ActionListener taskPerformer = new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    if (monitor.hasChanged()) {
+                        tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
+                    }
+                    System.out.println("Looping Monitor every 5 seconds");
+                }
+            };
+
+            timer = new Timer(monitorIntervalCheck ,taskPerformer);
+            timer.setRepeats(true);
+            timer.start();
+
+            Thread.sleep(threadSleep);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initTutorViews() {
         assert (this.user != null);
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
         this.tutorResponse = new TutorResponseView();
+        this.tutorMonitor = new TutorMonitorView();
         this.createBid = new CreateBid();
+
+        /** Run the Tutor Monitor before setting the panels*/
+        startTutorMonitor();
         
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
 
         // tutorResponse.setResponseListener(new TutorResponseListener());
         // tutorResponse.setCreateBidListener(new CreateBidListener());
@@ -169,6 +207,7 @@ public class Controller implements Observer{
 
             }
         });
+
 
         tutorAllContracts.setSignContractListener(new SignContractListener());
 
