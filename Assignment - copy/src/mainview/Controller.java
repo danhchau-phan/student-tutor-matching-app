@@ -1,6 +1,7 @@
 package mainview;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,10 +14,11 @@ import studentview.StudentResponseView;
 import studentview.StudentView;
 import tutorview.*;
 
-public class Controller {
+public class Controller implements Observer{
     private Display display;
     private User user;
-//    private List<Bid> initiatedBids, allBids;
+    private List<Bid> initiatedBids = new ArrayList<Bid>();
+    private List<Bid> allBids = new ArrayList<Bid>();
 //    private List<Contract> contractsAsFirstParty, contractsAsSecondParty;
 
     private Bid activeBid, subscriberBid = new Bid();
@@ -24,8 +26,6 @@ public class Controller {
     private Message activeMessage;
 
     private HomeView homeView;
-//    private Bid activeBid;
-//    private Message activeMessage;
 
     //Student Fields
     private StudentAllBids studentAllBids;
@@ -43,11 +43,6 @@ public class Controller {
     private TutorResponseView tutorResponse;
     private TutorMessageView tutorMessage;
 
-
-
-    
-    // private HashMap<EventType, List<Observer>> observers;
-
     public Controller() {
         this.start();
     }
@@ -55,7 +50,6 @@ public class Controller {
     public void start() {
         this.display = new Display();
         AuthenticationView authView = new AuthenticationView(display);
-
 
         // Login listener
         authView.addMouseListener(authView.loginButton, new MouseClickListener() {
@@ -73,18 +67,14 @@ public class Controller {
     			    display.removePanel(authView.panel);
                     // maybe admin??
                     if (user.isStudent()) {
-//                        initModels();
+                        fetchInitiatedBids();
                         initStudentViews();
-//                        subscribeViews();
-//                        homeView.display();
                     }
                     if (user.isTutor()) {
-//                        display.removePanel(authView.panel);
-//                        initModels();
+                        fetchAllBids();
                         initTutorViews();
-//                        subscribeViews();
                     }
-
+                    subscribeViews();
                     homeView.display();
     			} else {
 					Utils.INVALID_USER.show();
@@ -95,27 +85,23 @@ public class Controller {
         authView.display();
     }
 
-//
-//    private void initModels() {
-//        assert (this.user != null);
-//        this.initiatedBids = user.getInitiatedBids();
-//        this.allBids = Bid.getAll();
-//        this.contractsAsFirstParty = Contract.getAllContractsAsFirstParty(this.user.getId());
-//        this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
-//    }
+    private void fetchInitiatedBids() {
+        this.initiatedBids.clear();
+        for (Bid b : user.getInitiatedBids()) {
+            this.initiatedBids.add(b);
+            b.subscribe(EventType.BID_CLOSEDDOWN, this);
+            b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
+        }
+    }
 
-//    private void initViews() {
-//        assert (this.user != null);
-//        // this.allBids = tempBid.getAll();
-//        // this.contractsAsFirstParty = (new Contract()).getAllContractsAsFirstParty(this.user.getId());
-//        // this.contractsAsSecondParty = Contract.getAllContractsAsSecondParty(this.user.getId());
-//
-//        initStudentViews();
-//        subscribeStudentViews();
-//        initTutorViews();
-//        subscribeTutorViews();
-//    }
-
+    private void fetchAllBids() {
+        this.allBids.clear();
+        for (Bid b : Bid.getAll()) {
+            this.allBids.add(b);
+            b.subscribe(EventType.BID_CLOSEDDOWN, this);
+            b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
+        }
+    }
 
     private void initTutorViews() {
         assert (this.user != null);
@@ -169,7 +155,7 @@ public class Controller {
         assert (this.user != null);
         this.homeView = new HomeView(display, user);
         this.studentView = new StudentView(display, user);
-        this.studentAllBids = new StudentAllBids(user);
+        this.studentAllBids = new StudentAllBids(this.initiatedBids);
         this.studentAllContracts = new StudentAllContracts(user, subscriberContract);
         this.createRequest = new CreateRequest();
 
@@ -222,11 +208,14 @@ public class Controller {
         studentAllContracts.setSignContractListener(new SignContractListener());
     }
 
-//    public void
-
     private void subscribeViews() {
         // user.subscribe(studentAllBids);
+        subscriberBid.subscribe(EventType.BID_CREATED, this);
+        subscriberBid.subscribe(EventType.BID_CREATED, studentAllBids);
     }
+
+    // private void addSubscription(Bid b) {
+    // }
 
     // Display the Active Message SubPanel correspond to the ActiveBid
     private void showStudentMessagePanel() {
@@ -257,10 +246,7 @@ public class Controller {
         display.setVisible();
     }
 
-
-
     /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
-
 
     /** Response portals: MessageList View and Response View*/
     class ResponseListener implements MouseClickListener{
@@ -277,7 +263,7 @@ public class Controller {
                         selectedResponse.getBidderId(),
                         activeBid.getSubject().getId(),
                         new ContractAddInfo(true, false));
-                subscriberBid.closeDownBid(activeBid.getId());
+                activeBid.closeDownBid();
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             }
 
@@ -295,7 +281,7 @@ public class Controller {
                     selectedResponse.getBidderId(),
                     activeBid.getSubject().getId(),
                     new ContractAddInfo(true, false));
-            subscriberBid.closeDownBid(activeBid.getId());
+            activeBid.closeDownBid();
             Utils.SUCCESS_CONTRACT_CREATION.show();
 
         }
@@ -360,7 +346,7 @@ public class Controller {
                 subscriberContract.postContract(user.getId(), activeBid.getInitiatorId(),
                         activeBid.getSubject().getId(),
                         new ContractAddInfo(true, true));
-                activeBid.closeDownBid(activeBid.getId());
+                activeBid.closeDownBid();
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             } else {
                 Utils.INSUFFICIENT_COMPETENCY.show();
@@ -397,8 +383,6 @@ public class Controller {
         }
     }
 
-
-
     class SelectBidListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -406,7 +390,7 @@ public class Controller {
                     activeMessage.getPosterId(),
                     activeBid.getSubject().getId(),
                     new ContractAddInfo(true, false));
-            subscriberBid.closeDownBid(activeBid.getId());
+            activeBid.closeDownBid();
             Utils.SUCCESS_CONTRACT_CREATION.show();
 
         }
@@ -427,6 +411,24 @@ public class Controller {
                 } else
                     Utils.OTHER_PARTY_PENDING.show();
             }
+        }
+        
+    }
+
+    @Override
+    public void update(EventType e) {
+        if (e == EventType.BID_CREATED) {
+            // must only be created by a student hence only initiatedbids is updated
+            fetchInitiatedBids();
+        }
+        if (e == EventType.BID_CLOSEDDOWN) {
+            try {
+                this.initiatedBids.remove(activeBid);
+            } catch (NullPointerException e1) {};
+            try {
+                this.allBids.remove(activeBid);
+            } catch (NullPointerException e2) {};
+            activeBid = null;
         }
         
     }

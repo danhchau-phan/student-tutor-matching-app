@@ -1,10 +1,9 @@
 package model;
 
 public enum EventType {
-    BID_ADD,
-    BID_PATCH,
-    BID_CLOSEDOWN,
-    BID_BUYOUT,
+    BID_CREATED,
+    BID_CLOSEDDOWN,
+    BID_NEWRESPONSE,
     CONTRACT_ADD,
     CONTRACT_TERMINATE,
     CONTRACT_PATCH,

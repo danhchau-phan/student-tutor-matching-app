@@ -1,23 +1,25 @@
 package model;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mainview.Observer;
 
 public abstract class Observable {
-    List<Observer> observers = new ArrayList<Observer>();
+    Map<EventType, List<Observer>> observers = new HashMap<EventType, List<Observer>>();
     
-    public void inform() {
-        for (Observer o : this.observers) {
-            o.update();
+    public void inform(EventType e) {
+        for (Observer o : this.observers.get(e)) {
+            o.update(e);
         }
     };
 
-    public void subscribe(Observer o) {
-        this.observers.add(o);
+    public void subscribe(EventType e, Observer o) {
+        this.observers.get(e).add(o);
     }
-    public void unsubscribe(Observer o) {
-        this.observers.remove(o);
+    public void unsubscribe(EventType e, Observer o) {
+        this.observers.get(e).add(o);
     }
 
 }

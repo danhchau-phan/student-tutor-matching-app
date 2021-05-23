@@ -52,7 +52,7 @@ public class Contract extends Observable implements Model {
 		  		"\"additionalInfo\":" + addInfo.toJson() + "}";
 		    	
 		Model.post(url, jsonString);
-		this.inform();
+		// this.inform();
 	}
 	
 
@@ -64,7 +64,7 @@ public class Contract extends Observable implements Model {
 		String jsonString = "{" +
     	  		"\"dateSigned\":\"" + Utils.format.format(new Date()) + "\"}";
 		Model.post(url, jsonString);
-		this.inform();
+		// this.inform();
 	}
 	
 	public List<Contract> getAllContractsAsFirstParty(String userId) {
@@ -150,7 +150,7 @@ public class Contract extends Observable implements Model {
 		  		"\"additionalInfo\":" + addInfo.toJson() + "}";
 		    	
 		Model.patch(url, jsonString);
-		this.inform();
+		// this.inform();
 	}
 	
 }

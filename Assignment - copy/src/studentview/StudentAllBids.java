@@ -16,20 +16,29 @@ import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
 import model.Bid;
+import model.EventType;
 import model.User;
 
 /**
  * View that allows the Student to see all unexpired and unclosed match requests created by them
  */
 public class StudentAllBids extends JPanel implements Observer{
-	private User user;
+	// private User user;
+	// private List<Bid> bids;
+	// private JList<Bid> bidList;
+	// public StudentAllBids(User user) {
+	// 	super(new BorderLayout());
+	// 	this.setBackground(Color.BLUE);
+	// 	this.user = user;
+	// 	this.bids = user.getInitiatedBids();
+	// 	placeComponents();
+	// }
+	// private User user;
 	private List<Bid> bids;
 	private JList<Bid> bidList;
-	public StudentAllBids(User user) {
+	public StudentAllBids(List<Bid> bids) {
 		super(new BorderLayout());
-		this.setBackground(Color.BLUE);
-		this.user = user;
-		this.bids = user.getInitiatedBids();
+		this.bids = bids;
 		placeComponents();
 	}
 	
@@ -52,8 +61,7 @@ public class StudentAllBids extends JPanel implements Observer{
 	}
 
 	@Override
-	public void update() {
-		this.bids = user.getInitiatedBids();
+	public void update(EventType e) {
 		this.placeComponents();
 	}
 
