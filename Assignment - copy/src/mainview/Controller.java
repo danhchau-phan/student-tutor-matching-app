@@ -592,7 +592,6 @@ public class Controller implements Observer{
                 fetchAllContractAsSecondParty();
         }
         case CONTRACT_SIGN: {
-
         }
         case CONTRACT_ONE_PARTY_SIGN: {
 

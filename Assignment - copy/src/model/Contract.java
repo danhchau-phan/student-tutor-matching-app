@@ -21,6 +21,7 @@ public class Contract extends Observable implements Model {
 	private ContractAddInfo addInfo;
 	private static final int YEAR_IN_MILLIS = 3600 * 24 * 365 * 1000;
 	private static final int ONE_MONTH_IN_MILLIS = 3600 * 24 * 30 * 1000;
+	public static final int DEFAULT_CONTRACT_DURATION = 6;
 
 	private static final int MONTH_TO_MILLIS (int months) {
 		return ONE_MONTH_IN_MILLIS * months;
@@ -58,6 +59,26 @@ public class Contract extends Observable implements Model {
 		    	
 		Model.post(url, jsonString);
 	}
+
+	// requirement2 ongoing don't delete
+	// public void postContract(String firstPartyId,
+	// 		String secondPartyId,
+	// 		String subjectId,
+	// 		ContractAddInfo addInfo,
+	// 		int duration) { // duration is number of months the contract lasts
+	// 	String url = Application.rootUrl + "/contract";
+	// 	String jsonString = "{" +
+	// 	  		"\"firstPartyId\":\"" + firstPartyId + "\"," +
+	// 	  		"\"secondPartyId\":\"" + secondPartyId + "\"," +
+	// 			"\"subjectId\":\"" + subjectId + "\"," +
+	// 	  		"\"dateCreated\":\"" + Utils.format.format(new Date()) + "\"," +
+	// 	  		"\"expiryDate\":\"" + Utils.format.format(new Date(System.currentTimeMillis() + MONTH_TO_MILLIS(duration))) + "\"," +
+	// 	  		"\"paymentInfo\":{}," +
+	// 	  		"\"lessonInfo\":{}," +
+	// 	  		"\"additionalInfo\":" + addInfo.toJson() + "}";
+		    	
+	// 	Model.post(url, jsonString);
+	// }
 	
 
 	public void signContract() {
@@ -68,6 +89,7 @@ public class Contract extends Observable implements Model {
 		String jsonString = "{" +
     	  		"\"dateSigned\":\"" + Utils.format.format(new Date()) + "\"}";
 		Model.post(url, jsonString);
+		/////////// patch Contract expiry Date in here ////////
 		this.inform(EventType.CONTRACT_SIGN);
 	}
 	
@@ -95,6 +117,16 @@ public class Contract extends Observable implements Model {
 		}
 		return allContracts;
 	}
+
+	// requirement2 ongoing don't delete
+	// public static List<Contract> getNearExpiryContracts(String userId) {
+	// 	List<Contract> contracts = new ArrayList<Contract>();
+	// 	for (ObjectNode node : Model.getAll("/contract")) {
+	// 		Contract c = new Contract(node);
+	// 		if (c.isSigned() && c.terminationDate == null && (c.expiryDate - new Date (System.currentTimeMillis())))
+	// 	}
+	// 	return contracts;
+	// }
 	
 	private void updateDateSigned() {
 		if (this.addInfo == null)
