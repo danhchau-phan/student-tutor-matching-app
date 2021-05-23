@@ -18,6 +18,10 @@ public class Monitor implements Observer {
         if (bidAllRequests == null)
             bidAllRequests = new ArrayList<>();
         this.bidAllRequests = bidAllRequests;
+        for (Bid bid: bidAllRequests) {
+            subscribedBidsMap.put(bid, bid.getResponse());
+            addSubscribe(bid);
+        }
     }
 
     public Monitor() {
@@ -28,6 +32,7 @@ public class Monitor implements Observer {
         this.bidAllRequests = getBidsSubscribed(node.get("bidSubscribed").iterator());
         for (Bid bid: bidAllRequests) {
             subscribedBidsMap.put(bid, bid.getResponse());
+            addSubscribe(bid);
         }
     }
 

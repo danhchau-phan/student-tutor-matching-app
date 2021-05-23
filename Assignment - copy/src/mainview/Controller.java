@@ -182,15 +182,15 @@ public class Controller implements Observer{
         this.createBid = new CreateBid();
 
         monitor = user.getMonitor();
-        tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
+
+        /** Run the Tutor Monitor before setting the panels*/
+        startTutorMonitor();
 
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
 
-        /** Run the Tutor Monitor before setting the panels*/
-        startTutorMonitor();
 
         /** Tutor Response Portal: Response Bid View and Message View*/
         tutorAllBids.setListListener(new MouseClickListener(){
