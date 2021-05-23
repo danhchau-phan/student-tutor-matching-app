@@ -60,7 +60,7 @@ public class Contract extends Observable implements Model {
 		Model.post(url, jsonString);
 	}
 
-	// waiting for requirement2 is finished, don't delete
+	// requirement2 ongoing don't delete
 	// public void postContract(String firstPartyId,
 	// 		String secondPartyId,
 	// 		String subjectId,
@@ -89,6 +89,7 @@ public class Contract extends Observable implements Model {
 		String jsonString = "{" +
     	  		"\"dateSigned\":\"" + Utils.format.format(new Date()) + "\"}";
 		Model.post(url, jsonString);
+		/////////// patch Contract expiry Date in here ////////
 		this.inform(EventType.CONTRACT_SIGN);
 	}
 	
@@ -116,6 +117,16 @@ public class Contract extends Observable implements Model {
 		}
 		return allContracts;
 	}
+
+	// requirement2 ongoing don't delete
+	// public static List<Contract> getNearExpiryContracts(String userId) {
+	// 	List<Contract> contracts = new ArrayList<Contract>();
+	// 	for (ObjectNode node : Model.getAll("/contract")) {
+	// 		Contract c = new Contract(node);
+	// 		if (c.isSigned() && c.terminationDate == null && (c.expiryDate - new Date (System.currentTimeMillis())))
+	// 	}
+	// 	return contracts;
+	// }
 	
 	private void updateDateSigned() {
 		if (this.addInfo == null)
