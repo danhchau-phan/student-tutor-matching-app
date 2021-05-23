@@ -39,7 +39,7 @@ public class Monitor implements Observer {
 
     @Override
     public void update(EventType e) {
-        bidAllRequests= bidObserved.getAll();   // get all updated bids
+        bidAllRequests= Bid.getAll();   // get all updated bids
 
         for (Bid bid: subscribedBids) {
             if (bidAllRequests.contains(bid)) {
