@@ -145,7 +145,7 @@ public class Controller implements Observer{
                 }
 
                 activeBid = tutorAllBids.getSelectedBid();
-
+                System.out.println(activeBid);
                 if (activeBid.getType() == Bid.BidType.open) {
                     // tutorResponse = new TutorResponseView(activeBid);
                     tutorResponse.setBid(activeBid);
@@ -273,6 +273,7 @@ public class Controller implements Observer{
     }
 
     private void subscribeBidNewResponse() {
+        activeBid.emptySubscription(EventType.BID_NEWRESPONSE);
         activeBid.subscribe(EventType.BID_NEWRESPONSE, tutorResponse);
     }
 

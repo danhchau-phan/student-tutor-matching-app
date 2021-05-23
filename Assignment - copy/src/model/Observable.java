@@ -27,4 +27,7 @@ public abstract class Observable {
         this.observers.get(e).add(o);
     }
 
+    public void emptySubscription(EventType e) {
+        this.observers.get(e).clear();
+    }
 }
