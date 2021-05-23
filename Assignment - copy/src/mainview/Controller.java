@@ -274,6 +274,14 @@ public class Controller implements Observer{
         activeMessage.subscribe(EventType.MESSAGE_PATCH, this);
     }
 
+    private void subscribeContractCreation() {
+        subscriberContract.subscribe(EventType.CONTRACT_CREATED, this);
+        if (activeRole == Role.student)
+            subscriberContract.subscribe(EventType.CONTRACT_CREATED, studentAllContracts);
+        else if (activeRole == Role.tutor)
+            subscriberContract.subscribe(EventType.CONTRACT_CREATED, tutorAllContracts);
+    }
+
     // Display the Active Message SubPanel correspond to the ActiveBid
     private void showStudentMessagePanel() {
         
@@ -474,24 +482,34 @@ public class Controller implements Observer{
 
     @Override
     public void update(EventType e) {
-        if (e == EventType.BID_CREATED) {
+        switch (e) {
+        case BID_CREATED: {
             if (activeRole == Role.student) {
                 fetchInitiatedBids();
             } else if (activeRole == Role.tutor)
                 fetchAllBids();
-        }
-        if (e == EventType.BID_CLOSEDDOWN) {
+            break;
+            }
+        case BID_CLOSEDDOWN: {
             if (activeRole == Role.student)
                 this.initiatedBids.remove(activeBid);
             else if (activeRole == Role.tutor)
                 this.allBids.remove(activeBid);
             activeBid = null;
+            break;
         }
-        if (e == EventType.MESSAGE_PATCH) {
+        case MESSAGE_PATCH: {
             if (activeRole == Role.student)
                 showStudentMessagePanel();
             else if (activeRole == Role.tutor)
                 showTutorMessagePanel();
+        }
+        case CONTRACT_CREATED: {
+            if (activeRole == Role.student)
+                fetchAllContractAsFirstParty();
+            else if (activeRole == Role.tutor)
+                fetchAllContractAsSecondParty();
+        }
         }
     }
 }

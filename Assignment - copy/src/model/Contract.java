@@ -20,6 +20,11 @@ public class Contract extends Observable implements Model {
 	
 	private ContractAddInfo addInfo;
 	private static final int YEAR_IN_MILLIS = 3600 * 24 * 365 * 1000;
+	private static final int ONE_MONTH_IN_MILLIS = 3600 * 24 * 30 * 1000;
+
+	private static final int MONTH_TO_MILLIS (int months) {
+		return ONE_MONTH_IN_MILLIS * months;
+	}
 	
 	public Contract(JsonNode node) {
 		this.id = node.get("id").textValue();
@@ -150,6 +155,10 @@ public class Contract extends Observable implements Model {
 		  		"\"additionalInfo\":" + addInfo.toJson() + "}";
 		    	
 		Model.patch(url, jsonString);
+	}
+
+	public void terminateContract() {
+
 	}
 	
 }
