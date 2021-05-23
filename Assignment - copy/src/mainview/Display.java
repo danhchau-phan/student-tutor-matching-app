@@ -32,10 +32,7 @@ public class Display {
 		frame.repaint();
 	}
 
-	public void removeAll() {
-		// frame.removeAll();
-		frame.getContentPane().removeAll();
-		// frame.revalidate();
-		// frame.repaint();
+	public void closeWindow() {
+		frame.setVisible(false);
 	}
 }

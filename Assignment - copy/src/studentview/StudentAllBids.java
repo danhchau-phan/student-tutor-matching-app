@@ -43,6 +43,7 @@ public class StudentAllBids extends JPanel implements Observer{
 	}
 	
 	private void placeComponents() {
+		this.removeAll();
 		DefaultListModel<Bid> model = new DefaultListModel<Bid>();
 		for (Bid b : bids)
 			model.addElement(b);
