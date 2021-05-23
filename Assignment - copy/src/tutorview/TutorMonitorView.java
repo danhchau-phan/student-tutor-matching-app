@@ -27,8 +27,9 @@ public class TutorMonitorView extends JPanel {
     private List<BidResponse> responses;
 
 
-    public TutorMonitorView() {
+    public TutorMonitorView(List<Bid> activeBids) {
         super(new BorderLayout());
+        this.activeBidList = activeBids;
         placeComponents();
     }
 
@@ -39,8 +40,7 @@ public class TutorMonitorView extends JPanel {
 //    }
 
     protected void placeComponents(){
-//        this.removeAll();
-
+        this.removeAll();
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportBorder(null);
@@ -72,7 +72,7 @@ public class TutorMonitorView extends JPanel {
         scrollPane.setViewportView(AllBidContainer);
 
         setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
+        this.add(scrollPane, BorderLayout.CENTER);
     }
 
     private class ResponseCellRenderer extends JPanel implements ListCellRenderer<BidResponse> {

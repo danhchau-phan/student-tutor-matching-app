@@ -21,6 +21,7 @@ public class Controller implements Observer{
     private Timer timer;
     private static final int threadSleep = 10000;
     private static final int monitorIntervalCheck = 5000;
+    private boolean isLogOut;
 
     private Monitor monitor;
     private Display display;
@@ -78,6 +79,7 @@ public class Controller implements Observer{
     				exception.printStackTrace();
     			}
     			if (!(user == null)) {
+    			    isLogOut = false;
                     // should be a separate function
     			    display.removePanel(authView.panel);
                     homeView = new HomeView(display, user);
@@ -138,6 +140,10 @@ public class Controller implements Observer{
                     if (monitor.hasChanged()) {
                         tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
                     }
+
+                    if (isLogOut) {
+                        timer.stop();
+                    }
                     System.out.println("Looping Monitor every 5 seconds");
                 }
             };
@@ -158,7 +164,7 @@ public class Controller implements Observer{
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(user, subscriberContract);
         this.tutorResponse = new TutorResponseView();
-        this.tutorMonitor = new TutorMonitorView();
+        this.tutorMonitor = new TutorMonitorView(this.allBids);
         this.createBid = new CreateBid();
 
         /** Run the Tutor Monitor before setting the panels*/
@@ -348,6 +354,7 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent e) {
             display.closeWindow();
+            isLogOut = true;
             new Controller();
         }
         

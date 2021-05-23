@@ -65,6 +65,7 @@ public class Monitor implements Observer {
         return subscribedBidsMap.keySet();
     }
 
+
     @Override
     public void update(EventType e) {
         bidAllRequests= Bid.getAll();   // get all updated bids
