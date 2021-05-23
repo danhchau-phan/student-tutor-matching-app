@@ -1,21 +1,18 @@
 package model;
 
 import mainview.Observer;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /** Monitor store all the Subscribed Bid Request by tutor*/
 public class Monitor implements Observer {
     private List<Bid> subscribedBids;
-    private List<Bid > allBids;
+    private List<Bid> bidAllRequests;
+    private Bid bidObserved;
     private boolean isChanged;
 
-    public Monitor(List<Bid> subscribedBids, List<Bid> bidsToObserved) {
+    public Monitor(List<Bid> subscribedBids, Bid bidsToObserved) {
         this.subscribedBids = subscribedBids;
-        this.allBids = bidsToObserved;
+        this.bidObserved = bidsToObserved;
     }
 
     public void addSubscribe(Bid bid) {
@@ -34,26 +31,36 @@ public class Monitor implements Observer {
         this.isChanged = false;
     }
 
+    /** Check any changes happen on the responses for relevent subscribed bid request*/
+    public void checkResponses(Bid bid) {
 
-
-
-    public static void main(String [] args) throws Exception{
-        /** Listener on checking monitor every N seconds*/
-        ActionListener taskPerformer = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-
-            }
-        };
-        Timer timer = new Timer(5000 ,taskPerformer);
-        timer.setRepeats(true);
-        timer.start();
-
-        Thread.sleep(1000000);
     }
 
 
     @Override
-    public void update() {
-        this.allBids =
+    public void update(EventType e) {
+        bidAllRequests= bidObserved.getAll();   // get all updated bids
+
+        for (Bid bid: subscribedBids) {
+            if (bidAllRequests.contains(bid)) {
+                checkResponses(bid);
+            } else {
+                // Expired Bid should be removed from monitor
+                subscribedBids.remove(bid);
+            }
+        }
+
+
+        for (Bid bid: bidAllRequests) {
+            // Make sure these bids exist in subscribed bid to ensure it remain active
+            if (subscribedBids.contains(bid)) {
+                List<BidResponse> latestResponses = bid.getResponse();
+            }
+            else {
+
+            }
+
+        }
+
     }
 }
