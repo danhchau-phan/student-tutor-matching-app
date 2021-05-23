@@ -1,6 +1,7 @@
 package studentview;
 import java.awt.BorderLayout;
 import mainview.Observer;
+import model.EventType;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -70,7 +71,7 @@ public class StudentMessageView extends JPanel implements MessageView, Observer{
 
 
 	@Override
-	public void update() {
+	public void update(EventType e) {
 		// TODO Auto-generated method stub
 		
 	}

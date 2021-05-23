@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import model.EventType;
 
 import javax.swing.*;
 
@@ -127,7 +128,7 @@ public class TutorAllContracts extends JPanel implements Observer {
 
 
 	@Override
-	public void update() {
+	public void update(EventType e) {
 
 	}
 }

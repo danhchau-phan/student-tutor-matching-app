@@ -52,7 +52,7 @@ public class Contract extends Observable implements Model {
 		  		"\"additionalInfo\":" + addInfo.toJson() + "}";
 		    	
 		Model.post(url, jsonString);
-		this.inform();
+		// this.inform();
 	}
 	
 
@@ -64,10 +64,10 @@ public class Contract extends Observable implements Model {
 		String jsonString = "{" +
     	  		"\"dateSigned\":\"" + Utils.format.format(new Date()) + "\"}";
 		Model.post(url, jsonString);
-		this.inform();
+		// this.inform();
 	}
 	
-	public List<Contract> getAllContractsAsFirstParty(String userId) {
+	public static List<Contract> getAllContractsAsFirstParty(String userId) {
 		List<Contract> allContracts = new ArrayList<Contract>();
 		for (ObjectNode node : Model.getAll("/contract")) {
 			Contract c = new Contract(node);
@@ -80,7 +80,7 @@ public class Contract extends Observable implements Model {
 		return allContracts;
 	}
 	
-	public List<Contract> getAllContractsAsSecondParty(String userId) {
+	public static List<Contract> getAllContractsAsSecondParty(String userId) {
 		List<Contract> allContracts = new ArrayList<Contract>();
 		for (ObjectNode node : Model.getAll("/contract")) {
 			Contract c = new Contract(node);
@@ -150,7 +150,6 @@ public class Contract extends Observable implements Model {
 		  		"\"additionalInfo\":" + addInfo.toJson() + "}";
 		    	
 		Model.patch(url, jsonString);
-		this.inform();
 	}
 	
 }

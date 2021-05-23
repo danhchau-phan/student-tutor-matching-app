@@ -1,5 +1,4 @@
 package model;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -132,7 +131,7 @@ public class Bid extends Observable implements Model{
     	return false;
     }
     
-    public List<Bid> getAll() {
+    public static List<Bid> getAll() {
 		List<Bid> bids = new ArrayList<Bid> ();
 		for (ObjectNode node : Model.getAll("/bid")) {
 			bids.add(new Bid(node));
@@ -140,7 +139,7 @@ public class Bid extends Observable implements Model{
 		return screenClosedBid(bids);
 	}
     
-	public List<Bid> screenClosedBid(List<Bid> bids) {
+	public static List<Bid> screenClosedBid(List<Bid> bids) {
 		List<Bid> screenedBids = new ArrayList<Bid>();
 
 		for (Bid b : bids) {
@@ -154,7 +153,7 @@ public class Bid extends Observable implements Model{
 								b.getSubject().getId(),
 								new ContractAddInfo(false, false));
 				}
-				closeDownBid(b.id);
+				b.closeDownBid();
 			} else if (!b.closeddown)
 				screenedBids.add(b);
 		}
@@ -171,36 +170,38 @@ public class Bid extends Observable implements Model{
   		"\"additionalInfo\":" + addInfo.toJson() + "}";
       
     	Model.post(url,  jsonString);
-		this.inform();
+
+		this.inform(EventType.BID_CREATED);
     } 
     
-    public void patchBid() {
+    private void patchBid() {
     	String url = Application.rootUrl + "/bid/" + this.id;
     	
     	String jsonString = "{" + "\"additionalInfo\":" + this.addInfo.toJson() + "}";
     	
     	Model.patch(url, jsonString);
-		this.inform();
     }
     
-    public static Bid updateBid(String bidId) {
+    // public static Bid updateBid(String bidId) {
     	
-    	ObjectNode node = Model.get("/bid/", bidId);
-    	return new Bid(node);
+    // 	ObjectNode node = Model.get("/bid/", bidId);
+    // 	return new Bid(node);
     
-    }
+    // }
     
-    public static void updateBid(Bid bid) {
-    	bid = new Bid(Model.get("/bid/", bid.id));
-    }
+    // public static void updateBid(Bid bid) {
+    // 	bid = new Bid(Model.get("/bid/", bid.id));
+    // }
     
-    public void closeDownBid(String bidId) {
-    	String url = Application.rootUrl + "/bid/" + bidId + "/close-down";
+    public void closeDownBid() {
+    	String url = Application.rootUrl + "/bid/" + this.getId() + "/close-down";
     	String jsonString = "{" +
     	  		"\"dateClosedDown\":\"" + Utils.format.format(new Date()) + "\"}";
     	
     	Model.post(url, jsonString);
-    	this.inform();
+
+		this.closeddown = true;
+    	this.inform(EventType.BID_CLOSEDDOWN);
     }   
     
 	public List<Message> getMessages() {
@@ -222,6 +223,7 @@ public class Bid extends Observable implements Model{
 	public void addResponse(BidResponse r) {
 		this.addInfo.addResponse(r);
 		this.patchBid();
+		this.inform(EventType.BID_NEWRESPONSE);
 	}
 	
 	public boolean checkEligibility(User tutor) {
