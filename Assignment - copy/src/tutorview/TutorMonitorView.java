@@ -33,11 +33,11 @@ public class TutorMonitorView extends JPanel {
         placeComponents();
     }
 
-
-//    public TutorMonitorView(Monitor monitor) {
-//        super(new BorderLayout());
-//        this.monitor = monitor;
-//    }
+    public TutorMonitorView() {
+        super(new BorderLayout());
+        this.activeBidList = new ArrayList<>();
+        placeComponents();
+    }
 
     protected void placeComponents(){
         this.removeAll();
@@ -63,10 +63,13 @@ public class TutorMonitorView extends JPanel {
 
 
             JPanel bidRequestPanel = new JPanel();
-            bidRequestPanel.add(new JLabel(activeBid.getId(), JLabel.LEFT));
+            bidRequestPanel.add(new JLabel("Bid Request " + activeBid.getId(), JLabel.LEFT));
+            bidRequestPanel.add(new JLabel(activeBid.getInitiatorName(), JLabel.LEFT));
+            JPanel responseListPanel = new JPanel();
+            responseListPanel.add(responseList);
 
             activeBidPanel.add(bidRequestPanel);
-            activeBidPanel.add(responseList);
+            activeBidPanel.add(responseListPanel);
 
             AllBidContainer.add(activeBidPanel);
 
@@ -109,12 +112,8 @@ public class TutorMonitorView extends JPanel {
     public void setLatestMonitorView(Set<Bid> bids) {
         activeBidList.clear();
         activeBidList.addAll(bids);
+        placeComponents();
     }
-
-    public void addMonitorRunnableListener(ActionListener listener) {
-        monitorRun();
-    }
-
 //    // In controller
 //    public static void main(String [] args) throws Exception{
 //        /** Listener on checking monitor every N seconds*/

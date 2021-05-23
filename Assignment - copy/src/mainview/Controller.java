@@ -150,8 +150,10 @@ public class Controller implements Observer{
             ActionListener taskPerformer = new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     if (monitor.hasChanged()) {
+                        System.out.println("Monitor has Changed!");
                         tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
                         monitor.confirmChanges();
+                        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
                     }
 
                     if (isLogOut) {
@@ -177,7 +179,7 @@ public class Controller implements Observer{
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(this.allContracts);
         this.tutorResponse = new TutorResponseView();
-        this.tutorMonitor = new TutorMonitorView(this.allBids);
+        this.tutorMonitor = new TutorMonitorView();
         this.createBid = new CreateBid();
 
         /** Run the Tutor Monitor before setting the panels*/

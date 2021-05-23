@@ -6,8 +6,8 @@ import java.util.*;
 
 /** Monitor store all the Subscribed Bid Request by tutor*/
 public class Monitor implements Observer {
-    private List<BidResponse> newResponses;
-    private Map<Bid, List<BidResponse>> subscribedBidsMap;
+    private List<BidResponse> newResponses = new ArrayList<>();
+    private Map<Bid, List<BidResponse>> subscribedBidsMap = new HashMap<>();
     private List<Bid> bidAllRequests;
     private List<Bid> activeMonitorBids;
     private Bid bidObserved;
@@ -23,14 +23,15 @@ public class Monitor implements Observer {
 //    }
 
     public void addSubscribe(Bid bid) {
+        System.out.println("Adding Bid Subscription..." + bid.getId());
         newResponses.clear();
         if (bid.getResponse() == null) {
             newResponses = new ArrayList<>();
-        }
-        else {
+        } else {
             newResponses = bid.getResponse();
         }
         this.subscribedBidsMap.put(bid, newResponses);
+        setChanged(true);
     }
 
     public void unSubscribe(Bid bid) {
@@ -50,22 +51,16 @@ public class Monitor implements Observer {
         List<BidResponse> previousBidResponses = subscribedBidsMap.get(bidModel);
         // Check Any New Responses
         if (previousBidResponses.size() != bidModel.getResponse().size()) {
+            System.out.println("Response added!!!");
             setChanged(true);
             subscribedBidsMap.replace(bidModel, bidModel.getResponse());
         }
-    }
-
-    public boolean isChanged() {
-        return isChanged;
     }
 
     public void setChanged(boolean changed) {
         isChanged = changed;
     }
 
-    public Map<Bid, List<BidResponse>> getSubscribedBidsMap() {
-        return subscribedBidsMap;
-    }
 
     public Set<Bid> getSubscribedBids() {
         return subscribedBidsMap.keySet();
@@ -74,6 +69,7 @@ public class Monitor implements Observer {
 
     @Override
     public void update(EventType e) {
+        System.out.println("Bid has Changed, notifying Moniter .....");
         bidAllRequests= Bid.getAll();   // get all updated bids
         activeMonitorBids.clear();
 
@@ -85,5 +81,8 @@ public class Monitor implements Observer {
         }
 
         subscribedBidsMap.keySet().retainAll(activeMonitorBids);    // Only retain the bid request that is active
+        for (Bid bid: subscribedBidsMap.keySet()) {
+            System.out.println(bid.getId() + " stored in Monitor");
+        }
     }
 }
