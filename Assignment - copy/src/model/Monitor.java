@@ -44,22 +44,7 @@ public class Monitor implements Observer {
         return list;
     }
 
-    public String getBidSubscribedJson() {
-        String jsonString = "[";
-        String comma = "";
-        for (Bid bid : bidAllRequests) {
-            jsonString = jsonString + comma + bid.toJson();
-            comma = ",";
-        }
-        jsonString = jsonString + "]";
-        return jsonString;
-    }
 
-    public String toJson() {
-        String jsonString = "{" +
-                "\"bidSubscribed\":" + getBidSubscribedJson() + "}";
-        return jsonString;
-    }
 
     public void addSubscribe(Bid bid) {
         System.out.println("Adding Bid Subscription..." + bid.getId());
@@ -112,6 +97,22 @@ public class Monitor implements Observer {
         return subscribedBidsMap.keySet();
     }
 
+    public String toJson() {
+        String jsonString = "{" +
+                "\"bidSubscribed\":" + getBidSubscribedJson() + "}";
+        return jsonString;
+    }
+
+    public String getBidSubscribedJson() {
+        String jsonString = "[";
+        String comma = "";
+        for (Bid bid : bidAllRequests) {
+            jsonString = jsonString + comma + bid.toJson();
+            comma = ",";
+        }
+        jsonString = jsonString + "]";
+        return jsonString;
+    }
 
     @Override
     public void update(EventType e) {

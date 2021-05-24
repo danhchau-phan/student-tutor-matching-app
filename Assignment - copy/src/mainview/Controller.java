@@ -152,7 +152,7 @@ public class Controller implements Observer{
                         System.out.println("Monitor has Changed!");
                         tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
                         monitor.confirmChanges();
-                        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
+//                        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
                     }
 
                     if (isLogOut) {
