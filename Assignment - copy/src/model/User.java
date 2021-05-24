@@ -28,7 +28,7 @@ public class User extends Observable implements Model {
 
 	private String userName;
 
-	private boolean isStudent, isTutor, isAdmin;
+	private boolean isStudent, isTutor;
 
 	private Monitor monitor;
 

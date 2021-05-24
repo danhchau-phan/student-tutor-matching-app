@@ -1,5 +1,6 @@
 package model;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,13 @@ public class Contract extends Observable implements Model {
 	private static final int MONTH_TO_MILLIS (int months) {
 		return ONE_MONTH_IN_MILLIS * months;
 	}
+
+	private static final Date ADD_MONTH(Date now, int months) {
+		Calendar c = Calendar.getInstance();
+        c.setTime(now);
+		c.add(Calendar.MONTH, months);
+		return c.getTime();
+	}
 	
 	public Contract(JsonNode node) {
 		this.id = node.get("id").textValue();
@@ -35,7 +43,7 @@ public class Contract extends Observable implements Model {
 		this.dateCreated = Utils.formatDate(node.get("dateCreated").textValue());
 		this.dateSigned = Utils.formatDate(node.get("dateSigned").textValue());
 		this.expiryDate = Utils.formatDate(node.get("expiryDate").textValue());
-		
+		this.terminationDate = Utils.formatDate(node.get("terminationDate").textValue()); ///// req 2 //////
 		this.addInfo = (node.get("additionalInfo").isEmpty()? null : new ContractAddInfo(node.get("additionalInfo")));
 	}
 	
@@ -60,39 +68,54 @@ public class Contract extends Observable implements Model {
 		Model.post(url, jsonString);
 	}
 
-	// requirement2 ongoing don't delete
+	/////// requirement2 ongoing don't delete /////////////
 	// public void postContract(String firstPartyId,
 	// 		String secondPartyId,
 	// 		String subjectId,
-	// 		ContractAddInfo addInfo,
-	// 		int duration) { // duration is number of months the contract lasts
+	// 		ContractAddInfo addInfo) {
 	// 	String url = Application.rootUrl + "/contract";
 	// 	String jsonString = "{" +
 	// 	  		"\"firstPartyId\":\"" + firstPartyId + "\"," +
 	// 	  		"\"secondPartyId\":\"" + secondPartyId + "\"," +
 	// 			"\"subjectId\":\"" + subjectId + "\"," +
 	// 	  		"\"dateCreated\":\"" + Utils.format.format(new Date()) + "\"," +
-	// 	  		"\"expiryDate\":\"" + Utils.format.format(new Date(System.currentTimeMillis() + MONTH_TO_MILLIS(duration))) + "\"," +
+		  		// "\"expiryDate\":\"" + Utils.format.format(new Date(System.currentTimeMillis() + MONTH_TO_MILLIS(duration))) + "\"," +
 	// 	  		"\"paymentInfo\":{}," +
 	// 	  		"\"lessonInfo\":{}," +
 	// 	  		"\"additionalInfo\":" + addInfo.toJson() + "}";
 		    	
-	// 	Model.post(url, jsonString);
+		// Model.post(url, jsonString);
+		// this.inform(EventType.CONTRACT_CREATED);
 	// }
 	
 
 	public void signContract() {
 		this.addInfo.firstPartySign(true);
 		this.addInfo.secondPartySign(true);
-		/////////// patch Contract expiry Date in here ////////
+		/////////// set Contract expiry Date ////////
+		Date now = new Date();
+		setContractExpiryDate(ADD_MONTH(now, getContractDuration()));
+		/////////// sign contract ////////
 		String url = Application.rootUrl + "/contract/" + this.id + "/sign";
 		String jsonString = "{" +
-    	  		"\"dateSigned\":\"" + Utils.format.format(new Date()) + "\"}";
+    	  		"\"dateSigned\":\"" + Utils.format.format(now) + "\"}";
 		Model.post(url, jsonString);
 		
 		this.inform(EventType.CONTRACT_SIGN);
 	}
-	
+
+	private int getContractDuration() {
+		return this.addInfo.getContractDuration();
+	}
+	/**
+	 * Sets contract expiry date before signing
+	 * @param expiryDate
+	 */
+	private void setContractExpiryDate(Date expiryDate) {
+		this.expiryDate = expiryDate;
+		patchContract();
+	}
+
 	public static List<Contract> getAllContractsAsFirstParty(String userId) {
 		List<Contract> allContracts = new ArrayList<Contract>();
 		for (ObjectNode node : Model.getAll("/contract")) {
@@ -118,15 +141,16 @@ public class Contract extends Observable implements Model {
 		return allContracts;
 	}
 
-	// requirement2 ongoing don't delete
-	// public static List<Contract> getNearExpiryContracts(String userId) {
-	// 	List<Contract> contracts = new ArrayList<Contract>();
-	// 	for (ObjectNode node : Model.getAll("/contract")) {
-	// 		Contract c = new Contract(node);
-	// 		if (c.isSigned() && c.terminationDate == null && (c.expiryDate - new Date (System.currentTimeMillis())))
-	// 	}
-	// 	return contracts;
-	// }
+	//////// requirement2: notify near expired contracts /////////
+	public static List<Contract> getNearExpiryContracts(String userId) {
+		List<Contract> contracts = new ArrayList<Contract>();
+		for (ObjectNode node : Model.getAll("/contract")) {
+			Contract c = new Contract(node);
+			if (c.isSigned() && c.terminationDate == null && c.expiryDate.before(new Date(System.currentTimeMillis() + ONE_MONTH_IN_MILLIS)) )
+				contracts.add(c);
+		}
+		return contracts;
+	}
 	
 	private void updateDateSigned() {
 		if (this.addInfo == null)
@@ -180,7 +204,7 @@ public class Contract extends Observable implements Model {
 		  		"\"secondPartyId\":\"" + secondParty.getId() + "\"," +
 				"\"subjectId\":\"" + subject.getId() + "\"," +
 		  		"\"dateCreated\":\"" + Utils.format.format(new Date()) + "\"," +
-		  		"\"expiryDate\":\"" + Utils.format.format(new Date(System.currentTimeMillis() + YEAR_IN_MILLIS)) + "\"," +
+		  		"\"expiryDate\":\"" + this.expiryDate + "\"," +
 		  		"\"paymentInfo\":{}," +
 		  		"\"lessonInfo\":{}," +
 		  		"\"additionalInfo\":" + addInfo.toJson() + "}";

@@ -78,5 +78,7 @@ public class ContractAddInfo {
 		this.secondPartySigned = secondPartySigned;
 	}
 	
-	
+	public int getContractDuration() {
+		return duration;
+	}
 }
