@@ -20,13 +20,10 @@ public class Contract extends Observable implements Model {
 	private Date dateCreated, dateSigned, expiryDate, terminationDate;
 	
 	private ContractAddInfo addInfo;
+	private ContractCessationInfo cessationInfo;
 	private static final int YEAR_IN_MILLIS = 3600 * 24 * 365 * 1000;
 	private static final int ONE_MONTH_IN_MILLIS = 3600 * 24 * 30 * 1000;
 	public static final int DEFAULT_CONTRACT_DURATION = 6;
-
-	private static final int MONTH_TO_MILLIS (int months) {
-		return ONE_MONTH_IN_MILLIS * months;
-	}
 
 	private static final Date ADD_MONTH(Date now, int months) {
 		Calendar c = Calendar.getInstance();
@@ -128,7 +125,12 @@ public class Contract extends Observable implements Model {
 		}
 		return allContracts;
 	}
-	
+
+	/**
+	 * Fetch all unterminated contracts as second party
+	 * @param userId
+	 * @return
+	 */
 	public static List<Contract> getAllContractsAsSecondParty(String userId) {
 		List<Contract> allContracts = new ArrayList<Contract>();
 		for (ObjectNode node : Model.getAll("/contract")) {
@@ -141,11 +143,101 @@ public class Contract extends Observable implements Model {
 		return allContracts;
 	}
 
-	//////// requirement2: notify near expired contracts /////////
-	public static List<Contract> getNearExpiryContracts(String userId) {
-		List<Contract> contracts = new ArrayList<Contract>();
+	public static List<Contract> getAllSignedContractsAsFirstParty(String userId) {
+		List<Contract> allContracts = new ArrayList<Contract>();
 		for (ObjectNode node : Model.getAll("/contract")) {
 			Contract c = new Contract(node);
+			if (c.secondParty.getId().equals(userId))  {
+				c.updateDateSigned();
+				allContracts.add(c);
+			}
+		}
+		return allContracts;
+	}
+
+	/////////////////// requirement 3 ///////////////////////
+	/**
+	 * gets all unexpired contracts as second party
+	 * @param allContracts
+	 * @param userId
+	 * @return
+	 */
+	public static List<Contract> getAllContractsAsSecondParty(List<Contract> allContracts, String userId) {
+		List<Contract> contracts = new ArrayList<Contract>();
+		for (Contract c : allContracts) {
+			if (c.secondParty.getId().equals(userId) && c.terminationDate == null)  {
+				// c.updateDateSigned();
+				contracts.add(c);
+			}
+		}
+		return contracts;
+	}
+	/**
+	 * gets all expired contracts as second party
+	 * @param allContracts
+	 * @param userId
+	 * @return
+	 */
+	public static List<Contract> getAllExpiredContractsAsSecondParty(List<Contract> allContracts, String userId) {
+		List<Contract> contracts = new ArrayList<Contract>();
+		for (Contract c : allContracts)
+			if (c.secondParty.getId().equals(userId) && c.terminationDate != null)
+				contracts.add(c);
+		return contracts;
+	}
+
+	/**
+	 * gets all unexpired contracts as first party
+	 * @param allContracts
+	 * @param userId
+	 * @return
+	 */
+	public static List<Contract> getAllContractsAsFirstParty(List<Contract> allContracts, String userId) {
+		List<Contract> contracts = new ArrayList<Contract>();
+		for (Contract c : allContracts) {
+			if (c.firstParty.getId().equals(userId) && c.terminationDate == null)  {
+				// c.updateDateSigned();
+				contracts.add(c);
+			}
+		}
+		return contracts;
+	}
+	/**
+	 * gets all expired contracts as second party
+	 * @param allContracts
+	 * @param userId
+	 * @return
+	 */
+	public static List<Contract> getAllExpiredContractsAsFirstParty(List<Contract> allContracts, String userId) {
+		List<Contract> contracts = new ArrayList<Contract>();
+		for (Contract c : allContracts)
+			if (c.firstParty.getId().equals(userId) && c.terminationDate != null)
+				contracts.add(c);
+		return contracts;
+	}
+
+	private void deleteContract() {
+		
+		this.inform(EventType.CONTRACT_DELETED);
+	}
+
+	public void saveCessationInfo(ContractCessationInfo newInfo) {
+		this.cessationInfo = newInfo;
+	}
+
+	public void patchContractCessationInfo() {
+		String url = Application.rootUrl + "/contract/" + this.id;
+		String jsonString = "{" +
+		  		"\"cessationInfo\":" + cessationInfo.toJson() + "}";
+		    	
+		Model.patch(url, jsonString);
+		this.inform(EventType.CONTRACT_CESSATIONINFO_UPDATED);
+	}
+
+	//////// requirement2: notify near expired contracts /////////
+	public static List<Contract> getNearExpiryContracts(List<Contract> allContracts) {
+		List<Contract> contracts = new ArrayList<Contract>();
+		for (Contract c : allContracts) {
 			if (c.isSigned() && c.terminationDate == null && c.expiryDate.before(new Date(System.currentTimeMillis() + ONE_MONTH_IN_MILLIS)) )
 				contracts.add(c);
 		}

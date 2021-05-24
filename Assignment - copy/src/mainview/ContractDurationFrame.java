@@ -61,4 +61,6 @@ public class ContractDurationFrame extends JPanel{
         reload();
         return selectedDuration;
     }
+
+    
 }

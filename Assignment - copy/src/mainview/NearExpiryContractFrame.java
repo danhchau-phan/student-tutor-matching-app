@@ -14,14 +14,15 @@ import javax.swing.ListCellRenderer;
 
 import model.Contract;
 
-public class NearExpiryContractFrame extends JFrame{
+public class NearExpiryContractFrame extends JPanel{
     List<Contract> contracts;
     public NearExpiryContractFrame(List<Contract> contracts) {
+        super();
         this.contracts = contracts;
     }
 
     public void show() {
-        JPanel panel = new JPanel();
+        this.removeAll();
         JList<Contract> cList;
         DefaultListModel<Contract> model = new DefaultListModel<>();
         for (Contract c : contracts) {
@@ -42,8 +43,8 @@ public class NearExpiryContractFrame extends JFrame{
         });
 
         JScrollPane scrollp = new JScrollPane(cList);
-		panel.add(scrollp);
+		this.add(scrollp);
 
-        JOptionPane.showMessageDialog(this, panel, "Contracts About To Expire", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, this);
     }
 }
