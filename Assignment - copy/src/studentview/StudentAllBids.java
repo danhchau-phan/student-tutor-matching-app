@@ -11,13 +11,11 @@ import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
 import model.Bid;
 import model.EventType;
-import model.User;
 
 /**
  * View that allows the Student to see all unexpired and unclosed match requests created by them

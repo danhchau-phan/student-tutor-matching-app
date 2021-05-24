@@ -84,12 +84,12 @@ public class Contract extends Observable implements Model {
 	public void signContract() {
 		this.addInfo.firstPartySign(true);
 		this.addInfo.secondPartySign(true);
-		
+		/////////// patch Contract expiry Date in here ////////
 		String url = Application.rootUrl + "/contract/" + this.id + "/sign";
 		String jsonString = "{" +
     	  		"\"dateSigned\":\"" + Utils.format.format(new Date()) + "\"}";
 		Model.post(url, jsonString);
-		/////////// patch Contract expiry Date in here ////////
+		
 		this.inform(EventType.CONTRACT_SIGN);
 	}
 	
@@ -140,9 +140,9 @@ public class Contract extends Observable implements Model {
 		return "First Party: " + firstParty.getFullName() + '\n'
 				+  "Second Party: " + secondParty.getFullName() + '\n'
 				+  "Subject: " + '\n' + subject + '\n'
-				+ "Date created: " + dateCreated + '\n'
-				+ "Date signed: " + (dateSigned == null?"unsigned" : dateSigned) + '\n'
-				+ "Date expire: " + expiryDate;
+				+ "Date created: " + '\n' + dateCreated + '\n'
+				+ "Date signed: " + '\n' + (dateSigned == null?"unsigned" : dateSigned) + '\n'
+				+ "Date expire: " + '\n' + expiryDate;
 	}
 	
 	public boolean isSigned() {
