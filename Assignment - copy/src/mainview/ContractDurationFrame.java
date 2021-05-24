@@ -2,19 +2,19 @@ package mainview;
 
 import java.awt.event.MouseEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 
 public class ContractDurationFrame extends JPanel{
-    private JRadioButton three = new JRadioButton("3 months");
-    private JRadioButton six = new JRadioButton("6 months");
-    private JRadioButton twelve = new JRadioButton("12 months");
-    private JRadioButton twtyfour = new JRadioButton("24 months");
-    private JRadioButton longer = new JRadioButton("Longer");
+    private JRadioButtonMenuItem three = new JRadioButtonMenuItem("3 months");
+    private JRadioButtonMenuItem six = new JRadioButtonMenuItem("6 months");
+    private JRadioButtonMenuItem twelve = new JRadioButtonMenuItem("12 months");
+    private JRadioButtonMenuItem twtyfour = new JRadioButtonMenuItem("24 months");
+    private JRadioButtonMenuItem longer = new JRadioButtonMenuItem("Longer");
     private JTextField longerDuration = new JTextField();
     private ButtonGroup options = new ButtonGroup();
     private int selectedDuration;
@@ -24,9 +24,11 @@ public class ContractDurationFrame extends JPanel{
     twelve.setActionCommand("12");
     twtyfour.setActionCommand("24");
     longer.setActionCommand("longer");
+    six.setSelected(true);
     }
     public ContractDurationFrame() {
         super();
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         reload();
         this.add(three);
         this.add(six);
@@ -51,8 +53,8 @@ public class ContractDurationFrame extends JPanel{
 	}
 
     private void reload() {
+        longerDuration.setText("");
         longerDuration.setEditable(false);
-        six.setSelected(true);
     }
 
     public int getSelectedDuration() {
