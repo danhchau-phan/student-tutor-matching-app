@@ -19,7 +19,7 @@ import javax.swing.*;
 
 public class Controller implements Observer{
     private Timer timer;
-    private static final int threadSleep = 10000;
+    private static final int threadSleep = 5000;
     private static final int monitorIntervalCheck = 5000;
     private boolean isLogOut;
 
@@ -145,16 +145,18 @@ public class Controller implements Observer{
         }
     }
 
+
     /** Initialise the Monitor and Stop running when tutor logged out*/
-    private void startTutorMonitor() {
+    private void trackMonitor() {
         try {
             ActionListener taskPerformer = new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     if (monitor.hasChanged()) {
                         System.out.println("Monitor has Changed!");
-                        tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
+                        monitor.inform(EventType.MONITOR_CHANGED);
+//                        tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
                         monitor.confirmChanges();
-                        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
+//                        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
                     }
 
                     if (isLogOut) {
@@ -176,17 +178,21 @@ public class Controller implements Observer{
 
     private void initTutorViews() {
         assert (this.user != null);
+
+        monitor = user.getMonitor();
+
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(this.allContracts);
         this.tutorResponse = new TutorResponseView();
-        this.tutorMonitor = new TutorMonitorView();
+        this.tutorMonitor = new TutorMonitorView(monitor);
         this.createBid = new CreateBid();
 
-        monitor = user.getMonitor();
+        monitor.subscribe(EventType.MONITOR_CHANGED, tutorMonitor);
 
-        /** Run the Tutor Monitor before setting the panels*/
-        startTutorMonitor();
+        /** Run the Tutor Monitor every 5 seconds interval*/
+        trackMonitor();
+
 
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
@@ -494,7 +500,7 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
             // Notify View for update (check monitor)
-            monitor.addSubscribe(activeBid);
+            monitor.addRequestBidToSubscribe(activeBid);
         }
     }
 

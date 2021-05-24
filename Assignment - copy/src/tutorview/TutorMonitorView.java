@@ -16,12 +16,13 @@ import java.util.Set;
 
 
 /** Couldnt implement Observer here because must update every N seconds*/
-public class TutorMonitorView extends JPanel {
+public class TutorMonitorView extends JPanel implements Observer {
 //    private Timer timer;
 //    private static final int threadSleep = 1000000;
 //    private static final int monitorIntervalCheck = 5000;
 //    private Monitor monitor;
-    private List<Bid> activeBidList;
+    private Monitor monitor;
+    private List<Bid> activeBidList = new ArrayList<>();
     private List<JPanel> bidPanels = new ArrayList<>();
     private JList<BidResponse> responseList;
     private List<BidResponse> responses;
@@ -33,9 +34,9 @@ public class TutorMonitorView extends JPanel {
         placeComponents();
     }
 
-    public TutorMonitorView() {
+    public TutorMonitorView(Monitor monitor) {
         super(new BorderLayout());
-        this.activeBidList = new ArrayList<>();
+        this.monitor = monitor;
         placeComponents();
     }
 
@@ -46,7 +47,7 @@ public class TutorMonitorView extends JPanel {
         scrollPane.setViewportBorder(null);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        JPanel AllBidContainer = new JPanel(new GridLayout(0, 1));
+        JPanel AllBidContainer = new JPanel(new BorderLayout());
 
 
         // Create a Bid Panel for each bid
@@ -81,6 +82,15 @@ public class TutorMonitorView extends JPanel {
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
+    /** Update the latest Bid Response or expired Bid Request*/
+    @Override
+    public void update(EventType e) {
+        activeBidList.clear();
+        System.out.println(monitor.getSubscribedBids());
+        activeBidList.addAll(monitor.getSubscribedBids());
+        placeComponents();
+    }
+
     private class ResponseCellRenderer extends JPanel implements ListCellRenderer<BidResponse> {
 
         @Override
@@ -100,20 +110,16 @@ public class TutorMonitorView extends JPanel {
         }
     }
 
-    public void add() {
+//    public void add() {
+//
+//    }
 
-    }
+//    public void setLatestMonitorView(Set<Bid> bids) {
+//        activeBidList.clear();
+//        activeBidList.addAll(bids);
+//        placeComponents();
+//    }
 
-    public void monitorRun() {
-
-    }
-
-    /** Update the latest Bid Response or expired Bid Request*/
-    public void setLatestMonitorView(Set<Bid> bids) {
-        activeBidList.clear();
-        activeBidList.addAll(bids);
-        placeComponents();
-    }
 //    // In controller
 //    public static void main(String [] args) throws Exception{
 //        /** Listener on checking monitor every N seconds*/

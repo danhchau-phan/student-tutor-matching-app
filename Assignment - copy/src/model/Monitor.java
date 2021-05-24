@@ -6,7 +6,7 @@ import mainview.Observer;
 import java.util.*;
 
 /** Monitor store all the Subscribed Bid Request by tutor*/
-public class Monitor implements Observer {
+public class Monitor extends Observable implements Observer {
     private List<Bid> bidAllRequests;
 
     private List<BidResponse> newResponses = new ArrayList<>();
@@ -19,8 +19,10 @@ public class Monitor implements Observer {
             bidAllRequests = new ArrayList<>();
         this.bidAllRequests = bidAllRequests;
         for (Bid bid: bidAllRequests) {
-            subscribedBidsMap.put(bid, bid.getResponse());
-            addSubscribe(bid);
+//            if (bid.getResponse() == null)
+//                subscribedBidsMap.put(bid, new ArrayList<>());
+//            subscribedBidsMap.put(bid, bid.getResponse());
+            addRequestBidToSubscribe(bid);
         }
     }
 
@@ -31,8 +33,8 @@ public class Monitor implements Observer {
         assert (node.get("bidSubscribed").isArray());
         this.bidAllRequests = getBidsSubscribed(node.get("bidSubscribed").iterator());
         for (Bid bid: bidAllRequests) {
-            subscribedBidsMap.put(bid, bid.getResponse());
-            addSubscribe(bid);
+//            subscribedBidsMap.put(bid, bid.getResponse());
+            addRequestBidToSubscribe(bid);
         }
     }
 
@@ -44,24 +46,8 @@ public class Monitor implements Observer {
         return list;
     }
 
-    public String getBidSubscribedJson() {
-        String jsonString = "[";
-        String comma = "";
-        for (Bid bid : bidAllRequests) {
-            jsonString = jsonString + comma + bid.toJson();
-            comma = ",";
-        }
-        jsonString = jsonString + "]";
-        return jsonString;
-    }
-
-    public String toJson() {
-        String jsonString = "{" +
-                "\"bidSubscribed\":" + getBidSubscribedJson() + "}";
-        return jsonString;
-    }
-
-    public void addSubscribe(Bid bid) {
+    /** New Resquest Bid added*/
+    public void addRequestBidToSubscribe(Bid bid) {
         System.out.println("Adding Bid Subscription..." + bid.getId());
         newResponses.clear();
         if (bid.getResponse() == null) {
@@ -73,7 +59,8 @@ public class Monitor implements Observer {
         setChanged(true);
     }
 
-    public void unSubscribe(Bid bid) {
+    /** Remove Request Bid*/
+    public void removeRequestBidToSubscribe(Bid bid) {
         this.subscribedBidsMap.remove(bid);
     }
 
@@ -112,6 +99,22 @@ public class Monitor implements Observer {
         return subscribedBidsMap.keySet();
     }
 
+    public String toJson() {
+        String jsonString = "{" +
+                "\"bidSubscribed\":" + getBidSubscribedJson() + "}";
+        return jsonString;
+    }
+
+    public String getBidSubscribedJson() {
+        String jsonString = "[";
+        String comma = "";
+        for (Bid bid : bidAllRequests) {
+            jsonString = jsonString + comma + bid.toJson();
+            comma = ",";
+        }
+        jsonString = jsonString + "]";
+        return jsonString;
+    }
 
     @Override
     public void update(EventType e) {
