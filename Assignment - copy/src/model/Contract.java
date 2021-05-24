@@ -244,6 +244,8 @@ public class Contract extends Observable implements Model {
 		return contracts;
 	}
 	
+	//////// end requirement2 /////////
+	
 	private void updateDateSigned() {
 		if (this.addInfo == null)
 			return;
