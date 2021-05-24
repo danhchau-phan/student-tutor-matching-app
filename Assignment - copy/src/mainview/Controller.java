@@ -52,6 +52,8 @@ public class Controller implements Observer{
     private TutorResponseView tutorResponse;
     private TutorMonitorView tutorMonitor;
     private TutorMessageView tutorMessage;
+
+    private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     private enum Role {
         student,
         tutor,
@@ -204,7 +206,7 @@ public class Controller implements Observer{
                 if (activeBid.getType() == Bid.BidType.open) {
                     tutorResponse.setBid(activeBid);
                     subscribeBidNewResponse();
-                    tutorResponse.setResponseListener(new TutorResponseListener());
+                    // tutorResponse.setResponseListener(new TutorResponseListener());
                     tutorResponse.setCreateBidListener(new CreateBidListener());
                     tutorResponse.setBuyOutListener(new BuyOutListener());
                     tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
@@ -349,7 +351,7 @@ public class Controller implements Observer{
         
         studentMessage = new StudentMessageView(user, activeMessage, activeBid);
         studentMessage.setSendMessageListener(new SendStudentMessageListener());
-        studentMessage.setSelectBidListener(new SelectBidListener());
+        studentMessage.setSelectBidListener(new MessageSelectBidListener());
 
         if (studentView.activePanel != null) {
             studentView.main.remove(studentView.activePanel);
@@ -363,7 +365,6 @@ public class Controller implements Observer{
     private void showTutorMessagePanel() {
         tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
         tutorMessage.setSendMessageListener(new SendTutorMessageListener());
-//        tutorMessage.setSelectBidListener(new SelectBidListener());
 
         if (tutorView.activePanel != null) {
             tutorView.main.remove(tutorView.activePanel);
@@ -424,6 +425,7 @@ public class Controller implements Observer{
                 BidResponse selectedResponse = studentResponse.getSelectedResponse();
                 if (selectedResponse == null)
                     return;
+                contractDurationFrame.show();
                 subscriberContract.postContract(user.getId(),
                         selectedResponse.getBidderId(),
                         activeBid.getSubject().getId(),
@@ -437,11 +439,13 @@ public class Controller implements Observer{
     }
 
     class TutorResponseListener implements MouseClickListener{
+        ///// THIS IS PROBABLY WRONG /////
         @Override
         public void mouseClicked(MouseEvent e) {
             BidResponse selectedResponse = tutorResponse.getSelectedResponse();
             if (selectedResponse == null)
                 return;
+            contractDurationFrame.show();
             subscriberContract.postContract(user.getId(),
                     selectedResponse.getBidderId(),
                     activeBid.getSubject().getId(),
@@ -474,6 +478,7 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent e) {
             if (activeBid.checkEligibility(user)) {
+                contractDurationFrame.show();
                 subscriberContract.postContract(user.getId(), activeBid.getInitiatorId(),
                         activeBid.getSubject().getId(),
                         new ContractAddInfo(true, true));
@@ -515,9 +520,10 @@ public class Controller implements Observer{
         }
     }
 
-    class SelectBidListener implements MouseClickListener {
+    class MessageSelectBidListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
+            contractDurationFrame.show();
             subscriberContract.postContract(user.getId(),
                     activeMessage.getPosterId(),
                     activeBid.getSubject().getId(),
