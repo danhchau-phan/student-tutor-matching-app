@@ -29,6 +29,23 @@ public class BidAddInfo {
 	    }
 		return true;
 	}
+
+	/** Getter for match Request*/
+	public String getValidCompetency() {
+		return this.matchRequest.getCompetency();
+	}
+
+	public String getValidHourPerLesson() {
+		return this.matchRequest.getHourPerLesson();
+	}
+
+	public String getValidRate() {
+		return this.matchRequest.getRate();
+	}
+
+	public String getValidSessionPerWeek() {
+		return this.matchRequest.getSessionsPerWeek();
+	}
 	
 	public String getMatchRequest() {
 		return this.matchRequest.toJson();

@@ -246,6 +246,24 @@ public class Bid extends Observable implements Model{
 			return false;
 		}
 	}
+
+
+	/** Getter for match request*/
+    public String getRequestCompetency() {
+        return addInfo.getValidCompetency();
+    }
+
+    public String getRequestHourPerLesson() {
+        return addInfo.getValidHourPerLesson();
+    }
+
+    public String getRequestRate() {
+        return addInfo.getValidRate();
+    }
+
+    public String getRequestSessionPerWeek() {
+        return addInfo.getValidSessionPerWeek();
+    }
 }
 
 
