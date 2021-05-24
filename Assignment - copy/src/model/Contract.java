@@ -24,6 +24,7 @@ public class Contract extends Observable implements Model {
 	private static final int YEAR_IN_MILLIS = 3600 * 24 * 365 * 1000;
 	private static final int ONE_MONTH_IN_MILLIS = 3600 * 24 * 30 * 1000;
 	public static final int DEFAULT_CONTRACT_DURATION = 6;
+	public static final int MAX_CONTRACT_VIEWED = 5;
 
 	private static final Date ADD_MONTH(Date now, int months) {
 		Calendar c = Calendar.getInstance();
@@ -63,28 +64,8 @@ public class Contract extends Observable implements Model {
 		  		"\"additionalInfo\":" + addInfo.toJson() + "}";
 		    	
 		Model.post(url, jsonString);
-	}
-
-	/////// requirement2 ongoing don't delete /////////////
-	// public void postContract(String firstPartyId,
-	// 		String secondPartyId,
-	// 		String subjectId,
-	// 		ContractAddInfo addInfo) {
-	// 	String url = Application.rootUrl + "/contract";
-	// 	String jsonString = "{" +
-	// 	  		"\"firstPartyId\":\"" + firstPartyId + "\"," +
-	// 	  		"\"secondPartyId\":\"" + secondPartyId + "\"," +
-	// 			"\"subjectId\":\"" + subjectId + "\"," +
-	// 	  		"\"dateCreated\":\"" + Utils.format.format(new Date()) + "\"," +
-		  		// "\"expiryDate\":\"" + Utils.format.format(new Date(System.currentTimeMillis() + MONTH_TO_MILLIS(duration))) + "\"," +
-	// 	  		"\"paymentInfo\":{}," +
-	// 	  		"\"lessonInfo\":{}," +
-	// 	  		"\"additionalInfo\":" + addInfo.toJson() + "}";
-		    	
-		// Model.post(url, jsonString);
-		// this.inform(EventType.CONTRACT_CREATED);
-	// }
-	
+		this.inform(EventType.CONTRACT_CREATED);
+	}	
 
 	public void signContract() {
 		this.addInfo.firstPartySign(true);
@@ -172,19 +153,6 @@ public class Contract extends Observable implements Model {
 		}
 		return contracts;
 	}
-	/**
-	 * gets all expired contracts as second party
-	 * @param allContracts
-	 * @param userId
-	 * @return
-	 */
-	public static List<Contract> getAllExpiredContractsAsSecondParty(List<Contract> allContracts, String userId) {
-		List<Contract> contracts = new ArrayList<Contract>();
-		for (Contract c : allContracts)
-			if (c.secondParty.getId().equals(userId) && c.terminationDate != null)
-				contracts.add(c);
-		return contracts;
-	}
 
 	/**
 	 * gets all unexpired contracts as first party
@@ -203,7 +171,7 @@ public class Contract extends Observable implements Model {
 		return contracts;
 	}
 	/**
-	 * gets all expired contracts as second party
+	 * gets all expired contracts as first party
 	 * @param allContracts
 	 * @param userId
 	 * @return
@@ -220,18 +188,34 @@ public class Contract extends Observable implements Model {
 		
 		this.inform(EventType.CONTRACT_DELETED);
 	}
-
-	public void saveCessationInfo(ContractCessationInfo newInfo) {
-		this.cessationInfo = newInfo;
+	/**
+	 * Post new contract from currentContract's cessationInfo. currentContract is deleted right after
+	 */
+	public void postNewContractForReuse(Contract currentContract) {
+		postContract(currentContract.firstParty.getId(), currentContract.getSecondPartyId(), currentContract.subject.getId(), currentContract.createContractAddInfo());
+		currentContract.deleteContract();
 	}
 
-	public void patchContractCessationInfo() {
+	public void patchContractCessationInfo(ContractCessationInfo newInfo) {
+		this.cessationInfo = newInfo;
 		String url = Application.rootUrl + "/contract/" + this.id;
 		String jsonString = "{" +
 		  		"\"cessationInfo\":" + cessationInfo.toJson() + "}";
 		    	
 		Model.patch(url, jsonString);
 		this.inform(EventType.CONTRACT_CESSATIONINFO_UPDATED);
+	}
+
+	public ContractAddInfo createContractAddInfo() {
+		return this.cessationInfo.createContractAddInfo();
+	}
+
+	/**
+	 * Get second party id for reused contract
+	 * @return
+	 */
+	public String getSecondPartyId() {
+		return this.cessationInfo.getSecondPartyId();
 	}
 
 	//////// requirement2: notify near expired contracts /////////
@@ -245,7 +229,7 @@ public class Contract extends Observable implements Model {
 	}
 	
 	//////// end requirement2 /////////
-	
+
 	private void updateDateSigned() {
 		if (this.addInfo == null)
 			return;

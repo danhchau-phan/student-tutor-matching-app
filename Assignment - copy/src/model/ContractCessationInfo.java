@@ -41,4 +41,15 @@ public class ContractCessationInfo {
         "\"sessionsPerWeek\":\"" + this.sessionsPerWeek + "\"," +
         "\"rate\":\"" + this.rate + "\"}" ;
     }
+
+    /**
+     * Create ContractAdditionalInfo. Used when contract is reused
+     */
+    public ContractAddInfo createContractAddInfo() {
+        return new ContractAddInfo(false, false, duration, competency, hourPerLesson, sessionsPerWeek, rate);
+    }
+
+    public String getSecondPartyId() {
+        return secondPartyId;
+    }
 }
