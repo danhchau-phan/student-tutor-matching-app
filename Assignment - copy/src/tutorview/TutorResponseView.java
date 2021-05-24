@@ -15,7 +15,7 @@ import model.*;
 public class TutorResponseView extends JPanel implements Observer {
 	private Bid bid;
 	private JList<BidResponse> responseList;
-	private JList<Message> messageList;
+	// private JList<Message> messageList;
 	private List<BidResponse> responses;
 	private List<Message> messages;
 
@@ -51,8 +51,8 @@ public class TutorResponseView extends JPanel implements Observer {
 
 
 		if (bid.getType() == Bid.BidType.close) {
-			JScrollPane scrollp = new JScrollPane(messageList);
-			this.add(scrollp);
+			// JScrollPane scrollp = new JScrollPane(messageList);
+			// this.add(scrollp);
 		} else {
 			JScrollPane scrollp = new JScrollPane(responseList);
 			this.add(scrollp);
@@ -69,13 +69,13 @@ public class TutorResponseView extends JPanel implements Observer {
 		this.add(panel, BorderLayout.SOUTH);
 	}
 
-	public void setResponseListener(MouseClickListener listener) {
-		if (bid.getType() == Bid.BidType.close) {
-			this.messageList.addMouseListener(listener);
-		} else {
-			this.responseList.addMouseListener(listener);
-		}
-	}
+	// public void setResponseListener(MouseClickListener listener) {
+	// 	if (bid.getType() == Bid.BidType.close) {
+	// 		this.messageList.addMouseListener(listener);
+	// 	} else {
+	// 		this.responseList.addMouseListener(listener);
+	// 	}
+	// }
 
 	public void setCreateBidListener(MouseClickListener listener) {
 		this.createBid.addMouseListener(listener);
@@ -89,17 +89,17 @@ public class TutorResponseView extends JPanel implements Observer {
 		this.getSubscribeBid().addMouseListener(listener);
 	}
 
-	public int getSelectedMessageIndex() {
-		return this.messageList.getSelectedIndex();
-	}
+	// public int getSelectedMessageIndex() {
+	// 	return this.messageList.getSelectedIndex();
+	// }
 
 	public BidResponse getSelectedResponse() {
 		return responseList.getSelectedValue();
 	}
 
-	public Message getSelectedMessage() {
-		return messageList.getSelectedValue();
-	}
+	// public Message getSelectedMessage() {
+	// 	return messageList.getSelectedValue();
+	// }
 
 	private class ResponseCellRenderer extends JPanel implements ListCellRenderer<BidResponse> {
 

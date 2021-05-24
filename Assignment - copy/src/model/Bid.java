@@ -151,7 +151,7 @@ public class Bid extends Observable implements Model{
 					(new Contract()).postContract(b.initiator.getId(), 
 								winner.getBidderId(), 
 								b.getSubject().getId(),
-								new ContractAddInfo(false, false));
+								new ContractAddInfo(false, true));
 				}
 				b.closeDownBid();
 			} else if (!b.closeddown)
