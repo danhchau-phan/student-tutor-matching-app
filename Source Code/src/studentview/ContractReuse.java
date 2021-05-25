@@ -17,7 +17,6 @@ import model.Contract;
  */
 public class ContractReuse extends RemovablePanel implements Observer{
     private List<Contract> contracts;
-    private List<JButton> reuseButton;
     private JList<Contract> contractList;
     public ContractReuse(List<Contract> contracts) {
         super(new BorderLayout());
@@ -26,8 +25,6 @@ public class ContractReuse extends RemovablePanel implements Observer{
 
     private void placeComponents() {
         this.removeAll();
-
-
         DefaultListModel<Contract> model = new DefaultListModel<>();
         for (Contract contract : contracts)
             model.addElement(contract);
@@ -37,19 +34,7 @@ public class ContractReuse extends RemovablePanel implements Observer{
 
         JScrollPane scrollp = new JScrollPane(contractList);
         this.add(scrollp);
-
-
-
-
-        // Bottom Panel with buttons - Create Bid Button and Subscribe Button (correspond to Request)
-        JPanel panel = new JPanel(new FlowLayout());
-        if (bid.getType() == Bid.BidType.open) {
-            panel.add(createBid);
-            panel.add(buyOut);
-            panel.add(subscribeBid);
-        }
-        this.add(panel, BorderLayout.SOUTH);
-    }
+}
 
     @Override
     public void update(EventType e) {
@@ -64,15 +49,21 @@ public class ContractReuse extends RemovablePanel implements Observer{
         return this.contractList.getSelectedValue();
     }
 
+    public void setListListener(MouseClickListener listener) {
+        this.contractList.addMouseListener(listener);
+    }
+
     private class ContractCellRenderer extends JPanel implements ListCellRenderer<Contract> {
 
         @Override
         public Component getListCellRendererComponent(JList<? extends Contract> list, Contract value, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
             this.removeAll();
-            JEditorPane eP = new JEditorPane();
-            eP.setText(value.toString());
-            this.add(eP);
+            String text = value.toString();
+            JTextArea tA = new JTextArea();
+            tA.setText(text);
+            tA.setEditable(false);
+            this.add(tA);
             return this;
         }
     }
