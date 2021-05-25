@@ -58,7 +58,7 @@ public class User extends Observable implements Model {
 		// 	this.monitor = new Monitor((List<Bid>) null);
 		// else
 		// 	this.monitor = new Monitor(node.get("additionalInfo"));
-		this.monitor = (node.get("additionalInfo").isEmpty()) ? new ArrayList<>() : getMonitor(node.get("monitor").iterator());
+		this.monitor = (node.get("additionalInfo").isEmpty() | node.get("additionalInfo").get("monitor") == null) ? new ArrayList<>() : getMonitor(node.get("additionalInfo").get("monitor").iterator());
 	}
 
 	private static List<String> getMonitor(Iterator<JsonNode>iter) {
