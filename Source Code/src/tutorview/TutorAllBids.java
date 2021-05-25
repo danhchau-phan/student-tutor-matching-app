@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
+import mainview.RemovablePanel;
 import model.Bid;
 import model.Model;
 import model.User;
@@ -23,21 +24,9 @@ import model.User;
 /**
  * This is the View for Tutor to see all available (unclosed, unexpired) mathc requests
  */
-public class TutorAllBids extends JPanel implements Observer {
+public class TutorAllBids extends RemovablePanel implements Observer {
 	private List<Bid> bids;
 	private JList<Bid> bidList;
-
-//	public TutorAllBidsView(Display display, User user) {
-//		super(display, user);
-//	}
-
-	// public TutorAllBids(User user) {
-	// 	super(new BorderLayout());
-	// 	this.setBackground(Color.BLUE);
-	// 	this.user = user;
-	// 	this.bids = user.getInitiatedBids();
-	// 	placeComponents();
-	// }
 
 	public TutorAllBids(List<Bid> bids) {
 		super(new BorderLayout());
@@ -54,28 +43,6 @@ public class TutorAllBids extends JPanel implements Observer {
 		bidList.setCellRenderer(new CellRenderer());
 		JScrollPane scrollp = new JScrollPane(bidList);
 		this.add(scrollp);
-//		super.placeComponents();
-//		bids = Bid.getAll();
-//		ArrayList<JComponent> panels = new ArrayList<JComponent> ();
-//
-//		for (Bid b : bids) {
-//			String text = b.toString();
-//			JPanel panel = new JPanel();
-//			JTextArea tA = new JTextArea();
-//			tA.setText(text);
-//			panel.add(tA);
-//			tA.setEditable(false);
-//
-//			this.setSwitchPanelListener(main, tA, new TutorResponseView(display, user, b));
-//			panels.add(panel);
-//		}
-//
-//		JPanel midPanel = new ListPanel(panels);
-//        main.add(midPanel);
-//		JScrollPane scrollp = new JScrollPane(midPanel);
-//		main.add(scrollp);
-//		this.display.setVisible();
-
 	}
 
 	public Bid getSelectedBid() {

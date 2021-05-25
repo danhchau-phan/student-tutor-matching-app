@@ -21,11 +21,9 @@ import javax.swing.*;
 
 public class Controller implements Observer{
     private Timer timer;
-    private static final int threadSleep = 5000;
-    private static final int monitorIntervalCheck = 5000;
+    private static final int monitorCheckInterval = 5000;
     private boolean isLogOut;
 
-    private Monitor monitor;
     private Display display;
     private User user;
     private List<Bid> initiatedBids = new ArrayList<Bid>();
@@ -62,8 +60,7 @@ public class Controller implements Observer{
     private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     private enum Role {
         student,
-        tutor,
-        admin
+        tutor
     }
     private Role activeRole;
     public Controller() {
@@ -124,12 +121,14 @@ public class Controller implements Observer{
             this.allBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
+            b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorAllBids);
         }
     }
 
     private void fetchMonitoredBids() {
     	assert this.activeRole == Role.tutor;
-    	user.subscribe(EventType.USER_MONITOR_BID, tutorMonitor);
+    	this.monitoredBids.clear();
+    	user.subscribe(EventType.USER_SUBSCRIBE_NEW_BID, tutorMonitor);
     	for (Bid b : this.allBids)
     		if (this.user.monitor(b))
     			this.monitoredBids.add(b);
@@ -163,53 +162,16 @@ public class Controller implements Observer{
             this.studentExpiredContracts.add(c);
         }
     }
-    /** Initialise the Monitor and Stop running when tutor logged out*/
-    private void trackMonitor() {
-        try {
-            ActionListener taskPerformer = new ActionListener() {
-                public void actionPerformed(ActionEvent evt) {
-                    if (monitor.hasChanged()) {
-                        System.out.println("Monitor has Changed!");
-                        monitor.inform(EventType.MONITOR_CHANGED);
-//                        tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
-                        monitor.confirmChanges();
-//                        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
-                    }
-
-                    if (isLogOut) {
-                        timer.stop();
-                    }
-                    System.out.println("Looping Monitor every 5 seconds");
-                }
-            };
-
-            timer = new Timer(monitorIntervalCheck ,taskPerformer);
-            timer.setRepeats(true);
-            timer.start();
-
-            Thread.sleep(threadSleep);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void initTutorViews() {
         assert (this.user != null);
-
-//        monitor = user.getMonitor();
-
+        timer = new Timer(monitorCheckInterval, new MonitorReloadListener());
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(this.allContracts);
         this.tutorResponse = new TutorResponseView();
-        this.tutorMonitor = new TutorMonitorView(monitor);
+        this.tutorMonitor = new TutorMonitorView(this.monitoredBids, timer);
         this.createBid = new CreateBid();
-
-        monitor.subscribe(EventType.MONITOR_CHANGED, tutorMonitor);
-
-        /** Run the Tutor Monitor every 5 seconds interval*/
-//        trackMonitor();
-
 
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
@@ -356,7 +318,6 @@ public class Controller implements Observer{
         public void mouseClicked(MouseEvent e) {
             display.closeWindow();
             isLogOut = true;
-//            user.stopMonitor();
             new Controller();
         }
         
@@ -475,8 +436,6 @@ public class Controller implements Observer{
     class SubscribeBidListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
-            // Notify View for update (check monitor)
-//            monitor.addRequestBidToSubscribe(activeBid);
         	user.addBidToMonitor(activeBid);
         }
     }
@@ -618,6 +577,15 @@ public class Controller implements Observer{
         }
         
     }
+    
+    class MonitorReloadListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			for (Bid b : monitoredBids) {
+				b.updateBid();
+			}
+		}}
+    
     @Override
     public void update(EventType e) {
         switch (e) {
@@ -656,7 +624,7 @@ public class Controller implements Observer{
         case CONTRACT_DELETED: {
             studentExpiredContracts.remove(activeContract);
         }
-        case USER_MONITOR_BID: {
+        case USER_SUBSCRIBE_NEW_BID: {
         	this.fetchMonitoredBids();
         }
         }

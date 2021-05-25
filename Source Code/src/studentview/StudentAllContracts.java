@@ -14,12 +14,13 @@ import javax.swing.ListCellRenderer;
 import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
+import mainview.RemovablePanel;
 import model.Contract;
 
 /**
  * View that displays all contracts where this Student is first party
  */
-public class StudentAllContracts extends JPanel implements Observer {
+public class StudentAllContracts extends RemovablePanel implements Observer {
 	public static final int CONTRACT_QUOTA = 5; 
 	private JList<Contract> contractList;
 	List<Contract> contracts;

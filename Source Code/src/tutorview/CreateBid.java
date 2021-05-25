@@ -4,11 +4,12 @@ import java.awt.*;
 import javax.swing.*;
 
 import mainview.MouseClickListener;
+import mainview.RemovablePanel;
 
 /**
  * This is the View where the Tutor creates the bid in open bidding
  */
-public class CreateBid extends JPanel {
+public class CreateBid extends RemovablePanel {
 	public JRadioButton perSession = new JRadioButton("per session");
 	public JRadioButton perHour = new JRadioButton("per hour");
 	public ButtonGroup rateType = new ButtonGroup();

@@ -1,6 +1,7 @@
 package studentview;
 import java.awt.BorderLayout;
 import mainview.Observer;
+import mainview.RemovablePanel;
 import model.EventType;
 
 import javax.swing.BoxLayout;
@@ -18,7 +19,7 @@ import model.Bid;
 /**
  * The View where Student chats with the Tutor in close bidding
  */
-public class StudentMessageView extends JPanel implements MessageView, Observer{
+public class StudentMessageView extends RemovablePanel implements MessageView, Observer{
 
 	private Message message;
 	private Bid bid;

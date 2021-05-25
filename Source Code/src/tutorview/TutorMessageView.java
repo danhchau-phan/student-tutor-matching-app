@@ -7,6 +7,7 @@ import model.EventType;
 import mainview.MessageView;
 import mainview.MouseClickListener;
 import mainview.Observer;
+import mainview.RemovablePanel;
 import model.Bid;
 import model.Message;
 import model.User;
@@ -14,7 +15,7 @@ import model.User;
 /**
  * This is the View where Tutor messages Student in close bidding
  */
-public class TutorMessageView extends JPanel implements MessageView, Observer {
+public class TutorMessageView extends RemovablePanel implements MessageView, Observer {
 
 	private Message message;
 	private Bid bid;
