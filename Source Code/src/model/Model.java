@@ -104,6 +104,24 @@ public interface Model {
 	  		e.printStackTrace();
 	  	}
 	}
+
+	public static void delete(String url, String json) {
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder(URI.create(url))
+				.setHeader("Authorization", Application.myApiKey)
+				.method("DELETE", HttpRequest.BodyPublishers.ofString(json))
+				.header("Content-Type","application/json")
+				.build();
+
+		try {
+			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+			System.out.println(response.statusCode() + response.body());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static void patch(String url, String json) {
 		HttpClient client = HttpClient.newHttpClient();

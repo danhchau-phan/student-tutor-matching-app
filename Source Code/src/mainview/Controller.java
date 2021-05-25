@@ -311,6 +311,16 @@ public class Controller implements Observer{
     }
 
 
+    // ReviseContractTerm.setReuseSameTutorListener(new ReuseSameTutorListener());
+    class ReuseSameTutorListener implements MouseClickListener {
+
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
+
+        }
+    }
+
+
     class ReuseDifferentTutorListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {

@@ -185,13 +185,15 @@ public class Contract extends Observable implements Model {
 	public static List<Contract> getAllExpiredContracts(List<Contract> allContracts) {
 		List<Contract> contracts = new ArrayList<Contract>();
 		for (Contract c : allContracts)
-			if (c.terminationDate != null)
+			if (c.terminationDate != null && contracts.size() <= 5)
 				contracts.add(c);
 		return contracts;
 	}
 
-	private void deleteContract() {
+	private void deleteContract(String contractId) {
 		/////////// INCOMPLETE: Making API call to delete contract //////////////
+		String url = Application.rootUrl + "/contract/" + this.id + "/delete";
+		Model.delete(url, contractId);
 		this.inform(EventType.CONTRACT_DELETED);
 	}
 	/**
@@ -199,7 +201,7 @@ public class Contract extends Observable implements Model {
 	 */
 	public void postNewContractForReuse(Contract currentContract) {
 		postContract(currentContract.firstParty.getId(), currentContract.getSecondPartyId(), currentContract.subject.getId(), currentContract.createContractAddInfo());
-		currentContract.deleteContract();
+		currentContract.deleteContract(currentContract.id);
 	}
 
 	public void patchContractCessationInfo(ContractCessationInfo newInfo) {
