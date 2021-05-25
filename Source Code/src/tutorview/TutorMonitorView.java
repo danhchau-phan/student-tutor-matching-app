@@ -41,43 +41,6 @@ public class TutorMonitorView extends JPanel implements Observer {
     protected void placeComponents(){
         this.removeAll();
 
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportBorder(null);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        JPanel AllBidContainer = new JPanel(new BorderLayout());
-
-
-        // Create a Bid Panel for each bid
-        for (Bid activeBid: activeBidList) {
-            JPanel activeBidPanel = new JPanel();
-
-            // Responses JList
-            DefaultListModel<BidResponse> model = new DefaultListModel<>();
-            responses = activeBid.getResponse();
-            for (BidResponse r : responses)
-                model.addElement(r);
-            responseList = new JList<>(model);
-            responseList.setCellRenderer(new ResponseCellRenderer());
-
-
-            JPanel bidRequestPanel = new JPanel();
-            bidRequestPanel.add(new JLabel("Bid Request " + activeBid.getId(), JLabel.LEFT));
-            bidRequestPanel.add(new JLabel(activeBid.getInitiatorName(), JLabel.LEFT));
-            JPanel responseListPanel = new JPanel();
-            responseListPanel.add(responseList);
-
-            activeBidPanel.add(bidRequestPanel);
-            activeBidPanel.add(responseListPanel);
-
-            AllBidContainer.add(activeBidPanel);
-
-        }
-
-        scrollPane.setViewportView(AllBidContainer);
-
-        setLayout(new BorderLayout());
-        this.add(scrollPane, BorderLayout.CENTER);
     }
 
     /** Update the latest Bid Response or expired Bid Request*/

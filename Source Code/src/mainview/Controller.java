@@ -612,6 +612,16 @@ public class Controller implements Observer{
         }
         
     }
+    
+    class MonitorReloadListener implements MouseClickListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			for (Bid b : monitoredBids) {
+				b.updateBid();
+			}
+		}}
+    
     @Override
     public void update(EventType e) {
         switch (e) {

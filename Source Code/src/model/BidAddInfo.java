@@ -101,6 +101,9 @@ public class BidAddInfo {
 		
 	}
 	
+	public void resetResponse(List<BidResponse> bR) {
+		this.bidResponse = bR;
+	}
 	public int getPreferredCompetency() {
 		return Integer.parseInt(this.matchRequest.getCompetency());
 	}

@@ -200,9 +200,13 @@ public class Bid extends Observable implements Model{
     
     // }
     
-    // public static void updateBid(Bid bid) {
-    // 	bid = new Bid(Model.get("/bid/", bid.id));
-    // }
+    /**
+     * Update bid without changing the reference
+     */
+     public void updateBid() {
+     	Bid newBid = new Bid(Model.get("/bid/", this.id));
+     	this.addInfo.resetResponse(newBid.getResponse());
+     }
     
     public void closeDownBid() {
     	String url = Application.rootUrl + "/bid/" + this.getId() + "/close-down";
