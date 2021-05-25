@@ -206,6 +206,7 @@ public class Bid extends Observable implements Model{
      public void updateBid() {
      	Bid newBid = new Bid(Model.get("/bid/", this.id));
      	this.addInfo.resetResponse(newBid.getResponse());
+     	this.inform(EventType.BID_FETCH_NEWRESPONSE_FROM_API);
      }
     
     public void closeDownBid() {

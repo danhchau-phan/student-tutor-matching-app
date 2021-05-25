@@ -22,7 +22,7 @@ public class TutorMonitorView extends JPanel implements Observer {
 	private JButton stopMonitor = new JButton("Stop monitor"); // Button for stopping timer
     private List<Bid> bids = new ArrayList<>();
     private JList<BidResponse> responseList;
-    private List<BidResponse> responses;
+    private List<BidResponse> responses  = new ArrayList<>();
 
 
     public TutorMonitorView(List<Bid> bids, Timer timer) {
@@ -40,7 +40,17 @@ public class TutorMonitorView extends JPanel implements Observer {
 
     protected void placeComponents(){
         this.removeAll();
-
+        responses.clear();
+        for (Bid b : this.bids) {
+        	responses.addAll(b.getResponse());
+        }
+        DefaultListModel<BidResponse> model = new DefaultListModel<BidResponse>();
+		for (BidResponse r : responses)
+			model.addElement(r);
+		responseList = new JList<BidResponse>(model);
+		responseList.setCellRenderer(new ResponseCellRenderer());
+		JScrollPane scrollp = new JScrollPane(responseList);
+		this.add(scrollp);
     }
 
     /** Update the latest Bid Response or expired Bid Request*/
@@ -55,15 +65,9 @@ public class TutorMonitorView extends JPanel implements Observer {
         public Component getListCellRendererComponent(JList<? extends BidResponse> list, BidResponse value, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
             this.removeAll();
-
-            JPanel panel = new JPanel(new BorderLayout());
             JEditorPane eP = new JEditorPane();
-
             eP.setText(value.toString());
-            panel.add(eP);
-
-
-            this.add(panel);
+            this.add(eP);
             return this;
         }
     }
