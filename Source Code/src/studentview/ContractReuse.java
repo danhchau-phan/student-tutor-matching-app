@@ -49,10 +49,6 @@ public class ContractReuse extends RemovablePanel implements Observer{
         return this.contractList.getSelectedValue();
     }
 
-    public void setListListener(MouseClickListener listener) {
-        this.contractList.addMouseListener(listener);
-    }
-
     private class ContractCellRenderer extends JPanel implements ListCellRenderer<Contract> {
 
         @Override

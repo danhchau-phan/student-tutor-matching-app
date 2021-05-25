@@ -13,5 +13,6 @@ public abstract class RemovablePanel extends JPanel {
 	public RemovablePanel(LayoutManager layout) {
 		super(layout);
 	}
+
 	public void isRemoved() {};
 }
