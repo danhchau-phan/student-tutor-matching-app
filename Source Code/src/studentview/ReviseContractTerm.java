@@ -27,14 +27,22 @@ public class ReviseContractTerm extends RemovablePanel {
         panel.add(sameTutorReuse);
         panel.add(differentTutorReuse);
 
-        sameTutorReuse.addMouseListener(new MouseClickListener(){
+//        sameTutorReuse.addMouseListener(new MouseClickListener(){
+//
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//
+//            }
+//
+//        });
+    }
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
+    public void setReuseSameTutorListener(MouseClickListener listener) {
+        sameTutorReuse.addMouseListener(listener);
+    }
 
-            }
-
-        });
+    public void setReuseDifferentTutorListener(MouseClickListener listener) {
+        differentTutorReuse.addMouseListener(listener);
     }
 
     public void setContract(Contract contract) {

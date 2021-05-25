@@ -7,14 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.*;
-import studentview.ContractReuse;
-import studentview.CreateRequest;
-import studentview.ReviseContractTerm;
-import studentview.StudentAllBids;
-import studentview.StudentAllContracts;
-import studentview.StudentMessageView;
-import studentview.StudentResponseView;
-import studentview.StudentView;
+import studentview.*;
 import tutorview.*;
 
 import javax.swing.*;
@@ -312,6 +305,19 @@ public class Controller implements Observer{
         display.setVisible();
     }
 
+
+    class ReuseDifferentTutorListener implements MouseClickListener {
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
+            CreateDifferentTutorContract reuseContract = new CreateDifferentTutorContract();
+            List<User> contractTutors = new ArrayList<>(); // should be as field
+            for (Contract contract: allContracts) {
+                contractTutors.add(User.getUserbyId(contract.getSecondPartyId()));
+            }
+            reuseContract.setContractTutors(contractTutors);
+        }
+    }
+
     class LogoutListener implements MouseClickListener {
 
         @Override
@@ -352,6 +358,10 @@ public class Controller implements Observer{
             display.removePanel(homeView.panel);
             tutorView.display();
         }}
+
+
+
+
     /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
     /** Response portals: MessageList View and Response View*/
     class ResponseListener implements MouseClickListener{

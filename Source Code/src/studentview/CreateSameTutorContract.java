@@ -28,7 +28,7 @@ public class CreateSameTutorContract extends RemovablePanel {
     private JLabel sessionsPerWeekLb = new JLabel("Preferred Sesions/Week");
     private JLabel rateLb = new JLabel("Preferred Rate");
 
-    private JButton reuseWithSameTutor = new JButton("Reuse");
+    private JButton reuseContractButton = new JButton("Reuse");
 
     public CreateSameTutorContract() {
         super(new BorderLayout());
@@ -68,7 +68,7 @@ public class CreateSameTutorContract extends RemovablePanel {
         );
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setBackground(Color.red);
-        bottomPanel.add(reuseWithSameTutor);
+        bottomPanel.add(reuseContractButton);
         this.add(bottomPanel, BorderLayout.SOUTH);
     }
 }
