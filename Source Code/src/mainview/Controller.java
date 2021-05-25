@@ -25,7 +25,7 @@ public class Controller implements Observer{
     private static final int monitorIntervalCheck = 5000;
     private boolean isLogOut;
 
-    private Monitor monitor;
+//    private Monitor monitor;
     private Display display;
     private User user;
     private List<Bid> initiatedBids = new ArrayList<Bid>();
@@ -129,7 +129,8 @@ public class Controller implements Observer{
 
     private void fetchMonitoredBids() {
     	assert this.activeRole == Role.tutor;
-    	user.subscribe(EventType.USER_MONITOR_BID, tutorMonitor);
+    	this.monitoredBids.clear();
+    	user.subscribe(EventType.USER_SUBSCRIBE_NEW_BID, tutorMonitor);
     	for (Bid b : this.allBids)
     		if (this.user.monitor(b))
     			this.monitoredBids.add(b);
@@ -164,34 +165,32 @@ public class Controller implements Observer{
         }
     }
     /** Initialise the Monitor and Stop running when tutor logged out*/
-    private void trackMonitor() {
-        try {
-            ActionListener taskPerformer = new ActionListener() {
-                public void actionPerformed(ActionEvent evt) {
-                    if (monitor.hasChanged()) {
-                        System.out.println("Monitor has Changed!");
-                        monitor.inform(EventType.MONITOR_CHANGED);
-//                        tutorMonitor.setLatestMonitorView(monitor.getSubscribedBids());
-                        monitor.confirmChanges();
-//                        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
-                    }
-
-                    if (isLogOut) {
-                        timer.stop();
-                    }
-                    System.out.println("Looping Monitor every 5 seconds");
-                }
-            };
-
-            timer = new Timer(monitorIntervalCheck ,taskPerformer);
-            timer.setRepeats(true);
-            timer.start();
-
-            Thread.sleep(threadSleep);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void trackMonitor() {
+//        try {
+//            ActionListener taskPerformer = new ActionListener() {
+//                public void actionPerformed(ActionEvent evt) {
+//                    if (monitor.hasChanged()) {
+//                        System.out.println("Monitor has Changed!");
+//                        monitor.inform(EventType.MONITOR_CHANGED);
+//                        monitor.confirmChanges();
+//                    }
+//
+//                    if (isLogOut) {
+//                        timer.stop();
+//                    }
+//                    System.out.println("Looping Monitor every 5 seconds");
+//                }
+//            };
+//
+//            timer = new Timer(monitorIntervalCheck ,taskPerformer);
+//            timer.setRepeats(true);
+//            timer.start();
+//
+//            Thread.sleep(threadSleep);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void initTutorViews() {
         assert (this.user != null);
@@ -202,10 +201,10 @@ public class Controller implements Observer{
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(this.allContracts);
         this.tutorResponse = new TutorResponseView();
-        this.tutorMonitor = new TutorMonitorView(monitor);
+        this.tutorMonitor = new TutorMonitorView(this.monitoredBids);
         this.createBid = new CreateBid();
 
-        monitor.subscribe(EventType.MONITOR_CHANGED, tutorMonitor);
+//        monitor.subscribe(EventType.MONITOR_CHANGED, tutorMonitor);
 
         /** Run the Tutor Monitor every 5 seconds interval*/
 //        trackMonitor();
@@ -652,7 +651,7 @@ public class Controller implements Observer{
         case CONTRACT_DELETED: {
             studentExpiredContracts.remove(activeContract);
         }
-        case USER_MONITOR_BID: {
+        case USER_SUBSCRIBE_NEW_BID: {
         	this.fetchMonitoredBids();
         }
         }

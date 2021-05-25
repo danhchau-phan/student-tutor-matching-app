@@ -72,8 +72,9 @@ public class User extends Observable implements Model {
 	public void addBidToMonitor(Bid b) {
 		if (this.monitor(b))
 			return;
+		patch();
 		this.monitor.add(b.getId());
-		this.inform(EventType.USER_MONITOR_BID);
+		this.inform(EventType.USER_SUBSCRIBE_NEW_BID);
 	}
 
 	public boolean monitor(Bid b) {
@@ -82,14 +83,29 @@ public class User extends Observable implements Model {
 				return true;
 		return false;
 	}
-//	public void patchMonitor() {
-//		String url = Application.rootUrl + "/user/" + this.id;
-//
-//		String jsonString = "{" + "\"additionalInfo\":" + this.monitor.toJson() + "}";
-//
-//		Model.patch(url, jsonString);
-//	}
+	
+	/**
+	 * Patch user's monitor information
+	 */
+	private void patch() {
+		String url = Application.rootUrl + "/user/" + this.id;
 
+		String jsonString = "{" + "\"additionalInfo\":" + "{" +
+		  		"\"monitor\":" + getMonitorJson() + "}" + "}";
+
+		Model.patch(url, jsonString);
+	}
+
+	private String getMonitorJson() {
+		String jsonString = "[";
+		String comma = "";
+		for (String s : monitor) {
+			jsonString = jsonString + comma + s;
+			comma = ",";
+		}
+		jsonString = jsonString + "]";
+		return jsonString;
+	}
 //	public Monitor getMonitor() {
 //		assert (this.monitor != null);
 //		return this.monitor;

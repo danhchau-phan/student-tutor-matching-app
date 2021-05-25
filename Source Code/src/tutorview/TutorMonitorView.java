@@ -24,17 +24,17 @@ public class TutorMonitorView extends JPanel implements Observer {
     private List<BidResponse> responses;
 
 
-    public TutorMonitorView(List<Bid> activeBids) {
+    public TutorMonitorView(List<Bid> bids) {
         super(new BorderLayout());
-        this.activeBidList = activeBids;
+        this.activeBidList = bids;
         placeComponents();
     }
-
-    public TutorMonitorView(Monitor monitor) {
-        super(new BorderLayout());
-        this.monitor = monitor;
-        placeComponents();
-    }
+//
+//    public TutorMonitorView(Monitor monitor) {
+//        super(new BorderLayout());
+//        this.monitor = monitor;
+//        placeComponents();
+//    }
 
     protected void placeComponents(){
         this.removeAll();
