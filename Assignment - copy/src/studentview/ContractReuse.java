@@ -2,9 +2,13 @@ package studentview;
 
 import java.util.List;
 
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JSpinner.ListEditor;
+
 import java.awt.BorderLayout;
 
+import mainview.MouseClickListener;
 import mainview.Observer;
 import model.EventType;
 import model.Contract;
@@ -14,6 +18,7 @@ import model.Contract;
  */
 public class ContractReuse extends JPanel implements Observer{
     private List<Contract> contracts;
+    private JList<Contract> contractList;
     public ContractReuse(List<Contract> contracts) {
         super(new BorderLayout());
         this.contracts = contracts;
@@ -21,6 +26,7 @@ public class ContractReuse extends JPanel implements Observer{
 
     private void placeComponents() {
         this.removeAll();
+        /////////// INCOMPLETE //////////////
     }
 
     @Override
@@ -28,4 +34,11 @@ public class ContractReuse extends JPanel implements Observer{
         placeComponents();
     }
     
+    public void setReuseContractListener(MouseClickListener listener) {
+        this.contractList.addMouseListener(listener);
+    }
+
+    public Contract getSelectedContract() {
+        return this.contractList.getSelectedValue();
+    }
 }

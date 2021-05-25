@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.*;
+import studentview.ContractReuse;
 import studentview.CreateRequest;
+import studentview.ReviseContractTerm;
 import studentview.StudentAllBids;
 import studentview.StudentAllContracts;
 import studentview.StudentMessageView;
@@ -29,6 +31,7 @@ public class Controller implements Observer{
     private List<Bid> initiatedBids = new ArrayList<Bid>();
     private List<Bid> allBids = new ArrayList<Bid>();
     private List<Contract> allContracts = new ArrayList<Contract>();
+    private List<Contract> studentExpiredContracts = new ArrayList<Contract>();
 
     private Bid activeBid, subscriberBid = new Bid();
     private Contract activeContract, subscriberContract = new Contract();
@@ -43,6 +46,8 @@ public class Controller implements Observer{
     private StudentView studentView;
     private StudentResponseView studentResponse;
     private StudentMessageView studentMessage;
+    private ContractReuse contractReuse;
+    private ReviseContractTerm reviseContractTerm;
 
     //Tutor Fields
     private TutorAllBids tutorAllBids;
@@ -85,12 +90,10 @@ public class Controller implements Observer{
                     // should be a separate function
     			    display.removePanel(authView.panel);
                     homeView = new HomeView(display, user);
-                    // maybe admin??
-                    if (user.isStudent())
-                        initStudentViews();
-                    if (user.isTutor())
-                        initTutorViews();
-                    
+                    // if (user.isStudent())
+                    //     initStudentViews();
+                    // if (user.isTutor())
+                    //     initTutorViews();
                     homeView.logOut.addMouseListener(new LogoutListener());
                     homeView.studentButton.addMouseListener(new StudentRoleActivationListener());
                     homeView.tutorButton.addMouseListener(new TutorRoleActivationListener());
@@ -145,7 +148,12 @@ public class Controller implements Observer{
         }
     }
 
-
+    private void fetchStudentExpiredContract() {
+        this.studentExpiredContracts.clear();
+        for (Contract c : Contract.getAllExpiredContracts(this.allContracts)) {
+            this.studentExpiredContracts.add(c);
+        }
+    }
     /** Initialise the Monitor and Stop running when tutor logged out*/
     private void trackMonitor() {
         try {
@@ -232,38 +240,7 @@ public class Controller implements Observer{
 
         tutorAllContracts.setSignContractListener(new TutorSignContractListener());
 
-        createBid.setCreateBidListener(new MouseClickListener(){
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                String r = createBid.rate.getText();
-                String d = createBid.duration.getText();
-                String tD = createBid.timeDate.getText();
-                String s = createBid.sessionsPerWeek.getText();
-                String rT = createBid.rateType.getSelection().getActionCommand();
-                String a = createBid.addInfo.getText();
-                boolean f = createBid.freeLesson.getSelection().getActionCommand() == "yes"? true : false;
-                try {
-                    BidResponse response = new BidResponse(
-                            user.getId(),
-                            user.getFullName(),
-                            r,
-                            rT,
-                            d,
-                            tD,
-                            s,
-                            a,
-                            f);
-
-                    activeBid.addResponse(response);
-                    Utils.SUCCESS_BID_CREATION.show();
-                } catch (NumberFormatException nfe) {
-                    Utils.INVALID_FIELDS.show();
-                } catch (NullPointerException npe) {
-                    npe.printStackTrace();
-                    Utils.PLEASE_FILL_IN.show();
-                }
-            }
-        });
+        createBid.setSubmitBidListener(new SubmitBidListener());
     }
 
     private void initStudentViews() {
@@ -272,35 +249,16 @@ public class Controller implements Observer{
         this.studentAllBids = new StudentAllBids(this.initiatedBids);
         this.studentAllContracts = new StudentAllContracts(this.allContracts);
         this.createRequest = new CreateRequest();
-
+        this.contractReuse = new ContractReuse(studentExpiredContracts);
+        this.reviseContractTerm = new ReviseContractTerm();
         
         studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
         studentView.setSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
         studentView.setSwitchPanelListener(studentView.main, studentView.viewContracts, studentAllContracts);
         studentView.setSwitchPanelListener(studentView.main, studentView.createBid, createRequest);
-
-        createRequest.setCreateRequestListener(new MouseClickListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) { 
-                // needs refactoring
-                String c = (String) createRequest.competency.getSelectedItem();
-                String h = createRequest.hourPerLesson.getText();
-                String ss = createRequest.sessionsPerWeek.getText();
-                String r = createRequest.rate.getText();
-                String rT = createRequest.rateType.getSelection().getActionCommand();
-                String sj = (String) createRequest.subject.getSelectedItem();
-                String t = createRequest.bidType.getSelection().getActionCommand();
-                try {
-                    BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
-                    subscriberBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
-                    Utils.SUCCESS_MATCH_REQUEST.show();
-                } catch (NumberFormatException nfe) {
-                    Utils.INVALID_FIELDS.show();
-                } catch (NullPointerException npe) {
-                    npe.printStackTrace();
-                    Utils.PLEASE_FILL_IN.show();
-                }
-            }});
+        studentView.setSwitchPanelListener(studentView.main, studentView.reuseContracts, contractReuse);
+        
+        createRequest.setCreateRequestListener(new CreateRequestListener());
 
         studentAllBids.setListListener(new MouseClickListener(){
             @Override
@@ -321,6 +279,8 @@ public class Controller implements Observer{
         });
     
         studentAllContracts.setSignContractListener(new StudentSignContractListener());
+
+        contractReuse.setReuseContractListener(new ReuseContractListener());
     }
 
     private void subscribeBidCreation() {
@@ -399,6 +359,8 @@ public class Controller implements Observer{
             activeRole = Role.student;
             fetchInitiatedBids();
             fetchAllContractAsFirstParty();
+            fetchStudentExpiredContract();
+
             initStudentViews();
             subscribeBidCreation();
             subscribeContractCreation();
@@ -567,12 +529,80 @@ public class Controller implements Observer{
             if (c.isSigned()) {
                 Utils.CONTRACT_SIGNED.show();
             } else
-                Utils.OTHER_PARTY_PENDING.show();
-            
+                Utils.OTHER_PARTY_PENDING.show();   
+        }
+    }
+
+    class CreateRequestListener implements MouseClickListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // needs refactoring
+            String c = (String) createRequest.competency.getSelectedItem();
+            String h = createRequest.hourPerLesson.getText();
+            String ss = createRequest.sessionsPerWeek.getText();
+            String r = createRequest.rate.getText();
+            String rT = createRequest.rateType.getSelection().getActionCommand();
+            String sj = (String) createRequest.subject.getSelectedItem();
+            String t = createRequest.bidType.getSelection().getActionCommand();
+            try {
+                BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
+                subscriberBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
+                Utils.SUCCESS_MATCH_REQUEST.show();
+            } catch (NumberFormatException nfe) {
+                Utils.INVALID_FIELDS.show();
+            } catch (NullPointerException npe) {
+                npe.printStackTrace();
+                Utils.PLEASE_FILL_IN.show();
+            }
+        }
+
+    }
+
+    class SubmitBidListener implements MouseClickListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            String r = createBid.rate.getText();
+                String d = createBid.duration.getText();
+                String tD = createBid.timeDate.getText();
+                String s = createBid.sessionsPerWeek.getText();
+                String rT = createBid.rateType.getSelection().getActionCommand();
+                String a = createBid.addInfo.getText();
+                boolean f = createBid.freeLesson.getSelection().getActionCommand() == "yes"? true : false;
+                try {
+                    BidResponse response = new BidResponse(
+                            user.getId(),
+                            user.getFullName(),
+                            r,
+                            rT,
+                            d,
+                            tD,
+                            s,
+                            a,
+                            f);
+
+                    activeBid.addResponse(response);
+                    Utils.SUCCESS_BID_CREATION.show();
+                } catch (NumberFormatException nfe) {
+                    Utils.INVALID_FIELDS.show();
+                } catch (NullPointerException npe) {
+                    npe.printStackTrace();
+                    Utils.PLEASE_FILL_IN.show();
+                }
+        }
+
+    }
+
+    class ReuseContractListener implements MouseClickListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            activeContract = contractReuse.getSelectedContract();
+            reviseContractTerm.setContract(activeContract);
         }
         
     }
-
     @Override
     public void update(EventType e) {
         switch (e) {
@@ -607,6 +637,9 @@ public class Controller implements Observer{
         }
         case CONTRACT_ONE_PARTY_SIGN: {
 
+        }
+        case CONTRACT_DELETED: {
+            studentExpiredContracts.remove(activeContract);
         }
         }
     }

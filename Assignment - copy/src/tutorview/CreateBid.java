@@ -107,43 +107,9 @@ public class CreateBid extends JPanel {
 		bottomPanel.setBackground(Color.red);
 		bottomPanel.add(createBid);
 		this.add(bottomPanel, BorderLayout.SOUTH);
-//
-//		createBid.addMouseListener(new MouseClickListener() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				String r = rate.getText();
-//				String rT = rateType.getSelection().getActionCommand();
-//				String d = duration.getText();
-//				String tD = timeDate.getText();
-//				String s = sessionsPerWeek.getText();
-//				String a = addInfo.getText();
-//				boolean f = freeLesson.getSelection().getActionCommand() == "yes"? true : false;
-//				try {
-//					BidResponse response = new BidResponse(
-//							user.getId(),
-//							user.getFullName(),
-//							r,
-//							rT,
-//							d,
-//							tD,
-//							s,
-//							a,
-//							f);
-//					bid.addResponse(response);
-//					Utils.SUCCESS_BID_CREATION.show();
-//				} catch (NumberFormatException nfe) {
-//					Utils.INVALID_FIELDS.show();
-//				} catch (NullPointerException npe) {
-//					Utils.PLEASE_FILL_IN.show();
-//				}
-//			}
-//		});
-//
-//		this.display.setVisible();
-
 	}
 
-	public void setCreateBidListener(MouseClickListener listener) {
+	public void setSubmitBidListener(MouseClickListener listener) {
 		this.createBid.addMouseListener(listener);
 	}
 }

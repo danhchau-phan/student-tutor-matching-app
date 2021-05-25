@@ -100,7 +100,7 @@ public class Contract extends Observable implements Model {
 			Contract c = new Contract(node);
 				
 			if (c.firstParty.getId().equals(userId)) {
-				c.updateDateSigned();
+				// c.updateDateSigned();
 				allContracts.add(c);
 			}
 		}
@@ -117,19 +117,7 @@ public class Contract extends Observable implements Model {
 		for (ObjectNode node : Model.getAll("/contract")) {
 			Contract c = new Contract(node);
 			if (c.secondParty.getId().equals(userId))  {
-				c.updateDateSigned();
-				allContracts.add(c);
-			}
-		}
-		return allContracts;
-	}
-
-	public static List<Contract> getAllSignedContractsAsFirstParty(String userId) {
-		List<Contract> allContracts = new ArrayList<Contract>();
-		for (ObjectNode node : Model.getAll("/contract")) {
-			Contract c = new Contract(node);
-			if (c.secondParty.getId().equals(userId))  {
-				c.updateDateSigned();
+				// c.updateDateSigned();
 				allContracts.add(c);
 			}
 		}
@@ -176,16 +164,16 @@ public class Contract extends Observable implements Model {
 	 * @param userId
 	 * @return
 	 */
-	public static List<Contract> getAllExpiredContractsAsFirstParty(List<Contract> allContracts, String userId) {
+	public static List<Contract> getAllExpiredContracts(List<Contract> allContracts) {
 		List<Contract> contracts = new ArrayList<Contract>();
 		for (Contract c : allContracts)
-			if (c.firstParty.getId().equals(userId) && c.terminationDate != null)
+			if (c.terminationDate != null)
 				contracts.add(c);
 		return contracts;
 	}
 
 	private void deleteContract() {
-		
+		/////////// INCOMPLETE: Making API call to delete contract //////////////
 		this.inform(EventType.CONTRACT_DELETED);
 	}
 	/**
