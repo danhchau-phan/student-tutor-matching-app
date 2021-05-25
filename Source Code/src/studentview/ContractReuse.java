@@ -1,12 +1,10 @@
 package studentview;
 
+import java.awt.*;
 import java.util.List;
 
-import javax.swing.JList;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.JSpinner.ListEditor;
-
-import java.awt.BorderLayout;
 
 import mainview.MouseClickListener;
 import mainview.Observer;
@@ -18,6 +16,7 @@ import model.Contract;
  */
 public class ContractReuse extends JPanel implements Observer{
     private List<Contract> contracts;
+    private List<JButton> reuseButton;
     private JList<Contract> contractList;
     public ContractReuse(List<Contract> contracts) {
         super(new BorderLayout());
@@ -26,7 +25,29 @@ public class ContractReuse extends JPanel implements Observer{
 
     private void placeComponents() {
         this.removeAll();
-        /////////// INCOMPLETE //////////////
+
+
+        DefaultListModel<Contract> model = new DefaultListModel<>();
+        for (Contract contract : contracts)
+            model.addElement(contract);
+        contractList= new JList<>(model);
+        contractList.setCellRenderer(new ContractCellRenderer());
+
+
+        JScrollPane scrollp = new JScrollPane(contractList);
+        this.add(scrollp);
+
+
+
+
+        // Bottom Panel with buttons - Create Bid Button and Subscribe Button (correspond to Request)
+        JPanel panel = new JPanel(new FlowLayout());
+        if (bid.getType() == Bid.BidType.open) {
+            panel.add(createBid);
+            panel.add(buyOut);
+            panel.add(subscribeBid);
+        }
+        this.add(panel, BorderLayout.SOUTH);
     }
 
     @Override
@@ -41,4 +62,18 @@ public class ContractReuse extends JPanel implements Observer{
     public Contract getSelectedContract() {
         return this.contractList.getSelectedValue();
     }
+
+    private class ContractCellRenderer extends JPanel implements ListCellRenderer<Contract> {
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends Contract> list, Contract value, int index,
+                                                      boolean isSelected, boolean cellHasFocus) {
+            this.removeAll();
+            JEditorPane eP = new JEditorPane();
+            eP.setText(value.toString());
+            this.add(eP);
+            return this;
+        }
+    }
 }
+

@@ -107,6 +107,24 @@ public class Contract extends Observable implements Model {
 		return allContracts;
 	}
 
+
+
+//
+//	public List<Contract> getAllNearExpiryContract(List<Contract> allContracts) {
+//		for (Contract contract: allContracts) {
+//			if (contract.expiryDate.before(new Date(System.currentTimeMillis() - ONE_MONTH_IN_MILLIS))) {
+//
+//			}
+//		}
+//	}
+//
+//
+//
+
+
+
+
+
 	/**
 	 * Fetch all unterminated contracts as second party
 	 * @param userId
