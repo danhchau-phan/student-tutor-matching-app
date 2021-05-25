@@ -14,7 +14,7 @@ import model.User;
  */
 public class StudentView extends View implements NavigationPane {
 	protected User user;
-	public JButton createBid = new JButton("Create Match Request");
+	public JButton createMatchRequest = new JButton("Create Match Request");
 	public JButton viewAllBids = new JButton("View All Bids");
 	public JButton viewContracts = new JButton("View Contracts");
 	public JButton reuseContracts = new JButton("Reuse Contracts");
@@ -27,7 +27,7 @@ public class StudentView extends View implements NavigationPane {
 	
 	protected void placeComponents() {
 		
-		showNavigationPane(display, main, new JButton[]{homeButton, createBid, viewAllBids, viewContracts, reuseContracts});
+		showNavigationPane(display, main, new JButton[]{homeButton, createMatchRequest, viewAllBids, viewContracts, reuseContracts});
 		display.createPanel(main);
 		this.display.setVisible();
 	}

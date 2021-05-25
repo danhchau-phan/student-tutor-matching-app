@@ -150,9 +150,13 @@ public class Controller implements Observer{
     }
 
     private void fetchStudentExpiredContract() {
+    	assert this.activeRole == Role.student;
         this.studentExpiredContracts.clear();
         for (Contract c : Contract.getAllExpiredContracts(this.allContracts)) {
             this.studentExpiredContracts.add(c);
+            c.subscribe(EventType.CONTRACT_CESSATIONINFO_UPDATED, contractReuse);
+            c.subscribe(EventType.CONTRACT_DELETED, this);
+            c.subscribe(EventType.CONTRACT_DELETED, contractReuse);
         }
     }
 
@@ -184,10 +188,11 @@ public class Controller implements Observer{
                 if (activeBid.getType() == Bid.BidType.open) {
                     tutorResponse.setBid(activeBid);
                     subscribeBidNewResponse();
-                    // tutorResponse.setResponseListener(new TutorResponseListener());
+                    
                     tutorResponse.setCreateBidListener(new CreateBidListener());
                     tutorResponse.setBuyOutListener(new BuyOutListener());
                     tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
+                    tutorResponse.setModifyBidListener(new ModifyBidListener());
                     tutorView.main.add(tutorResponse);
                     tutorView.activePanel = tutorResponse;
                 } else {
@@ -219,7 +224,7 @@ public class Controller implements Observer{
         studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
         studentView.setSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
         studentView.setSwitchPanelListener(studentView.main, studentView.viewContracts, studentAllContracts);
-        studentView.setSwitchPanelListener(studentView.main, studentView.createBid, createRequest);
+        studentView.setSwitchPanelListener(studentView.main, studentView.createMatchRequest, createRequest);
         studentView.setSwitchPanelListener(studentView.main, studentView.reuseContracts, contractReuse);
         
         createRequest.setCreateRequestListener(new CreateRequestListener());
@@ -450,6 +455,15 @@ public class Controller implements Observer{
         }
     }
     
+    class ModifyBidListener implements MouseClickListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			
+		}
+   
+    }
+    
     class SendStudentMessageListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -577,17 +591,51 @@ public class Controller implements Observer{
         }
 
     }
-
-    class ReuseContractListener implements MouseClickListener {
+    
+    /**
+     * Listener to revise contract's term (if student reuse contract with the same tutor)
+     *
+     */
+    class ReviseContractTermListener implements MouseClickListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
+        	assert activeRole == Role.student;
             activeContract = contractReuse.getSelectedContract();
             reviseContractTerm.setContract(activeContract);
+            if (studentView.activePanel != null) {
+                studentView.main.remove(studentView.activePanel);
+            }
+            studentView.main.add(reviseContractTerm);
+            studentView.activePanel = reviseContractTerm;
+            display.createPanel(studentView.main);
+            display.setVisible();
         }
         
     }
     
+    class SaveCessationInfoListener implements MouseClickListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			//////// INCOMPLETE /////////
+		}}
+    
+    /**
+     * Listener to create new contract and delete current contract
+     *
+     */
+    class ReuseContractListener implements MouseClickListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			//////// INCOMPLETE /////////
+		}}
+    
+    /**
+     * Listener to reload monitor
+     *
+     */
     class MonitorReloadListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
