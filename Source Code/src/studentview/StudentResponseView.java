@@ -12,6 +12,7 @@ import javax.swing.ListCellRenderer;
 
 import mainview.MouseClickListener;
 import mainview.Observer;
+import mainview.RemovablePanel;
 import model.Bid;
 import model.BidResponse;
 import model.EventType;
@@ -23,7 +24,7 @@ import java.awt.Component;
  * If the match request is type open, the student can View all bids.
  * If the match request is type close, the student can View all incoming messages..
  */
-public class StudentResponseView extends JPanel implements Observer {
+public class StudentResponseView extends RemovablePanel implements Observer {
 	private Bid bid;
 	private JList<BidResponse> responseList;
 	private JList<Message> messageList;

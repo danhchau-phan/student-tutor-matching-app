@@ -14,13 +14,14 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
+import mainview.RemovablePanel;
 import model.Bid;
 import model.EventType;
 
 /**
  * View that allows the Student to see all unexpired and unclosed match requests created by them
  */
-public class StudentAllBids extends JPanel implements Observer{
+public class StudentAllBids extends RemovablePanel implements Observer{
 	// private User user;
 	// private List<Bid> bids;
 	// private JList<Bid> bidList;

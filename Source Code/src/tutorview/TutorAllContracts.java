@@ -14,7 +14,7 @@ import model.User;
 /**
  * This is the View for the Tutor to see all the contracts that involves them as the second party
  */
-public class TutorAllContracts extends JPanel implements Observer {
+public class TutorAllContracts extends RemovablePanel implements Observer {
 	private JList<Contract> contractList;
 	List<Contract> contracts;
 

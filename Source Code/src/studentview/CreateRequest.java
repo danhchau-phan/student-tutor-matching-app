@@ -12,13 +12,14 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import mainview.MouseClickListener;
+import mainview.RemovablePanel;
 import model.Bid;
 import model.Subject;
 
 /**
  * View where the Student creates a match request
  */
-public class CreateRequest extends JPanel {
+public class CreateRequest extends RemovablePanel {
 	public JRadioButton openBid = new JRadioButton("Open");
     public JRadioButton closeBid = new JRadioButton("Close");
     public ButtonGroup bidType = new ButtonGroup();

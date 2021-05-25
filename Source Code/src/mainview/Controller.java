@@ -21,8 +21,7 @@ import javax.swing.*;
 
 public class Controller implements Observer{
     private Timer timer;
-    private static final int threadSleep = 5000;
-    private static final int monitorIntervalCheck = 5000;
+    private static final int monitorCheckInterval = 5000;
     private boolean isLogOut;
 
     private Display display;
@@ -166,7 +165,7 @@ public class Controller implements Observer{
 
     private void initTutorViews() {
         assert (this.user != null);
-
+        timer = new Timer(monitorCheckInterval, new MonitorReloadListener());
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(this.allContracts);
@@ -575,10 +574,9 @@ public class Controller implements Observer{
         
     }
     
-    class MonitorReloadListener implements MouseClickListener {
-
+    class MonitorReloadListener implements ActionListener {
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void actionPerformed(ActionEvent e) {
 			for (Bid b : monitoredBids) {
 				b.updateBid();
 			}

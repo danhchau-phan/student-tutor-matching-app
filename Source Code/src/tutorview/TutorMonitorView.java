@@ -1,10 +1,10 @@
 package tutorview;
 
 import mainview.Observer;
+import mainview.RemovablePanel;
 import model.Bid;
 import model.BidResponse;
 import model.EventType;
-import model.Monitor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,14 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Couldnt implement Observer here because must update every N seconds*/
-public class TutorMonitorView extends JPanel implements Observer {
-//    private Timer timer;
-//    private static final int threadSleep = 1000000;
-//    private static final int monitorIntervalCheck = 5000;
-//    private Monitor monitor;
-	
+public class TutorMonitorView extends RemovablePanel implements Observer {
 	private Timer timer;
-	private JButton stopMonitor = new JButton("Stop monitor"); // Button for stopping timer
     private List<Bid> bids = new ArrayList<>();
     private JList<BidResponse> responseList;
     private List<BidResponse> responses  = new ArrayList<>();
@@ -27,19 +21,14 @@ public class TutorMonitorView extends JPanel implements Observer {
 
     public TutorMonitorView(List<Bid> bids, Timer timer) {
         super(new BorderLayout());
+        
         this.bids = bids;
-        this.timer = timer;
         placeComponents();
     }
-//
-//    public TutorMonitorView(Monitor monitor) {
-//        super(new BorderLayout());
-//        this.monitor = monitor;
-//        placeComponents();
-//    }
-
+    
     protected void placeComponents(){
         this.removeAll();
+        this.timer.start();
         responses.clear();
         for (Bid b : this.bids) {
         	responses.addAll(b.getResponse());
@@ -71,4 +60,9 @@ public class TutorMonitorView extends JPanel implements Observer {
             return this;
         }
     }
+
+	@Override
+	public void isRemoved() {
+		this.timer.stop();
+	}
 }

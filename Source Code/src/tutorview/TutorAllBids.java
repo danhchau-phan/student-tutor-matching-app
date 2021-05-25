@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Component;
 import mainview.MouseClickListener;
 import mainview.Observer;
+import mainview.RemovablePanel;
 import model.Bid;
 import model.Model;
 import model.User;
@@ -23,7 +24,7 @@ import model.User;
 /**
  * This is the View for Tutor to see all available (unclosed, unexpired) mathc requests
  */
-public class TutorAllBids extends JPanel implements Observer {
+public class TutorAllBids extends RemovablePanel implements Observer {
 	private List<Bid> bids;
 	private JList<Bid> bidList;
 
