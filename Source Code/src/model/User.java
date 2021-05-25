@@ -69,10 +69,19 @@ public class User extends Observable implements Model {
 		return list;
 	}
 
-	public void addBidToMonitor(String bidId) {
-		this.monitor.add(bidId);
+	public void addBidToMonitor(Bid b) {
+		if (this.monitor(b))
+			return;
+		this.monitor.add(b.getId());
+		this.inform(EventType.USER_MONITOR_BID);
 	}
 
+	public boolean monitor(Bid b) {
+		for (String s : this.monitor) 
+			if (s.equals(b.getId()))
+				return true;
+		return false;
+	}
 //	public void patchMonitor() {
 //		String url = Application.rootUrl + "/user/" + this.id;
 //
@@ -188,11 +197,6 @@ public class User extends Observable implements Model {
 		}
 
 		return Bid.screenClosedBid(bids);
-	}
-
-
-	public void addMonitor() {
-
 	}
 	
 	public static User getUserbyId(String userId) {

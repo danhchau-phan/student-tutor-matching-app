@@ -30,6 +30,7 @@ public class Controller implements Observer{
     private User user;
     private List<Bid> initiatedBids = new ArrayList<Bid>();
     private List<Bid> allBids = new ArrayList<Bid>();
+    private List<Bid> monitoredBids = new ArrayList<Bid>();
     private List<Contract> allContracts = new ArrayList<Contract>();
     private List<Contract> studentExpiredContracts = new ArrayList<Contract>();
 
@@ -126,6 +127,14 @@ public class Controller implements Observer{
         }
     }
 
+    private void fetchMonitoredBids() {
+    	assert this.activeRole == Role.tutor;
+    	user.subscribe(EventType.USER_MONITOR_BID, tutorMonitor);
+    	for (Bid b : this.allBids)
+    		if (this.user.monitor(b))
+    			this.monitoredBids.add(b);
+    }
+    
     private void fetchAllContractAsFirstParty() {
         this.allContracts.clear();
         for (Contract c : Contract.getAllContractsAsFirstParty(this.user.getId())) {
@@ -187,7 +196,7 @@ public class Controller implements Observer{
     private void initTutorViews() {
         assert (this.user != null);
 
-        monitor = user.getMonitor();
+//        monitor = user.getMonitor();
 
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
@@ -199,7 +208,7 @@ public class Controller implements Observer{
         monitor.subscribe(EventType.MONITOR_CHANGED, tutorMonitor);
 
         /** Run the Tutor Monitor every 5 seconds interval*/
-        trackMonitor();
+//        trackMonitor();
 
 
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
@@ -347,7 +356,7 @@ public class Controller implements Observer{
         public void mouseClicked(MouseEvent e) {
             display.closeWindow();
             isLogOut = true;
-            user.stopMonitor();
+//            user.stopMonitor();
             new Controller();
         }
         
@@ -374,6 +383,7 @@ public class Controller implements Observer{
             activeRole = Role.tutor;
             fetchAllBids();
             fetchAllContractAsSecondParty();
+            fetchMonitoredBids();
             initTutorViews();
             subscribeBidCreation();
             subscribeContractCreation();
@@ -462,17 +472,9 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
             // Notify View for update (check monitor)
-            monitor.addRequestBidToSubscribe(activeBid);
+//            monitor.addRequestBidToSubscribe(activeBid);
+        	user.addBidToMonitor(activeBid);
         }
-    }
-
-    class MonitorBidListener implements MouseClickListener {
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			
-		}
-
     }
     
     class SendStudentMessageListener implements MouseClickListener {
@@ -649,6 +651,9 @@ public class Controller implements Observer{
         }
         case CONTRACT_DELETED: {
             studentExpiredContracts.remove(activeContract);
+        }
+        case USER_MONITOR_BID: {
+        	this.fetchMonitoredBids();
         }
         }
     }
