@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Application {
 	//   public static final String API_KEY_FILE_NAME = "/Users/yuanleslie/Desktop/FIT3077_A3/Source Code/src/APIManager"; // change this to your file's name
 	// public static final String API_KEY_FILE_NAME = "Source Code/apiKey"; // change this to your file's name
-	public static final String API_KEY_FILE_NAME = "Source Code/src/apiKey"; // change this to your file's name
+	public static final String API_KEY_FILE_NAME = "C:/Users/chaup/project/Source Code/src/apiKey"; // change this to your file's name
 	public static String myApiKey;
 	public static final String rootUrl = "https://fit3077.com/api/v2";
     

@@ -73,24 +73,24 @@ public class User extends Observable implements Model {
 		this.monitor.add(bidId);
 	}
 
-	public void patchMonitor() {
-		String url = Application.rootUrl + "/user/" + this.id;
+//	public void patchMonitor() {
+//		String url = Application.rootUrl + "/user/" + this.id;
+//
+//		String jsonString = "{" + "\"additionalInfo\":" + this.monitor.toJson() + "}";
+//
+//		Model.patch(url, jsonString);
+//	}
 
-		String jsonString = "{" + "\"additionalInfo\":" + this.monitor.toJson() + "}";
-
-		Model.patch(url, jsonString);
-	}
-
-	public Monitor getMonitor() {
-		assert (this.monitor != null);
-		return this.monitor;
-	}
-
-	public void stopMonitor() {
-		if (monitor.getBidAllRequests() != null) {
-			this.patchMonitor();
-		}
-	}
+//	public Monitor getMonitor() {
+//		assert (this.monitor != null);
+//		return this.monitor;
+//	}
+//
+//	public void stopMonitor() {
+//		if (monitor.getBidAllRequests() != null) {
+//			this.patchMonitor();
+//		}
+//	}
 
 	public static User logIn(String username, String password) {
 		String usersLoginUrl = Application.rootUrl + "/user/login";

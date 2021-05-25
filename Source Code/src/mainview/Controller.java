@@ -468,6 +468,11 @@ public class Controller implements Observer{
 
     class MonitorBidListener implements MouseClickListener {
 
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			
+		}
+
     }
     
     class SendStudentMessageListener implements MouseClickListener {
