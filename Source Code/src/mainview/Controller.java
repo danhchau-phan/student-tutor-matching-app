@@ -62,8 +62,7 @@ public class Controller implements Observer{
     private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     private enum Role {
         student,
-        tutor,
-        admin
+        tutor
     }
     private Role activeRole;
     public Controller() {
@@ -201,7 +200,7 @@ public class Controller implements Observer{
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(this.allContracts);
         this.tutorResponse = new TutorResponseView();
-        this.tutorMonitor = new TutorMonitorView(this.monitoredBids);
+        this.tutorMonitor = new TutorMonitorView(this.monitoredBids, timer);
         this.createBid = new CreateBid();
 
 //        monitor.subscribe(EventType.MONITOR_CHANGED, tutorMonitor);

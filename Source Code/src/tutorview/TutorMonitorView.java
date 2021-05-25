@@ -17,16 +17,18 @@ public class TutorMonitorView extends JPanel implements Observer {
 //    private static final int threadSleep = 1000000;
 //    private static final int monitorIntervalCheck = 5000;
 //    private Monitor monitor;
-    private Monitor monitor;
-    private List<Bid> activeBidList = new ArrayList<>();
-    private List<JPanel> bidPanels = new ArrayList<>();
+	
+	private Timer timer;
+	private JButton stopMonitor = new JButton("Stop monitor"); // Button for stopping timer
+    private List<Bid> bids = new ArrayList<>();
     private JList<BidResponse> responseList;
     private List<BidResponse> responses;
 
 
-    public TutorMonitorView(List<Bid> bids) {
+    public TutorMonitorView(List<Bid> bids, Timer timer) {
         super(new BorderLayout());
-        this.activeBidList = bids;
+        this.bids = bids;
+        this.timer = timer;
         placeComponents();
     }
 //
@@ -81,9 +83,6 @@ public class TutorMonitorView extends JPanel implements Observer {
     /** Update the latest Bid Response or expired Bid Request*/
     @Override
     public void update(EventType e) {
-        activeBidList.clear();
-        System.out.println(monitor.getSubscribedBids());
-        activeBidList.addAll(monitor.getSubscribedBids());
         placeComponents();
     }
 
@@ -105,29 +104,4 @@ public class TutorMonitorView extends JPanel implements Observer {
             return this;
         }
     }
-
-//    public void add() {
-//
-//    }
-
-//    public void setLatestMonitorView(Set<Bid> bids) {
-//        activeBidList.clear();
-//        activeBidList.addAll(bids);
-//        placeComponents();
-//    }
-
-//    // In controller
-//    public static void main(String [] args) throws Exception{
-//        /** Listener on checking monitor every N seconds*/
-//        ActionListener taskPerformer = new ActionListener() {
-//            public void actionPerformed(ActionEvent evt) {
-//
-//            }
-//        };
-//        Timer timer = new Timer(monitorIntervalCheck ,taskPerformer);
-//        timer.setRepeats(true);
-//        timer.start();
-//
-//        Thread.sleep(threadSleep);
-//    }
 }
