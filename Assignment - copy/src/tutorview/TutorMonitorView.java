@@ -8,12 +8,8 @@ import model.Monitor;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 
 /** Couldnt implement Observer here because must update every N seconds*/
 public class TutorMonitorView extends JPanel implements Observer {
