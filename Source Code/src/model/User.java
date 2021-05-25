@@ -30,7 +30,9 @@ public class User extends Observable implements Model {
 
 	private boolean isStudent, isTutor;
 
-	private Monitor monitor;
+	// private Monitor monitor;
+
+	private List<String> monitor;
 
 
 	public User(String id, String givenName, String familyName, String username, boolean isStudent, boolean isTutor) {
@@ -52,10 +54,23 @@ public class User extends Observable implements Model {
     	this.userName = (node.get("userName") != null) ?node.get("userName").textValue() : null;
     	this.isTutor = (node.get("isTutor") != null) ?node.get("isTutor").asBoolean() : null;
     	this.isStudent = (node.get("isStudent") != null) ?node.get("isStudent").asBoolean() : null;
-		if (node.get("additionalInfo").isEmpty())
-			this.monitor = new Monitor((List<Bid>) null);
-		else
-			this.monitor = new Monitor(node.get("additionalInfo"));
+		// if (node.get("additionalInfo").isEmpty())
+		// 	this.monitor = new Monitor((List<Bid>) null);
+		// else
+		// 	this.monitor = new Monitor(node.get("additionalInfo"));
+		this.monitor = (node.get("additionalInfo").isEmpty()) ? new ArrayList<>() : getMonitor(node.get("monitor").iterator());
+	}
+
+	private static List<String> getMonitor(Iterator<JsonNode>iter) {
+		List<String> list = new ArrayList<String>();
+		while (iter.hasNext()) {
+		    list.add(iter.next().textValue());
+		}
+		return list;
+	}
+
+	public void addBidToMonitor(String bidId) {
+		this.monitor.add(bidId);
 	}
 
 	public void patchMonitor() {

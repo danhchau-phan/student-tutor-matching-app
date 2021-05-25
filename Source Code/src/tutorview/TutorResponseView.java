@@ -22,6 +22,7 @@ public class TutorResponseView extends JPanel implements Observer {
 	public JButton createBid;
 	public JButton buyOut;
 	public JButton subscribeBid;
+	public JButton modifyBid;
 
 	public TutorResponseView(Bid bid) {
 		super(new BorderLayout());
@@ -38,6 +39,7 @@ public class TutorResponseView extends JPanel implements Observer {
 		this.createBid = new JButton("Create Bid");
 		this.buyOut = new JButton("Buy Out Bid");
 		this.subscribeBid = new JButton("Subscribe Bid");
+		this.modifyBid = new JButton("Modify Bid");
 		if (bid.getType() == Bid.BidType.open) {
 			
 			DefaultListModel<BidResponse> model = new DefaultListModel<>();
@@ -69,37 +71,27 @@ public class TutorResponseView extends JPanel implements Observer {
 		this.add(panel, BorderLayout.SOUTH);
 	}
 
-	// public void setResponseListener(MouseClickListener listener) {
-	// 	if (bid.getType() == Bid.BidType.close) {
-	// 		this.messageList.addMouseListener(listener);
-	// 	} else {
-	// 		this.responseList.addMouseListener(listener);
-	// 	}
-	// }
-
 	public void setCreateBidListener(MouseClickListener listener) {
 		this.createBid.addMouseListener(listener);
 	}
 
 	public void setBuyOutListener(MouseClickListener listener) {
-		this.getBuyOut().addMouseListener(listener);
+		this.buyOut.addMouseListener(listener);
 	}
 
 	public void setSubscribeBidListener(MouseClickListener listener) {
-		this.getSubscribeBid().addMouseListener(listener);
+		this.subscribeBid.addMouseListener(listener);
 	}
 
-	// public int getSelectedMessageIndex() {
-	// 	return this.messageList.getSelectedIndex();
-	// }
+	public void setModifyBidListener(MouseClickListener listener) {
+		this.modifyBid.addMouseListener(listener);
+	}
 
 	public BidResponse getSelectedResponse() {
 		return responseList.getSelectedValue();
 	}
 
-	// public Message getSelectedMessage() {
-	// 	return messageList.getSelectedValue();
-	// }
+
 
 	private class ResponseCellRenderer extends JPanel implements ListCellRenderer<BidResponse> {
 
@@ -107,16 +99,9 @@ public class TutorResponseView extends JPanel implements Observer {
 		public Component getListCellRendererComponent(JList<? extends BidResponse> list, BidResponse value, int index,
 													  boolean isSelected, boolean cellHasFocus) {
 			this.removeAll();
-
-			JPanel panel = new JPanel(new BorderLayout());
 			JEditorPane eP = new JEditorPane();
-			JButton bT = new JButton("Select Bid");
-
 			eP.setText(value.toString());
-			panel.add(eP);
-			panel.add(bT, BorderLayout.EAST);
-
-			this.add(panel);
+			this.add(eP);
 			return this;
 		}
 	}
@@ -138,30 +123,6 @@ public class TutorResponseView extends JPanel implements Observer {
 			this.add(panel);
 			return this;
 		}
-	}
-
-	public JButton getCreateBid() {
-		return createBid;
-	}
-
-	public void setCreateBid(JButton createBid) {
-		this.createBid = createBid;
-	}
-
-	public JButton getBuyOut() {
-		return buyOut;
-	}
-
-	public void setBuyOut(JButton buyOut) {
-		this.buyOut = buyOut;
-	}
-
-	public JButton getSubscribeBid() {
-		return subscribeBid;
-	}
-
-	public void setSubscribeBid(JButton subscribeBid) {
-		this.subscribeBid = subscribeBid;
 	}
 
 	@Override

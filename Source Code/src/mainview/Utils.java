@@ -37,4 +37,6 @@ public class Utils {
 	public static final NotificationFrame CONTRACT_SIGNED =	new NotificationFrame("Contract signed successfully");
 	public static final NotificationFrame OTHER_PARTY_PENDING =	new NotificationFrame("Contract pending on the other party's signature");
 	public static final NotificationFrame INVALID_USER = new NotificationFrame("Invalid user credentials");
+	public static final NotificationFrame CANNOT_CREATE_BID = new NotificationFrame("Please click modify bid");
+	public static final NotificationFrame CANNOT_MODIFY_BID = new NotificationFrame("Please click create bid");
 }
