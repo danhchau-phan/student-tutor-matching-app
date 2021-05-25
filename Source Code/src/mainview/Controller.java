@@ -349,6 +349,7 @@ public class Controller implements Observer{
             activeRole = Role.tutor;
             fetchAllBids();
             fetchAllContractAsSecondParty();
+
             fetchMonitoredBids();
             initTutorViews();
             subscribeBidCreation();
@@ -369,11 +370,14 @@ public class Controller implements Observer{
                 BidResponse selectedResponse = studentResponse.getSelectedResponse();
                 if (selectedResponse == null)
                     return;
+
+                /** Set up the contract expiry date*/
+                int contractDuration = contractDurationFrame.getSelectedDuration();
                 contractDurationFrame.show();
                 subscriberContract.postContract(user.getId(),
                         selectedResponse.getBidderId(),
                         activeBid.getSubject().getId(),
-                        new ContractAddInfo(true, false));
+                        new ContractAddInfo(true, false, contractDuration));
                 activeBid.closeDownBid();
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             }

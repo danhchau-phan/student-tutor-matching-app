@@ -13,16 +13,29 @@ public class ContractDurationFrame extends JPanel{
     private JRadioButtonMenuItem three = new JRadioButtonMenuItem("3 months");
     private JRadioButtonMenuItem six = new JRadioButtonMenuItem("6 months");
     private JRadioButtonMenuItem twelve = new JRadioButtonMenuItem("12 months");
-    private JRadioButtonMenuItem twtyfour = new JRadioButtonMenuItem("24 months");
+    private JRadioButtonMenuItem twentyfour = new JRadioButtonMenuItem("24 months");
     private JRadioButtonMenuItem longer = new JRadioButtonMenuItem("Longer");
     private JTextField longerDuration = new JTextField();
     private ButtonGroup options = new ButtonGroup();
+    public ButtonGroup duration = new ButtonGroup();
+    {
+        three.setActionCommand("3");
+        six.setActionCommand("6");
+        twelve.setActionCommand("12");
+        twentyfour.setActionCommand("24");
+        duration.add(three);
+        duration.add(six);
+        duration.add(twelve);
+        duration.add(twentyfour);
+        six.setSelected(true);
+    }
+
     private int selectedDuration;
     {
     three.setActionCommand("3");
     six.setActionCommand("6");
     twelve.setActionCommand("12");
-    twtyfour.setActionCommand("24");
+    twentyfour.setActionCommand("24");
     longer.setActionCommand("longer");
     six.setSelected(true);
     }
@@ -33,7 +46,7 @@ public class ContractDurationFrame extends JPanel{
         this.add(three);
         this.add(six);
         this.add(twelve);
-        this.add(twtyfour);
+        this.add(twentyfour);
         this.add(longer);
         this.add(longerDuration);
         this.longer.addMouseListener(new MouseClickListener(){
@@ -58,9 +71,27 @@ public class ContractDurationFrame extends JPanel{
     }
 
     public int getSelectedDuration() {
+        selectedDuration = Integer.parseInt(duration.getSelection().getActionCommand());
+        if (duration.getSelection().getActionCommand().equalsIgnoreCase("longer")) {
+            if (!isNumeric(longerDuration.getText())) {
+                throw new NumberFormatException();
+            }
+            selectedDuration = Integer.parseInt(longerDuration.getText());
+        }
         reload();
         return selectedDuration;
     }
 
+    private boolean isNumeric(String s) {
+        if (s == null) {
+            return true;
+        }
+        try {
+            double d = Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
     
 }
