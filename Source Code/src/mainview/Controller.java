@@ -158,6 +158,7 @@ public class Controller implements Observer{
             c.subscribe(EventType.CONTRACT_DELETED, this);
             c.subscribe(EventType.CONTRACT_DELETED, contractReuse);
         }
+        (new NearExpiryContractFrame(this.studentExpiredContracts)).show();
     }
 
     private void initTutorViews() {
@@ -352,6 +353,7 @@ public class Controller implements Observer{
             fetchAllContractAsFirstParty();
             fetchStudentExpiredContract();
 
+
             initStudentViews();
             subscribeBidCreation();
             subscribeContractCreation();
@@ -452,8 +454,8 @@ public class Controller implements Observer{
                 subscriberContract.postContract(user.getId(), activeBid.getInitiatorId(),
                         activeBid.getSubject().getId(),
                         new ContractAddInfo(true, true));
-                ContractCessationInfo cessationInfo = new ContractCessationInfo(subscriberContract.getSecondPartyId(), contractDuration, activeBid.getRequestCompetency(), activeBid.getRequestHourPerLesson(), activeBid.getRequestHourPerLesson(), activeBid.getRequestRate());
-                subscriberContract.patchContractCessationInfo(cessationInfo);
+//                ContractCessationInfo cessationInfo = new ContractCessationInfo(subscriberContract.getSecondPartyId(), contractDuration, activeBid.getRequestCompetency(), activeBid.getRequestHourPerLesson(), activeBid.getRequestHourPerLesson(), activeBid.getRequestRate());
+//                subscriberContract.patchContractCessationInfo(cessationInfo);
                 activeBid.closeDownBid();
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             } else {
