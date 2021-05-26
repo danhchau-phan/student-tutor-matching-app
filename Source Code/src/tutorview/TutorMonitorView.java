@@ -54,6 +54,7 @@ public class TutorMonitorView extends RemovablePanel implements Observer {
     @Override
     public void update(EventType e) {
         placeComponents();
+        this.timer.stop();
     }
 
     private class ResponseCellRenderer extends JPanel implements ListCellRenderer<BidResponse> {

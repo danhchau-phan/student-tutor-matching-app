@@ -233,7 +233,6 @@ public class Controller implements Observer{
         
         for (Bid b : this.allBids) {
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
-            b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorAllBids);
         }
         
         for (Contract c : this.allContracts) {

@@ -22,7 +22,7 @@ import model.Model;
 import model.User;
 
 /**
- * This is the View for Tutor to see all available (unclosed, unexpired) mathc requests
+ * This is the View for Tutor to see all available (unclosed, unexpired) match requests
  */
 public class TutorAllBids extends RemovablePanel implements Observer {
 	private List<Bid> bids;
@@ -36,6 +36,7 @@ public class TutorAllBids extends RemovablePanel implements Observer {
 	}
 
 	protected void placeComponents() {
+		this.removeAll();
 		DefaultListModel<Bid> model = new DefaultListModel<Bid>();
 		for (Bid b : bids)
 			model.addElement(b);
@@ -49,16 +50,14 @@ public class TutorAllBids extends RemovablePanel implements Observer {
 		return this.bidList.getSelectedValue();
 	}
 
-	// Listener for tutor response
 	public void setListListener(MouseClickListener listener) {
 		this.bidList.addMouseListener(listener);
 	}
 
 	@Override
 	public void update(EventType e) {
-		placeComponents();
+		this.placeComponents();
 	}
-
 
 	private class CellRenderer extends JPanel implements ListCellRenderer<Bid> {
 
