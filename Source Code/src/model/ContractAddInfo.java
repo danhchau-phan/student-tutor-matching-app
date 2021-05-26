@@ -14,12 +14,6 @@ public class ContractAddInfo {
 	private String sessionsPerWeek;
 	private String rate;
 
-	public ContractAddInfo(boolean firstPartySigned, boolean secondPartySigned, int duration) {
-		this.firstPartySigned = firstPartySigned;
-		this.secondPartySigned = secondPartySigned;
-		this.duration = duration;
-	}
-
 	public ContractAddInfo(boolean firstPartySigned, boolean secondPartySigned, int duration,
 		String competency, String hourPerLesson, String sessionsPerWeek, String rate) {
 		this.firstPartySigned = firstPartySigned;
@@ -34,24 +28,22 @@ public class ContractAddInfo {
 	public ContractAddInfo(JsonNode node) {
 		this.firstPartySigned = Boolean.parseBoolean(node.get("firstPartySigned").textValue());
 		this.secondPartySigned = Boolean.parseBoolean(node.get("secondPartySigned").textValue());
-		// this.duration = Integer.parseInt(node.get("duration").textValue());
-		// this.competency = node.get("competency").textValue();
-		// this.hourPerLesson = node.get("hourPerLesson").textValue();
-		// this.sessionsPerWeek = node.get("sessionsPerWeek").textValue();
-		// this.rate = node.get("rate").textValue();
+		this.duration = Integer.parseInt(node.get("duration").textValue());
+		this.competency = node.get("competency").textValue();
+		this.hourPerLesson = node.get("hourPerLesson").textValue();
+		this.sessionsPerWeek = node.get("sessionsPerWeek").textValue();
+		this.rate = node.get("rate").textValue();
 	}
 	
 	public String toJson() {
-		return "{\"firstPartySigned\":\"" + this.firstPartySigned + "\"," +
-				"\"secondPartySigned\":\"" + this.secondPartySigned + "\"}" ;
 
-		// return "{\"firstPartySigned\":\"" + this.firstPartySigned + "\"," +
-		// 		"\"secondPartySigned\":\"" + this.secondPartySigned + "\"," +
-		// 		"\"duration\":\"" + this.duration + "\"," +
-		// 		"\"competency\":\"" + this.competency + "\"," +
-		// 		"\"hourPerLesson\":\"" + this.hourPerLesson + "\"," +
-		// 		"\"sessionsPerWeek\":\"" + this.sessionsPerWeek + "\"," +
-		// 		"\"rate\":\"" + this.rate + "\"}" ;
+		 return "{\"firstPartySigned\":\"" + this.firstPartySigned + "\"," +
+		 		"\"secondPartySigned\":\"" + this.secondPartySigned + "\"," +
+		 		"\"duration\":\"" + this.duration + "\"," +
+		 		"\"competency\":\"" + this.competency + "\"," +
+		 		"\"hourPerLesson\":\"" + this.hourPerLesson + "\"," +
+		 		"\"sessionsPerWeek\":\"" + this.sessionsPerWeek + "\"," +
+		 		"\"rate\":\"" + this.rate + "\"}" ;
 	}
 	
 	public String toString() {

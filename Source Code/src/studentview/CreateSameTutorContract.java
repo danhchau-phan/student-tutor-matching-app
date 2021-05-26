@@ -1,13 +1,16 @@
 package studentview;
 
+import mainview.MouseClickListener;
 import mainview.RemovablePanel;
 import model.Bid;
+import model.Contract;
 import model.Subject;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class CreateSameTutorContract extends RemovablePanel {
+	private Contract contract;
     public JRadioButton perSession = new JRadioButton("per session");
     public JRadioButton perHour = new JRadioButton("per hour");
     public ButtonGroup rateType = new ButtonGroup();
@@ -70,5 +73,13 @@ public class CreateSameTutorContract extends RemovablePanel {
         bottomPanel.setBackground(Color.red);
         bottomPanel.add(reuseContractButton);
         this.add(bottomPanel, BorderLayout.SOUTH);
+    }
+    
+    public void setListener(MouseClickListener listener) {
+		this.reuseContractButton.addMouseListener(listener);
+	}
+    
+    public void setCurrentContract(Contract c) {
+    	this.contract = c;
     }
 }

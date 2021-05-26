@@ -27,15 +27,6 @@ public class ReviseContractTerm extends RemovablePanel {
         this.add(panel);
         panel.add(sameTutorReuse);
         panel.add(differentTutorReuse);
-
-//        sameTutorReuse.addMouseListener(new MouseClickListener(){
-//
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//
-//            }
-//
-//        });
     }
 
     public void setReuseSameTutorListener(MouseClickListener listener) {

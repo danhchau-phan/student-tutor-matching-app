@@ -48,6 +48,7 @@ public class Controller implements Observer{
     private TutorResponseView tutorResponse;
     private TutorMonitorView tutorMonitor;
     private TutorMessageView tutorMessage;
+    private CreateSameTutorContract createSameTutorContract;
 
     private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     private enum Role {
@@ -117,7 +118,6 @@ public class Controller implements Observer{
             this.allBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
-            b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorAllBids);
         }
     }
 
@@ -131,6 +131,16 @@ public class Controller implements Observer{
     }
     
     private void fetchAllContractAsFirstParty() {
+        this.allContracts.clear();
+        for (Contract c : Contract.getAllContractsAsFirstParty(this.user.getId())) {
+            this.allContracts.add(c);
+            c.subscribe(EventType.CONTRACT_SIGN, this);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
+            
+        }
+    }
+    
+    private void reFetchAllContractAsFirstParty() {
         this.allContracts.clear();
         for (Contract c : Contract.getAllContractsAsFirstParty(this.user.getId())) {
             this.allContracts.add(c);
@@ -185,6 +195,7 @@ public class Controller implements Observer{
         this.tutorResponse = new TutorResponseView();
         this.tutorMonitor = new TutorMonitorView(this.monitoredBids, new MonitorReloadListener());
         this.createBid = new CreateBid();
+        this.createSameTutorContract = new CreateSameTutorContract();
 
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
@@ -237,7 +248,6 @@ public class Controller implements Observer{
         
         for (Contract c : this.allContracts) {
 	        c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
-	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
 	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, tutorAllContracts);
         }
     }
@@ -280,6 +290,10 @@ public class Controller implements Observer{
         studentAllContracts.setSignContractListener(new StudentSignContractListener());
 
         contractReuse.setReuseContractListener(new ReuseContractListener());
+        for (Contract c : this.allContracts) {
+	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, studentAllContracts);
+	        c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
+        }
     }
 
     private void subscribeBidCreation() {
@@ -339,12 +353,21 @@ public class Controller implements Observer{
         display.setVisible();
     }
 
-    // ReviseContractTerm.setReuseSameTutorListener(new ReuseSameTutorListener());
+    /**
+     * Listener for reusing contract with same tutor
+     *
+     */
     class ReuseSameTutorListener implements MouseClickListener {
 
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
-
+        	createSameTutorContract.setCurrentContract(activeContract);
+        	String c = (String) createSameTutorContract.competency.getSelectedItem();
+            String h = createSameTutorContract.hourPerLesson.getText();
+            String ss = createSameTutorContract.sessionsPerWeek.getText();
+            String r = createSameTutorContract.rate.getText();
+            String rT = createSameTutorContract.rateType.getSelection().getActionCommand();
+        	activeContract.reuseContract(new ContractAddInfo(false, false, activeContract.getContractDuration() , c, h, ss, r));
         }
     }
 
@@ -352,12 +375,9 @@ public class Controller implements Observer{
     class ReuseDifferentTutorListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
-//            CreateDifferentTutorContract reuseContract = new CreateDifferentTutorContract();
-//            List<User> contractTutors = new ArrayList<>(); // should be as field
-//            for (Contract contract: allContracts) {
-//                contractTutors.add(User.getUserbyId(contract.getSecondPartyId()));
-//            }
-//            reuseContract.setContractTutors(contractTutors);
+        	///////// INCOMPLETE: INPUT FOR TUTOR SELECTION NEEDED ///////////////
+        	String newSecondPartyId = null;
+        	activeContract.reuseContract(newSecondPartyId);
         }
     }
 
@@ -630,16 +650,16 @@ public class Controller implements Observer{
 
         @Override
         public void mouseClicked(MouseEvent e) {
-        	assert activeRole == Role.student;
-            activeContract = contractReuse.getSelectedContract();
-            reviseContractTerm.setContract(activeContract);
-            if (studentView.activePanel != null) {
-                studentView.main.remove(studentView.activePanel);
-            }
-            studentView.main.add(reviseContractTerm);
-            studentView.activePanel = reviseContractTerm;
-            display.createPanel(studentView.main);
-            display.setVisible();
+//        	assert activeRole == Role.student;
+//            activeContract = contractReuse.getSelectedContract();
+//            reviseContractTerm.setContract(activeContract);
+//            if (studentView.activePanel != null) {
+//                studentView.main.remove(studentView.activePanel);
+//            }
+//            studentView.main.add(reviseContractTerm);
+//            studentView.activePanel = reviseContractTerm;
+//            display.createPanel(studentView.main);
+//            display.setVisible();
         }
         
     }
@@ -659,12 +679,10 @@ public class Controller implements Observer{
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			//////// INCOMPLETE /////////
             activeContract = contractReuse.getSelectedContract();
-            reviseContractTerm = new ReviseContractTerm();
+            reviseContractTerm.setContract(activeContract);
             reviseContractTerm.setReuseSameTutorListener(new ReuseSameTutorListener());
             reviseContractTerm.setReuseDifferentTutorListener(new ReuseDifferentTutorListener());
-            activeContract.postNewContractForReuse(activeContract);
 
 
             if (studentView.activePanel != null) {
@@ -717,9 +735,9 @@ public class Controller implements Observer{
         }
         case CONTRACT_CREATED: {
             if (activeRole == Role.student)
-                fetchAllContractAsFirstParty();
+                reFetchAllContractAsFirstParty();
             else if (activeRole == Role.tutor)
-                fetchAllContractAsSecondParty();
+                reFetchAllContractAsSecondParty();
         }
         case CONTRACT_SIGN: {
         }

@@ -82,9 +82,7 @@ public class Contract extends Observable implements Model {
 		this.inform(EventType.CONTRACT_SIGN);
 	}
 
-	private int getContractDuration() {
-		return this.addInfo.getContractDuration();
-	}
+	
 	/**
 	 * Sets contract expiry date before signing
 	 * @param expiryDate
@@ -172,18 +170,28 @@ public class Contract extends Observable implements Model {
 		return contracts;
 	}
 
-	private void deleteContract(String contractId) {
-		/////////// INCOMPLETE: Making API call to delete contract //////////////
+	private void deleteContract() {
 		String url = Application.rootUrl + "/contract/" + this.id + "/delete";
-		Model.delete(url, contractId);
+		Model.delete(url, this.id);
 		this.inform(EventType.CONTRACT_DELETED);
 	}
 	/**
 	 * Post new contract from currentContract's cessationInfo. currentContract is deleted right after
 	 */
-	public void postNewContractForReuse(Contract currentContract) {
-		postContract(currentContract.firstParty.getId(), currentContract.getSecondPartyId(), currentContract.subject.getId(), currentContract.createContractAddInfo());
-		currentContract.deleteContract(currentContract.id);
+	public void reuseContract(
+			ContractAddInfo addInfo) {
+		postContract(this.firstParty.getId(), 
+				this.getSecondPartyId(), 
+				this.subject.getId(), addInfo);
+		this.deleteContract();
+	}
+	
+	public void reuseContract(String newSecondPartyId) {
+		postContract(this.firstParty.getId(), 
+				newSecondPartyId, 
+				this.subject.getId(), 
+				this.addInfo);
+		this.deleteContract();
 	}
 
 	public void patchContractCessationInfo(ContractCessationInfo newInfo) {
@@ -216,6 +224,10 @@ public class Contract extends Observable implements Model {
 				contracts.add(c);
 		}
 		return contracts;
+	}
+	
+	public int getContractDuration() {
+		return this.addInfo.getContractDuration();
 	}
 	
 	//////// end requirement2 /////////
@@ -279,10 +291,6 @@ public class Contract extends Observable implements Model {
 		    	
 		Model.patch(url, jsonString);
 		this.inform(EventType.CONTRACT_ONE_PARTY_SIGN);
-	}
-
-	public void terminateContract() {
-
 	}
 	
 }
