@@ -21,6 +21,7 @@ public class ContractReuse extends RemovablePanel implements Observer{
     public ContractReuse(List<Contract> contracts) {
         super(new BorderLayout());
         this.contracts = contracts;
+        placeComponents();
     }
 
     private void placeComponents() {

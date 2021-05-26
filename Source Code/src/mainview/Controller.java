@@ -413,6 +413,7 @@ public class Controller implements Observer{
             BidResponse selectedResponse = tutorResponse.getSelectedResponse();
             if (selectedResponse == null)
                 return;
+            int contractDuration = contractDurationFrame.getSelectedDuration();
             contractDurationFrame.show();
             subscriberContract.postContract(user.getId(),
                     selectedResponse.getBidderId(),
@@ -446,10 +447,13 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent e) {
             if (activeBid.checkEligibility(user)) {
+                int contractDuration = contractDurationFrame.getSelectedDuration();
                 contractDurationFrame.show();
                 subscriberContract.postContract(user.getId(), activeBid.getInitiatorId(),
                         activeBid.getSubject().getId(),
                         new ContractAddInfo(true, true));
+                ContractCessationInfo cessationInfo = new ContractCessationInfo(subscriberContract.getSecondPartyId(), contractDuration, activeBid.getRequestCompetency(), activeBid.getRequestHourPerLesson(), activeBid.getRequestHourPerLesson(), activeBid.getRequestRate());
+                subscriberContract.patchContractCessationInfo(cessationInfo);
                 activeBid.closeDownBid();
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             } else {
@@ -520,6 +524,7 @@ public class Controller implements Observer{
                 Contract c = studentAllContracts.getSelectedContract();
                 c.firstPartySign(true);
                 if (c.isSigned()) {
+                    //////////// CHANGES HERE //////////////
                     Utils.CONTRACT_SIGNED.show();
                 } else
                     Utils.OTHER_PARTY_PENDING.show();
@@ -632,7 +637,7 @@ public class Controller implements Observer{
 		}}
     
     /**
-     * Listener to create new contract and delete current contract
+     * Listener to create new contract and delete current contract (when JList is clicked)
      *
      */
     class ReuseContractListener implements MouseClickListener {
@@ -640,7 +645,22 @@ public class Controller implements Observer{
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			//////// INCOMPLETE /////////
-		}}
+            activeContract = contractReuse.getSelectedContract();
+            reviseContractTerm = new ReviseContractTerm();
+            reviseContractTerm.setReuseSameTutorListener(new ReuseSameTutorListener());
+            reviseContractTerm.setReuseDifferentTutorListener(new ReuseDifferentTutorListener());
+            activeContract.postNewContractForReuse(activeContract);
+
+
+            if (studentView.activePanel != null) {
+                studentView.main.remove(studentView.activePanel);
+            }
+            studentView.main.add(reviseContractTerm);
+            studentView.activePanel = reviseContractTerm;
+            display.createPanel(studentView.main);
+            display.setVisible();
+
+        }}
     
     /**
      * Listener to reload monitor

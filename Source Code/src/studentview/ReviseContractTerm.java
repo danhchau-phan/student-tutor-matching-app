@@ -19,6 +19,7 @@ public class ReviseContractTerm extends RemovablePanel {
 
     public ReviseContractTerm() {
         super(new BorderLayout());
+        placeComponents();
     }
 
     protected void placeComponents() {

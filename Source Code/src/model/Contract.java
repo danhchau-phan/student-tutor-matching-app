@@ -200,6 +200,13 @@ public class Contract extends Observable implements Model {
 	 * Post new contract from currentContract's cessationInfo. currentContract is deleted right after
 	 */
 	public void postNewContractForReuse(Contract currentContract) {
+//		List<Bid> initiatedBids = currentContract.firstParty.getInitiatedBids();
+//		for (Bid bid: initiatedBids) {
+//			if (bid.getSubject() == currentContract.)
+//		}
+//		currentContract.cessationInfo = new ContractCessationInfo(currentContract.secondParty, currentContract.getContractDuration(), currentContract.);
+//		currentContract.patchContractCessationInfo();
+//		patchContractCessationInfo(currentContract.addInfo);
 		postContract(currentContract.firstParty.getId(), currentContract.getSecondPartyId(), currentContract.subject.getId(), currentContract.createContractAddInfo());
 		currentContract.deleteContract(currentContract.id);
 	}
