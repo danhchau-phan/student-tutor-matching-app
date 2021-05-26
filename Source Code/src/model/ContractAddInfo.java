@@ -13,11 +13,6 @@ public class ContractAddInfo {
 	private String hourPerLesson;
 	private String sessionsPerWeek;
 	private String rate;
-	
-	public ContractAddInfo(boolean firstPartySigned, boolean secondPartySigned) {
-		this.firstPartySigned = firstPartySigned;
-		this.secondPartySigned = secondPartySigned;
-	}
 
 	public ContractAddInfo(boolean firstPartySigned, boolean secondPartySigned, int duration) {
 		this.firstPartySigned = firstPartySigned;

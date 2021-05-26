@@ -144,16 +144,16 @@ public class Bid extends Observable implements Model{
 
 		for (Bid b : bids) {
 			if ((!b.closeddown) &&  b.isExpired() ) {
-				b.closeddown = true;
-				if (b.addInfo != null && b.type == Bid.BidType.open
-					&& !b.getResponse().isEmpty()) {
-					BidResponse winner = b.getResponse().get(0);
-					(new Contract()).postContract(b.initiator.getId(), 
-								winner.getBidderId(), 
-								b.getSubject().getId(),
-								new ContractAddInfo(false, true));
-				}
-				b.closeDownBid();
+//				b.closeddown = true;
+//				if (b.addInfo != null && b.type == Bid.BidType.open
+//					&& !b.getResponse().isEmpty()) {
+//					BidResponse winner = b.getResponse().get(0);
+//					(new Contract()).postContract(b.initiator.getId(), 
+//								winner.getBidderId(), 
+//								b.getSubject().getId(),
+//								new ContractAddInfo(false, true));
+//				}
+//				b.closeDownBid();
 			} else if (!b.closeddown)
 				screenedBids.add(b);
 		}

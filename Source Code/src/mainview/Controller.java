@@ -161,6 +161,11 @@ public class Controller implements Observer{
         (new NearExpiryContractFrame(this.studentExpiredContracts)).show();
     }
 
+    private void fetchNearExpiredContract() {
+    	List<Contract> c = Contract.getNearExpiryContracts(allContracts);
+    	(new NearExpiryContractFrame(c)).show();
+    };
+    
     private void initTutorViews() {
         assert (this.user != null);
         timer = new Timer(monitorCheckInterval, new MonitorReloadListener());
@@ -267,9 +272,6 @@ public class Controller implements Observer{
         activeBid.subscribe(EventType.BID_NEWRESPONSE, tutorResponse);
     }
 
-    // private void addSubscription(Bid b) {
-    // }
-
     private void subscribeMessage() {
         activeMessage.subscribe(EventType.MESSAGE_PATCH, this);
     }
@@ -282,7 +284,9 @@ public class Controller implements Observer{
             subscriberContract.subscribe(EventType.CONTRACT_CREATED, tutorAllContracts);
     }
 
-    // Display the Active Message SubPanel correspond to the ActiveBid
+    /** Display the Active Message SubPanel correspond to the ActiveBid
+     * 
+     */
     private void showStudentMessagePanel() {
         
         studentMessage = new StudentMessageView(user, activeMessage, activeBid);
@@ -310,7 +314,6 @@ public class Controller implements Observer{
         display.createPanel(tutorView.main);
         display.setVisible();
     }
-
 
     // ReviseContractTerm.setReuseSameTutorListener(new ReuseSameTutorListener());
     class ReuseSameTutorListener implements MouseClickListener {
@@ -352,7 +355,7 @@ public class Controller implements Observer{
             fetchInitiatedBids();
             fetchAllContractAsFirstParty();
             fetchStudentExpiredContract();
-
+            fetchNearExpiredContract();
 
             initStudentViews();
             subscribeBidCreation();
@@ -367,7 +370,7 @@ public class Controller implements Observer{
             activeRole = Role.tutor;
             fetchAllBids();
             fetchAllContractAsSecondParty();
-
+            fetchNearExpiredContract();
             fetchMonitoredBids();
             initTutorViews();
             subscribeBidCreation();
@@ -376,11 +379,6 @@ public class Controller implements Observer{
             tutorView.display();
         }}
 
-
-
-
-    /** JButton Listener on each SubPanel (tutorAllBid, studentAllBid etc.)*/
-    /** Response portals: MessageList View and Response View*/
     class ResponseListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -394,12 +392,17 @@ public class Controller implements Observer{
                     return;
 
                 /** Set up the contract expiry date*/
-                int contractDuration = contractDurationFrame.getSelectedDuration();
                 contractDurationFrame.show();
+                int contractDuration = contractDurationFrame.getDuration();
+                
                 subscriberContract.postContract(user.getId(),
                         selectedResponse.getBidderId(),
                         activeBid.getSubject().getId(),
-                        new ContractAddInfo(true, false, contractDuration));
+                        new ContractAddInfo(true, false, contractDuration,
+                        		activeBid.getRequestCompetency(),
+                        		activeBid.getRequestHourPerLesson(),
+                        		activeBid.getRequestSessionPerWeek(),
+                        		activeBid.getRequestRate()));
                 activeBid.closeDownBid();
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             }
@@ -407,27 +410,7 @@ public class Controller implements Observer{
         }
 
     }
-
-    class TutorResponseListener implements MouseClickListener{
-        ///// THIS IS PROBABLY WRONG /////
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            BidResponse selectedResponse = tutorResponse.getSelectedResponse();
-            if (selectedResponse == null)
-                return;
-            int contractDuration = contractDurationFrame.getSelectedDuration();
-            contractDurationFrame.show();
-            subscriberContract.postContract(user.getId(),
-                    selectedResponse.getBidderId(),
-                    activeBid.getSubject().getId(),
-                    new ContractAddInfo(true, false));
-            activeBid.closeDownBid();
-            Utils.SUCCESS_CONTRACT_CREATION.show();
-
-        }
-
-    }
-
+    
     class CreateBidListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
@@ -449,11 +432,15 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent e) {
             if (activeBid.checkEligibility(user)) {
-                int contractDuration = contractDurationFrame.getSelectedDuration();
                 contractDurationFrame.show();
+                int contractDuration = contractDurationFrame.getDuration();
                 subscriberContract.postContract(user.getId(), activeBid.getInitiatorId(),
                         activeBid.getSubject().getId(),
-                        new ContractAddInfo(true, true));
+                        new ContractAddInfo(true, true, contractDuration,
+                        		activeBid.getRequestCompetency(),
+                        		activeBid.getRequestHourPerLesson(),
+                        		activeBid.getRequestSessionPerWeek(),
+                        		activeBid.getRequestRate()));
 //                ContractCessationInfo cessationInfo = new ContractCessationInfo(subscriberContract.getSecondPartyId(), contractDuration, activeBid.getRequestCompetency(), activeBid.getRequestHourPerLesson(), activeBid.getRequestHourPerLesson(), activeBid.getRequestRate());
 //                subscriberContract.patchContractCessationInfo(cessationInfo);
                 activeBid.closeDownBid();
@@ -506,10 +493,14 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent e) {
             contractDurationFrame.show();
+            int contractDuration = contractDurationFrame.getDuration();
             subscriberContract.postContract(user.getId(),
                     activeMessage.getPosterId(),
                     activeBid.getSubject().getId(),
-                    new ContractAddInfo(true, false));
+                    new ContractAddInfo(true, false, contractDuration, activeBid.getRequestCompetency(),
+                    		activeBid.getRequestHourPerLesson(),
+                    		activeBid.getRequestSessionPerWeek(),
+                    		activeBid.getRequestRate()));
             activeBid.closeDownBid();
             Utils.SUCCESS_CONTRACT_CREATION.show();
 

@@ -16,7 +16,7 @@ public class ContractDurationFrame extends JPanel{
     private JRadioButtonMenuItem twentyfour = new JRadioButtonMenuItem("24 months");
     private JRadioButtonMenuItem longer = new JRadioButtonMenuItem("Longer");
     private JTextField longerDuration = new JTextField();
-    private ButtonGroup options = new ButtonGroup();
+    
     public ButtonGroup duration = new ButtonGroup();
     {
         three.setActionCommand("3");
@@ -42,7 +42,7 @@ public class ContractDurationFrame extends JPanel{
     public ContractDurationFrame() {
         super();
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        reload();
+        
         this.add(three);
         this.add(six);
         this.add(twelve);
@@ -60,9 +60,11 @@ public class ContractDurationFrame extends JPanel{
     }
 
     public void show() {
-        
-		JOptionPane.showMessageDialog(null, this);
-        
+    	reload();
+		int result = JOptionPane.showConfirmDialog(null, this);
+		if (result == JOptionPane.OK_OPTION) {
+			this.getSelectedDuration();
+		}
 	}
 
     private void reload() {
@@ -70,7 +72,7 @@ public class ContractDurationFrame extends JPanel{
         longerDuration.setEditable(false);
     }
 
-    public int getSelectedDuration() {
+    private void getSelectedDuration() {
         selectedDuration = Integer.parseInt(duration.getSelection().getActionCommand());
         if (duration.getSelection().getActionCommand().equalsIgnoreCase("longer")) {
             if (!isNumeric(longerDuration.getText())) {
@@ -78,8 +80,7 @@ public class ContractDurationFrame extends JPanel{
             }
             selectedDuration = Integer.parseInt(longerDuration.getText());
         }
-        reload();
-        return selectedDuration;
+        return;
     }
 
     private boolean isNumeric(String s) {
@@ -92,6 +93,13 @@ public class ContractDurationFrame extends JPanel{
             return false;
         }
         return true;
+    }
+    
+    /**
+     * To be called in Controller to retrieve user's selected duration
+     */
+    public int getDuration() {
+    	return this.selectedDuration;
     }
     
 }
