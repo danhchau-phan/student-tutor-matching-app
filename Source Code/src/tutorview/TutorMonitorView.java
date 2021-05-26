@@ -8,30 +8,38 @@ import model.EventType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Couldnt implement Observer here because must update every N seconds*/
 public class TutorMonitorView extends RemovablePanel implements Observer {
 	private Timer timer;
     private List<Bid> bids = new ArrayList<>();
+    private ActionListener listener;
     private JList<BidResponse> responseList;
     private List<BidResponse> responses  = new ArrayList<>();
-
-
-    public TutorMonitorView(List<Bid> bids, Timer timer) {
+    
+    public TutorMonitorView(List<Bid> bids, ActionListener listener) {
         super(new BorderLayout());
-        
+        this.listener = listener;
         this.bids = bids;
         placeComponents();
     }
     
     protected void placeComponents(){
         this.removeAll();
+        this.timer = new Timer(5000, listener);
+        this.timer.setInitialDelay(0);
         this.timer.start();
+        
         responses.clear();
         for (Bid b : this.bids) {
         	responses.addAll(b.getResponse());
+   
+        }
+        
+        for (BidResponse r : this.responses) {
+        	System.out.print(r);
         }
         DefaultListModel<BidResponse> model = new DefaultListModel<BidResponse>();
 		for (BidResponse r : responses)
@@ -62,7 +70,15 @@ public class TutorMonitorView extends RemovablePanel implements Observer {
     }
 
 	@Override
-	public void isRemoved() {
+	public void onRemoved() {
 		this.timer.stop();
+		this.timer.removeActionListener(listener);
+		this.timer = null;
+		System.out.println("Timer Stopped");
 	}
+	
+	public void onAttached() {
+		placeComponents();
+	}
+	
 }

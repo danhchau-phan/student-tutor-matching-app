@@ -13,7 +13,6 @@ import tutorview.*;
 import javax.swing.*;
 
 public class Controller implements Observer{
-    private Timer timer;
     private static final int monitorCheckInterval = 5000;
     private boolean isLogOut;
 
@@ -81,10 +80,6 @@ public class Controller implements Observer{
                     // should be a separate function
     			    display.removePanel(authView.panel);
                     homeView = new HomeView(display, user);
-                    // if (user.isStudent())
-                    //     initStudentViews();
-                    // if (user.isTutor())
-                    //     initTutorViews();
                     homeView.logOut.addMouseListener(new LogoutListener());
                     homeView.studentButton.addMouseListener(new StudentRoleActivationListener());
                     homeView.tutorButton.addMouseListener(new TutorRoleActivationListener());
@@ -113,6 +108,14 @@ public class Controller implements Observer{
         for (Bid b : Bid.getAll()) {
             this.allBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
+        }
+    }
+    
+    private void reFetchAllBids() {
+        this.allBids.clear();
+        for (Bid b : Bid.getAll()) {
+            this.allBids.add(b);
+            b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
             b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorAllBids);
         }
@@ -121,7 +124,7 @@ public class Controller implements Observer{
     private void fetchMonitoredBids() {
     	assert this.activeRole == Role.tutor;
     	this.monitoredBids.clear();
-    	user.subscribe(EventType.USER_SUBSCRIBE_NEW_BID, tutorMonitor);
+    	
     	for (Bid b : this.allBids)
     		if (this.user.monitor(b))
     			this.monitoredBids.add(b);
@@ -143,6 +146,15 @@ public class Controller implements Observer{
         for (Contract c : Contract.getAllContractsAsSecondParty(this.user.getId())) {
             this.allContracts.add(c);
             c.subscribe(EventType.CONTRACT_SIGN, this);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
+        }
+    }
+    
+    private void reFetchAllContractAsSecondParty() {
+        this.allContracts.clear();
+        for (Contract c : Contract.getAllContractsAsSecondParty(this.user.getId())) {
+            this.allContracts.add(c);
+            c.subscribe(EventType.CONTRACT_SIGN, this);
             c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
             c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
             c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, tutorAllContracts);
@@ -158,7 +170,6 @@ public class Controller implements Observer{
             c.subscribe(EventType.CONTRACT_DELETED, this);
             c.subscribe(EventType.CONTRACT_DELETED, contractReuse);
         }
-        (new NearExpiryContractFrame(this.studentExpiredContracts)).show();
     }
 
     private void fetchNearExpiredContract() {
@@ -168,12 +179,11 @@ public class Controller implements Observer{
     
     private void initTutorViews() {
         assert (this.user != null);
-        timer = new Timer(monitorCheckInterval, new MonitorReloadListener());
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
         this.tutorAllContracts = new TutorAllContracts(this.allContracts);
         this.tutorResponse = new TutorResponseView();
-        this.tutorMonitor = new TutorMonitorView(this.monitoredBids, timer);
+        this.tutorMonitor = new TutorMonitorView(this.monitoredBids, new MonitorReloadListener());
         this.createBid = new CreateBid();
 
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
@@ -216,6 +226,21 @@ public class Controller implements Observer{
         tutorAllContracts.setSignContractListener(new TutorSignContractListener());
 
         createBid.setSubmitBidListener(new SubmitBidListener());
+        
+        user.emptySubscription(EventType.USER_SUBSCRIBE_NEW_BID);
+        user.subscribe(EventType.USER_SUBSCRIBE_NEW_BID, this);
+        user.subscribe(EventType.USER_SUBSCRIBE_NEW_BID, tutorMonitor);
+        
+        for (Bid b : this.allBids) {
+            b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
+            b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorAllBids);
+        }
+        
+        for (Contract c : this.allContracts) {
+	        c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
+	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
+	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, tutorAllContracts);
+        }
     }
 
     private void initStudentViews() {
@@ -406,9 +431,7 @@ public class Controller implements Observer{
                 activeBid.closeDownBid();
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             }
-
         }
-
     }
     
     class CreateBidListener implements MouseClickListener{
@@ -662,9 +685,11 @@ public class Controller implements Observer{
     class MonitorReloadListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			System.out.println("Reload monitor");
 			for (Bid b : monitoredBids) {
 				b.updateBid();
 			}
+			
 		}}
     
     @Override

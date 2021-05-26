@@ -45,12 +45,13 @@ public abstract class View {
 	 * 	comp: the component where listener is attached to
 	 * 	view: the view to be displayed
 	 */
-	protected void setSwitchPanelListener(JPanel panel, Component comp, View newView) {
+	protected void setSwitchPanelListener(RemovablePanel panel, Component comp, View newView) {
 		MouseListener mouseListener = new MouseClickListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				display.removePanel(panel);
+				panel.onRemoved();
 				newView.display();
 			}
 		};
@@ -69,9 +70,10 @@ public abstract class View {
 			public void mouseClicked(MouseEvent e) {
 				if (activePanel != null) {
 					main.remove(activePanel);
-					activePanel.isRemoved();
+					activePanel.onRemoved();
 				}
 				main.add(newPanel);
+				newPanel.onAttached();
 				activePanel = newPanel;
 				display.createPanel(main);
 				display.setVisible();

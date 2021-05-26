@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import mainview.Display;
 import mainview.HomeView;
 import mainview.NavigationPane;
+import mainview.RemovablePanel;
 import model.User;
 
 import mainview.View;
@@ -20,15 +21,11 @@ public class TutorView extends View implements NavigationPane{
 	public JButton viewAllBids = new JButton("View All Bids");
 	public JButton viewContracts = new JButton("View Contracts");
 	public JButton viewMonitor = new JButton("View Monitor");
-	public JPanel main = new JPanel(new BorderLayout());
-
-//
-//	private JButton viewAllBids = new JButton("View All Bids");
-//	private JButton viewContracts = new JButton("View Contracts");
-//	protected JPanel main;
+	public RemovablePanel main = new RemovablePanel(new BorderLayout());
 
 	public TutorView(Display display, User user) {
 		super(display);
+		
 		this.user = user;
 	}
 

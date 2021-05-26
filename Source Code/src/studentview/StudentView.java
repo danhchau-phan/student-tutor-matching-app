@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
 import mainview.Display;
 import mainview.NavigationPane;
+import mainview.RemovablePanel;
 import mainview.View;
 import model.User;
 
@@ -18,7 +19,7 @@ public class StudentView extends View implements NavigationPane {
 	public JButton viewAllBids = new JButton("View All Bids");
 	public JButton viewContracts = new JButton("View Contracts");
 	public JButton reuseContracts = new JButton("Reuse Contracts");
-	public JPanel main = new JPanel(new BorderLayout());
+	public RemovablePanel main = new RemovablePanel(new BorderLayout());
 	
 	public StudentView(Display display, User user) {
 		super(display);

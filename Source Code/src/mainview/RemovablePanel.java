@@ -4,7 +4,7 @@ import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 
-public abstract class RemovablePanel extends JPanel {
+public class RemovablePanel extends JPanel {
 	
 	public RemovablePanel() {
 		super();
@@ -14,5 +14,7 @@ public abstract class RemovablePanel extends JPanel {
 		super(layout);
 	}
 
-	public void isRemoved() {};
+	public void onRemoved() {};
+	
+	public void onAttached() {};
 }

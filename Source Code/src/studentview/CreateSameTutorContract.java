@@ -35,7 +35,7 @@ public class CreateSameTutorContract extends RemovablePanel {
         placeComponents();
     }
 
-    protected void placeComponents() {
+    private void placeComponents() {
         JPanel midPanel = new JPanel();
         GroupLayout groupLayout = new GroupLayout(midPanel);
         midPanel.setLayout(groupLayout);

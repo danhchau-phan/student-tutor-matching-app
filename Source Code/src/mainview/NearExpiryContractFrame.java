@@ -45,6 +45,6 @@ public class NearExpiryContractFrame extends JPanel{
         JScrollPane scrollp = new JScrollPane(cList);
 		this.add(scrollp);
 
-        JOptionPane.showMessageDialog(null, this);
+        JOptionPane.showMessageDialog(null, this, "Contracts About to expire", JOptionPane.INFORMATION_MESSAGE);
     }
 }
