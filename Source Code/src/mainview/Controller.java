@@ -325,12 +325,12 @@ public class Controller implements Observer{
     class ReuseDifferentTutorListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
-            CreateDifferentTutorContract reuseContract = new CreateDifferentTutorContract();
-            List<User> contractTutors = new ArrayList<>(); // should be as field
-            for (Contract contract: allContracts) {
-                contractTutors.add(User.getUserbyId(contract.getSecondPartyId()));
-            }
-            reuseContract.setContractTutors(contractTutors);
+//            CreateDifferentTutorContract reuseContract = new CreateDifferentTutorContract();
+//            List<User> contractTutors = new ArrayList<>(); // should be as field
+//            for (Contract contract: allContracts) {
+//                contractTutors.add(User.getUserbyId(contract.getSecondPartyId()));
+//            }
+//            reuseContract.setContractTutors(contractTutors);
         }
     }
 
