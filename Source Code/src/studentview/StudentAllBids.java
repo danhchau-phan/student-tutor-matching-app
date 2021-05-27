@@ -22,17 +22,6 @@ import model.EventType;
  * View that allows the Student to see all unexpired and unclosed match requests created by them
  */
 public class StudentAllBids extends RemovablePanel implements Observer{
-	// private User user;
-	// private List<Bid> bids;
-	// private JList<Bid> bidList;
-	// public StudentAllBids(User user) {
-	// 	super(new BorderLayout());
-	// 	this.setBackground(Color.BLUE);
-	// 	this.user = user;
-	// 	this.bids = user.getInitiatedBids();
-	// 	placeComponents();
-	// }
-	// private User user;
 	private List<Bid> bids;
 	private JList<Bid> bidList;
 	public StudentAllBids(List<Bid> bids) {

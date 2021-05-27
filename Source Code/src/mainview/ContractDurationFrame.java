@@ -23,10 +23,12 @@ public class ContractDurationFrame extends JPanel{
         six.setActionCommand("6");
         twelve.setActionCommand("12");
         twentyfour.setActionCommand("24");
+        longer.setActionCommand("longer");
         duration.add(three);
         duration.add(six);
         duration.add(twelve);
         duration.add(twentyfour);
+        duration.add(longer);
 //        six.setSelected(true);
     }
 
@@ -61,8 +63,8 @@ public class ContractDurationFrame extends JPanel{
 
     public void show() {
     	reload();
-		int result = JOptionPane.showConfirmDialog(new ContractDurationFrame(),
-                null , "Select Contract Duration",
+		int result = JOptionPane.showConfirmDialog(null,
+                this , "Select Contract Duration",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			this.getSelectedDuration();

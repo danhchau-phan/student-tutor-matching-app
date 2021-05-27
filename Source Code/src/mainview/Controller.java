@@ -102,6 +102,13 @@ public class Controller implements Observer{
         for (Bid b : user.getInitiatedBids()) {
             this.initiatedBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
+        }
+    }
+    private void reFetchInitiatedBids() {
+        this.initiatedBids.clear();
+        for (Bid b : user.getInitiatedBids()) {
+            this.initiatedBids.add(b);
+            b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
         }
     }
@@ -299,6 +306,16 @@ public class Controller implements Observer{
 	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, studentAllContracts);
 	        c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
         }
+        
+        for (Contract c : this.allContracts) {
+	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, studentAllContracts);
+	        c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
+        }
+        
+        for (Bid b : this.initiatedBids) {
+        	b.subscribe(EventType.BID_CLOSEDDOWN, studentAllBids);
+        }
+        
     }
 
     private void subscribeBidCreation() {
@@ -723,9 +740,9 @@ public class Controller implements Observer{
         switch (e) {
         case BID_CREATED: {
             if (activeRole == Role.student) {
-                fetchInitiatedBids();
+                reFetchInitiatedBids();
             } else if (activeRole == Role.tutor)
-                fetchAllBids();
+                reFetchAllBids();
             break;
             }
         case BID_CLOSEDDOWN: {
