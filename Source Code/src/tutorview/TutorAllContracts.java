@@ -26,6 +26,8 @@ public class TutorAllContracts extends RemovablePanel implements Observer {
 
 	private void placeComponents() {
 		this.removeAll();
+		this.revalidate();
+		this.repaint();
 		DefaultListModel<Contract> model = new DefaultListModel<Contract>();
 		for (Contract c : contracts)
 			model.addElement(c);
@@ -61,12 +63,12 @@ public class TutorAllContracts extends RemovablePanel implements Observer {
 													  boolean isSelected, boolean cellHasFocus) {
 			this.removeAll();
 			JPanel panel = new JPanel();
-			if (c.firstPartySigned()) {
+			if (c.secondPartySigned() || c.isSigned()) {
 				JTextArea tA = new JTextArea();
 				tA.setText(c.toString());
 				tA.setEditable(false);
 				panel.add(tA);
-			} else if (c.firstPartySigned() == false) {
+			} else {
 				JTextArea tA = new JTextArea();
 				JButton bT = new JButton("Sign");
 

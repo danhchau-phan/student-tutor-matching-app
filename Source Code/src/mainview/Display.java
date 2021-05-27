@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class Display {
 	private JFrame frame;
-	public static final int FRAME_WIDTH = 500;
+	public static final int FRAME_WIDTH = 700;
 	public static final int FRAME_HEIGHT = 500;
 	/** The display shared by the whole program, contains a JFrame that multiple
 	 * JComponents could be attached to and removed from

@@ -32,7 +32,6 @@ public class StudentAllContracts extends RemovablePanel implements Observer {
 	}
 	
 	private void placeComponents() {
-		this.removeAll();
 		DefaultListModel<Contract> model = new DefaultListModel<Contract>();
 		for (Contract c : contracts)
 			model.addElement(c);
@@ -73,7 +72,7 @@ public class StudentAllContracts extends RemovablePanel implements Observer {
 				tA.setText(c.toString());
 				tA.setEditable(false);
 				panel.add(tA);
-			} else if (c.firstPartySigned() == false) {
+			} else {
 				JTextArea tA = new JTextArea();
 				JButton bT = new JButton("Sign");
 				
@@ -90,6 +89,10 @@ public class StudentAllContracts extends RemovablePanel implements Observer {
 
 	@Override
 	public void update(EventType e) {
+		this.removeAll();
+		this.revalidate();
+		this.repaint();
+		
 		this.placeComponents();
 	}
 }

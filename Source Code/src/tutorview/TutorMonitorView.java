@@ -71,7 +71,7 @@ public class TutorMonitorView extends RemovablePanel implements Observer {
 	
 	public void onAttached() {
 		this.removeAll();
-        this.timer = new Timer(30000, listener);
+        this.timer = new Timer(15000, listener);
         this.timer.setInitialDelay(0);
         this.timer.start();
 		placeComponents();

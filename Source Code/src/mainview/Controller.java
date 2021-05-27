@@ -14,14 +14,13 @@ import javax.swing.*;
 
 public class Controller implements Observer{
     private static final int monitorCheckInterval = 5000;
-    private boolean isLogOut;
 
     private Display display;
     private User user;
     private List<Bid> initiatedBids = new ArrayList<Bid>();
     private List<Bid> allBids = new ArrayList<Bid>();
     private List<Bid> monitoredBids = new ArrayList<Bid>();
-    private List<Contract> allContracts = new ArrayList<Contract>();
+    private List<Contract> allUnexpiredContracts = new ArrayList<Contract>();
     private List<Contract> studentExpiredContracts = new ArrayList<Contract>();
 
     private Bid activeBid, subscriberBid = new Bid();
@@ -79,7 +78,6 @@ public class Controller implements Observer{
     				exception.printStackTrace();
     			}
     			if (!(user == null)) {
-    			    isLogOut = false;
                     // should be a separate function
     			    display.removePanel(authView.panel);
                     homeView = new HomeView(display, user);
@@ -141,9 +139,9 @@ public class Controller implements Observer{
     }
     
     private void fetchAllContractAsFirstParty() {
-        this.allContracts.clear();
+        this.allUnexpiredContracts.clear();
         for (Contract c : Contract.getAllContractsAsFirstParty(this.user.getId())) {
-            this.allContracts.add(c);
+            this.allUnexpiredContracts.add(c);
             c.subscribe(EventType.CONTRACT_SIGN, this);
             c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
             
@@ -151,9 +149,9 @@ public class Controller implements Observer{
     }
     
     private void reFetchAllContractAsFirstParty() {
-        this.allContracts.clear();
+        this.allUnexpiredContracts.clear();
         for (Contract c : Contract.getAllContractsAsFirstParty(this.user.getId())) {
-            this.allContracts.add(c);
+            this.allUnexpiredContracts.add(c);
             c.subscribe(EventType.CONTRACT_SIGN, this);
             c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
             c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
@@ -162,18 +160,18 @@ public class Controller implements Observer{
     }
 
     private void fetchAllContractAsSecondParty() {
-        this.allContracts.clear();
+        this.allUnexpiredContracts.clear();
         for (Contract c : Contract.getAllContractsAsSecondParty(this.user.getId())) {
-            this.allContracts.add(c);
+            this.allUnexpiredContracts.add(c);
             c.subscribe(EventType.CONTRACT_SIGN, this);
             c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
         }
     }
     
     private void reFetchAllContractAsSecondParty() {
-        this.allContracts.clear();
+        this.allUnexpiredContracts.clear();
         for (Contract c : Contract.getAllContractsAsSecondParty(this.user.getId())) {
-            this.allContracts.add(c);
+            this.allUnexpiredContracts.add(c);
             c.subscribe(EventType.CONTRACT_SIGN, this);
             c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
             c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
@@ -184,7 +182,7 @@ public class Controller implements Observer{
     private void fetchStudentExpiredContract() {
     	assert this.activeRole == Role.student;
         this.studentExpiredContracts.clear();
-        for (Contract c : Contract.getAllExpiredContracts(this.allContracts)) {
+        for (Contract c : Contract.getAllExpiredContracts(this.user.getId())) {
             this.studentExpiredContracts.add(c);
             c.subscribe(EventType.CONTRACT_CESSATIONINFO_UPDATED, contractReuse);
             c.subscribe(EventType.CONTRACT_DELETED, this);
@@ -193,7 +191,7 @@ public class Controller implements Observer{
     }
 
     private void fetchNearExpiredContract() {
-    	List<Contract> c = Contract.getNearExpiryContracts(allContracts);
+    	List<Contract> c = Contract.getNearExpiryContracts(allUnexpiredContracts);
     	(new NearExpiryContractFrame(c)).show();
     };
     
@@ -201,7 +199,7 @@ public class Controller implements Observer{
         assert (this.user != null);
         this.tutorView = new TutorView(display, user);
         this.tutorAllBids = new TutorAllBids(this.allBids);
-        this.tutorAllContracts = new TutorAllContracts(this.allContracts);
+        this.tutorAllContracts = new TutorAllContracts(this.allUnexpiredContracts);
         this.tutorResponse = new TutorResponseView();
         this.tutorMonitor = new TutorMonitorView(this.monitoredBids, new MonitorReloadListener());
         this.createBid = new CreateBid();
@@ -258,7 +256,7 @@ public class Controller implements Observer{
             b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorMonitor);
         }
         
-        for (Contract c : this.allContracts) {
+        for (Contract c : this.allUnexpiredContracts) {
 	        c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
 	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, tutorAllContracts);
         }
@@ -268,7 +266,7 @@ public class Controller implements Observer{
         assert (this.user != null);
         this.studentView = new StudentView(display, user);
         this.studentAllBids = new StudentAllBids(this.initiatedBids);
-        this.studentAllContracts = new StudentAllContracts(this.allContracts);
+        this.studentAllContracts = new StudentAllContracts(this.allUnexpiredContracts);
         this.createRequest = new CreateRequest();
         this.contractReuse = new ContractReuse(studentExpiredContracts);
         this.reviseContractTerm = new ReviseContractTerm();
@@ -302,12 +300,12 @@ public class Controller implements Observer{
         studentAllContracts.setSignContractListener(new StudentSignContractListener());
 
         contractReuse.setReuseContractListener(new ReuseContractListener());
-        for (Contract c : this.allContracts) {
+        for (Contract c : this.allUnexpiredContracts) {
 	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, studentAllContracts);
 	        c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
         }
         
-        for (Contract c : this.allContracts) {
+        for (Contract c : this.allUnexpiredContracts) {
 	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, studentAllContracts);
 	        c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
         }
@@ -398,7 +396,7 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
         	///////// INCOMPLETE: INPUT FOR TUTOR SELECTION NEEDED ///////////////
-            createDifferentTutorContract.addAllContract(allContracts);
+            createDifferentTutorContract.addAllContract(allUnexpiredContracts);
             createDifferentTutorContract.show();
             String tutorId = createDifferentTutorContract.getSelectedTutor();
         	String newSecondPartyId = tutorId;
@@ -411,7 +409,6 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent e) {
             display.closeWindow();
-            isLogOut = true;
             new Controller();
         }
         
@@ -508,8 +505,7 @@ public class Controller implements Observer{
                         		activeBid.getRequestHourPerLesson(),
                         		activeBid.getRequestSessionPerWeek(),
                         		activeBid.getRequestRate()));
-//                ContractCessationInfo cessationInfo = new ContractCessationInfo(subscriberContract.getSecondPartyId(), contractDuration, activeBid.getRequestCompetency(), activeBid.getRequestHourPerLesson(), activeBid.getRequestHourPerLesson(), activeBid.getRequestRate());
-//                subscriberContract.patchContractCessationInfo(cessationInfo);
+
                 activeBid.closeDownBid();
                 Utils.SUCCESS_CONTRACT_CREATION.show();
             } else {
@@ -577,14 +573,13 @@ public class Controller implements Observer{
     class StudentSignContractListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (studentAllContracts.getSignedContracts() >= StudentAllContracts.CONTRACT_QUOTA) {
+        	activeContract = studentAllContracts.getSelectedContract();
+            if (!activeContract.isSigned() && studentAllContracts.getSignedContracts() >= StudentAllContracts.CONTRACT_QUOTA) {
                 Utils.REACHED_CONTRACT_LIMIT.show();
             }
             else {
-                Contract c = studentAllContracts.getSelectedContract();
-                c.firstPartySign(true);
-                if (c.isSigned()) {
-                    //////////// CHANGES HERE //////////////
+                activeContract.firstPartySign();
+                if (activeContract.isSigned()) {
                     Utils.CONTRACT_SIGNED.show();
                 } else
                     Utils.OTHER_PARTY_PENDING.show();
@@ -597,9 +592,9 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent e) {
             
-            Contract c = tutorAllContracts.getSelectedContract();
-            c.secondPartySign(true);
-            if (c.isSigned()) {
+            activeContract = tutorAllContracts.getSelectedContract();
+            activeContract.secondPartySign();
+            if (activeContract.isSigned()) {
                 Utils.CONTRACT_SIGNED.show();
             } else
                 Utils.OTHER_PARTY_PENDING.show();   
@@ -697,7 +692,7 @@ public class Controller implements Observer{
 		}}
     
     /**
-     * Listener to create new contract and delete current contract (when JList is clicked)
+     * Listener to create new contract and delete current contract
      *
      */
     class ReuseContractListener implements MouseClickListener {
@@ -758,24 +753,36 @@ public class Controller implements Observer{
                 showStudentMessagePanel();
             else if (activeRole == Role.tutor)
                 showTutorMessagePanel();
+            break;
         }
         case CONTRACT_CREATED: {
             if (activeRole == Role.student)
                 reFetchAllContractAsFirstParty();
             else if (activeRole == Role.tutor)
                 reFetchAllContractAsSecondParty();
+            break;
         }
         case CONTRACT_SIGN: {
+        	int id = this.allUnexpiredContracts.indexOf(activeContract);
+        	Contract newContract = activeContract.updateContract();
+        	this.allUnexpiredContracts.set(id, newContract); 
+        	activeContract = newContract;
+        	break;
         }
         case CONTRACT_ONE_PARTY_SIGN: {
-
+        	int id = this.allUnexpiredContracts.indexOf(activeContract);
+        	Contract newContract = activeContract.updateContract();
+        	this.allUnexpiredContracts.set(id, newContract); 
+        	activeContract = newContract;
+        	break;
         }
         case CONTRACT_DELETED: {
             studentExpiredContracts.remove(activeContract);
+            break;
         }
         case USER_SUBSCRIBE_NEW_BID: {
         	this.monitoredBids.add(activeBid);
-//        	this.fetchMonitoredBids();
+        	break;
         }
         }
     }

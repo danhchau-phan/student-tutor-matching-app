@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 
+import model.Bid;
 import model.Contract;
 
 public class NearExpiryContractFrame extends JPanel{
@@ -22,6 +23,7 @@ public class NearExpiryContractFrame extends JPanel{
     }
 
     public void show() {
+    	System.out.print(this.contracts.size());
         this.removeAll();
         JList<Contract> cList;
         DefaultListModel<Contract> model = new DefaultListModel<>();
@@ -29,22 +31,26 @@ public class NearExpiryContractFrame extends JPanel{
             model.addElement(c);
         }
         cList = new JList<>(model);
-        cList.setCellRenderer(new ListCellRenderer<Contract>(){
-
-            @Override
-            public Component getListCellRendererComponent(JList<? extends Contract> list, Contract contract, int index,
-                    boolean isSelected, boolean cellHasFocus) {
-                JTextArea tA = new JTextArea();
-                tA.setText(contract.toString());
-                tA.setEditable(false);
-                return tA; // DOUBLE CHECK
-            }
-            
-        });
+        cList.setCellRenderer(new CellRenderer());
 
         JScrollPane scrollp = new JScrollPane(cList);
 		this.add(scrollp);
 
-        JOptionPane.showMessageDialog(null, this, "Contracts About to expire", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, this);
     }
+    
+    private class CellRenderer extends JPanel implements ListCellRenderer<Contract> {
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Contract> list, Contract contract, int index,
+                boolean isSelected, boolean cellHasFocus) {
+			this.removeAll();
+			JTextArea tA = new JTextArea();
+            tA.setText(contract.toString());
+            tA.setEditable(false);
+            this.add(tA);
+			return this;
+		}
+
+	}
 }
