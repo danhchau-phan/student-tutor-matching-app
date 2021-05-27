@@ -20,7 +20,7 @@ public class CreateDifferentTutorContract extends JPanel {
     public CreateDifferentTutorContract(Contract contract, List<String> allTutorsId) {
         super();
         this.contract = contract;
-        allTutors = new JComboBox<String>((String[]) allTutorsId.toArray());
+        allTutors = new JComboBox<String>(allTutorsId.toArray(new String[0]));
         this.add(allTutors);
     }
 

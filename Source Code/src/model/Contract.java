@@ -166,14 +166,14 @@ public class Contract extends Observable implements Model {
 		this.inform(EventType.CONTRACT_DELETED);
 	}
 	/**
-	 * Post new contract from currentContract's cessationInfo. currentContract is deleted right after
+	 * Post new contract from currentContract. currentContract is deleted right after
 	 */
-	public void reuseContract(
-			ContractAddInfo addInfo) {
+	public void reuseContract(ContractAddInfo addInfo) {
 		postContract(this.firstParty.getId(), 
-				this.getSecondPartyId(), 
+				this.secondParty.getId(), 
 				this.subject.getId(), addInfo);
 		this.deleteContract();
+		this.inform(EventType.CONTRACT_REUSE);
 	}
 	
 	public void reuseContract(String newSecondPartyId) {
@@ -182,6 +182,7 @@ public class Contract extends Observable implements Model {
 				this.subject.getId(), 
 				this.addInfo);
 		this.deleteContract();
+		this.inform(EventType.CONTRACT_REUSE);
 	}
 
 	public String getSubjectId() {
@@ -211,7 +212,8 @@ public class Contract extends Observable implements Model {
 	 * @return
 	 */
 	public String getSecondPartyId() {
-		return this.cessationInfo.getSecondPartyId();
+//		return this.cessationInfo.getSecondPartyId();
+		return this.secondParty.getId();
 	}
 
 	//////// requirement2: notify near expired contracts /////////

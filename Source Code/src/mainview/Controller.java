@@ -48,7 +48,6 @@ public class Controller implements Observer{
     private TutorMonitorView tutorMonitor;
     private TutorMessageView tutorMessage;
     private CreateSameTutorContract createSameTutorContract;
-    private CreateDifferentTutorContract createDifferentTutorContract;
 
 
     private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
@@ -184,7 +183,18 @@ public class Controller implements Observer{
         this.studentExpiredContracts.clear();
         for (Contract c : Contract.getAllExpiredContracts(this.user.getId())) {
             this.studentExpiredContracts.add(c);
+            c.subscribe(EventType.CONTRACT_DELETED, this);
+            c.subscribe(EventType.CONTRACT_REUSE, this);
+        }
+    }
+    
+    private void reFetchStudentExpiredContract() {
+    	assert this.activeRole == Role.student;
+        this.studentExpiredContracts.clear();
+        for (Contract c : Contract.getAllExpiredContracts(this.user.getId())) {
+            this.studentExpiredContracts.add(c);
             c.subscribe(EventType.CONTRACT_CESSATIONINFO_UPDATED, contractReuse);
+            c.subscribe(EventType.CONTRACT_REUSE, this);
             c.subscribe(EventType.CONTRACT_DELETED, this);
             c.subscribe(EventType.CONTRACT_DELETED, contractReuse);
         }
@@ -301,14 +311,17 @@ public class Controller implements Observer{
         studentAllContracts.setSignContractListener(new StudentSignContractListener());
 
         contractReuse.setReuseContractListener(new ReuseContractListener());
+        
+        createSameTutorContract.setListener(new SubmitReuseSameTutorListener());
         for (Contract c : this.allUnexpiredContracts) {
 	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, studentAllContracts);
 	        c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
         }
         
-        for (Contract c : this.allUnexpiredContracts) {
-	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, studentAllContracts);
-	        c.subscribe(EventType.CONTRACT_SIGN, studentAllContracts);
+        for (Contract c : this.studentExpiredContracts) {
+            c.subscribe(EventType.CONTRACT_CESSATIONINFO_UPDATED, contractReuse);
+            c.subscribe(EventType.CONTRACT_DELETED, contractReuse);
+            c.subscribe(EventType.CONTRACT_REUSE, studentAllBids);
         }
         
         for (Bid b : this.initiatedBids) {
@@ -383,12 +396,30 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
         	createSameTutorContract.setCurrentContract(activeContract);
+        	
+        	if (studentView.activePanel != null) {
+                studentView.main.remove(studentView.activePanel);
+            }
+        	studentView.main.add(createSameTutorContract);
+        	studentView.activePanel = createSameTutorContract;
+            display.createPanel(studentView.main);
+            display.setVisible();
+        }
+    }
+    
+    class SubmitReuseSameTutorListener implements MouseClickListener {
+
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
+        	
+            
         	String c = (String) createSameTutorContract.competency.getSelectedItem();
             String h = createSameTutorContract.hourPerLesson.getText();
             String ss = createSameTutorContract.sessionsPerWeek.getText();
             String r = createSameTutorContract.rate.getText();
             String rT = createSameTutorContract.rateType.getSelection().getActionCommand();
         	activeContract.reuseContract(new ContractAddInfo(false, false, activeContract.getContractDuration() , c, h, ss, r));
+        	Utils.SUCCESS_CONTRACT_CREATION.show();
         }
     }
 
@@ -397,8 +428,11 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
         	List<String> allTutorsId = User.getAllTutorsId();
-            (new CreateDifferentTutorContract(allTutorsId)).show();
+        	CreateDifferentTutorContract createDifferentTutorContract = new CreateDifferentTutorContract(activeContract,allTutorsId);
+        	createDifferentTutorContract.show();
             String tutorId = createDifferentTutorContract.getSelectedTutor();
+            if (tutorId == null) 
+            	return;
         	String newSecondPartyId = tutorId;
         	activeContract.reuseContract(newSecondPartyId);
         }
@@ -779,6 +813,10 @@ public class Controller implements Observer{
         }
         case CONTRACT_DELETED: {
             studentExpiredContracts.remove(activeContract);
+            break;
+        }
+        case CONTRACT_REUSE: {
+            this.reFetchAllContractAsFirstParty();
             break;
         }
         case USER_SUBSCRIBE_NEW_BID: {

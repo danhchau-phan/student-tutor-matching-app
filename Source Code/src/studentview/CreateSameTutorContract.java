@@ -10,8 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CreateSameTutorContract extends RemovablePanel {
+	private Contract contract;
     public JRadioButton perSession = new JRadioButton("per session");
-    private Contract contract;
     public JRadioButton perHour = new JRadioButton("per hour");
     public ButtonGroup rateType = new ButtonGroup();
     {
@@ -47,28 +47,37 @@ public class CreateSameTutorContract extends RemovablePanel {
         this.add(midPanel);
 
         groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
-                .addGroup(groupLayout.createParallelGroup()
-                        .addComponent(rateLb)
-                        .addComponent(sessionsPerWeekLb)
-                .addGroup(groupLayout.createParallelGroup()
-                        .addGroup(groupLayout.createSequentialGroup()
-                                .addComponent(rate)
-                                .addComponent(perSession)
-                                .addComponent(perHour))
-                        .addComponent(sessionsPerWeek)
-                ))
-        );
+				.addGroup(groupLayout.createParallelGroup()
+						.addComponent(rateLb)
+						.addComponent(competencyLb)
+						.addComponent(hourPerLessonLb)
+						.addComponent(sessionsPerWeekLb)
+				.addGroup(groupLayout.createParallelGroup()
+						.addGroup(groupLayout.createSequentialGroup()
+								.addComponent(rate)
+								.addComponent(perSession)
+								.addComponent(perHour))
+						.addComponent(competency)
+						.addComponent(hourPerLesson)
+						.addComponent(sessionsPerWeek)
+				)));
 
-        groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
-                .addGroup(groupLayout.createParallelGroup()
-                        .addComponent(rateLb)
-                        .addComponent(rate)
-                        .addComponent(perSession)
-                        .addComponent(perHour))
-                .addGroup(groupLayout.createParallelGroup()
-                        .addComponent(sessionsPerWeekLb)
-                        .addComponent(sessionsPerWeek))
-        );
+		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
+				.addGroup(groupLayout.createParallelGroup()
+						.addComponent(rateLb)
+						.addComponent(rate)
+						.addComponent(perSession)
+						.addComponent(perHour))
+				.addGroup(groupLayout.createParallelGroup()
+						.addComponent(competencyLb)
+						.addComponent(competency))
+				.addGroup(groupLayout.createParallelGroup()
+						.addComponent(hourPerLessonLb)
+						.addComponent(hourPerLesson))
+				.addGroup(groupLayout.createParallelGroup()
+						.addComponent(sessionsPerWeekLb)
+						.addComponent(sessionsPerWeek))
+		);
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setBackground(Color.red);
         bottomPanel.add(reuseContractButton);

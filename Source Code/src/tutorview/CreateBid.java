@@ -39,7 +39,7 @@ public class CreateBid extends RemovablePanel {
 
 	private JLabel rateLb = new JLabel("Rate");
 	private JLabel durationLb = new JLabel("Duration");
-	private JLabel timeDateLb = new JLabel("Time and Date"); // Wednesday 2PM
+	private JLabel timeDateLb = new JLabel("Time and Date");
 	private JLabel sessionsPerWeekLb = new JLabel("Sessions/Week");
 	private JLabel freeLessonLb = new JLabel("freeLesson");
 	private JLabel addInfoLb = new JLabel("Additional information");
