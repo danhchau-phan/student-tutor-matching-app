@@ -171,8 +171,8 @@ public class Contract extends Observable implements Model {
 	}
 
 	private void deleteContract() {
-		String url = Application.rootUrl + "/contract/" + this.id + "/delete";
-		Model.delete(url, this.id);
+		String url = Application.rootUrl + "/contract/" + this.id;
+		Model.delete(url);
 		this.inform(EventType.CONTRACT_DELETED);
 	}
 	/**
@@ -232,6 +232,14 @@ public class Contract extends Observable implements Model {
 	
 	//////// end requirement2 /////////
 
+	/////// for testing //////////
+	public static void deleteAllContracts() {
+		for (ObjectNode node : Model.getAll("/contract")) {
+			String url = Application.rootUrl + "/contract/" + node.get("id").textValue();
+			Model.delete(url);
+		}
+	}
+	
 	private void updateDateSigned() {
 		if (this.addInfo == null)
 			return;

@@ -105,13 +105,14 @@ public interface Model {
 	  	}
 	}
 
-	public static void delete(String url, String json) {
+	public static void delete(String url) {
 		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder(URI.create(url))
-				.setHeader("Authorization", Application.myApiKey)
-				.method("DELETE", HttpRequest.BodyPublishers.ofString(json))
-				.header("Content-Type","application/json")
-				.build();
+		HttpRequest request = HttpRequest.newBuilder()
+						.setHeader("Authorization", Application.myApiKey)
+				        .uri(URI.create(url))
+				        .header("Content-Type", "application/json")
+				        .DELETE()
+				        .build();
 
 		try {
 			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
