@@ -10,8 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CreateSameTutorContract extends RemovablePanel {
-	private Contract contract;
     public JRadioButton perSession = new JRadioButton("per session");
+    private Contract contract;
     public JRadioButton perHour = new JRadioButton("per hour");
     public ButtonGroup rateType = new ButtonGroup();
     {

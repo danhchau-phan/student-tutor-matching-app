@@ -49,6 +49,8 @@ public class Controller implements Observer{
     private TutorMonitorView tutorMonitor;
     private TutorMessageView tutorMessage;
     private CreateSameTutorContract createSameTutorContract;
+    private CreateDifferentTutorContract createDifferentTutorContract;
+
 
     private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     private enum Role {
@@ -196,6 +198,7 @@ public class Controller implements Observer{
         this.tutorMonitor = new TutorMonitorView(this.monitoredBids, new MonitorReloadListener());
         this.createBid = new CreateBid();
         this.createSameTutorContract = new CreateSameTutorContract();
+        this.createDifferentTutorContract = new CreateDifferentTutorContract();
 
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
@@ -376,7 +379,10 @@ public class Controller implements Observer{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
         	///////// INCOMPLETE: INPUT FOR TUTOR SELECTION NEEDED ///////////////
-        	String newSecondPartyId = null;
+            createDifferentTutorContract.addAllContract(allContracts);
+            createDifferentTutorContract.show();
+            String tutorId = createDifferentTutorContract.getSelectedTutor();
+        	String newSecondPartyId = tutorId;
         	activeContract.reuseContract(newSecondPartyId);
         }
     }
