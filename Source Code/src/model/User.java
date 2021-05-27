@@ -188,6 +188,31 @@ public class User extends Observable implements Model {
 		return -1;
 	}
 	
+	/**
+	 * Check tutor's competency using their Id
+	 * @param tutorId
+	 * @param subjectId
+	 * @return
+	 */
+	public static int getCompetency(String tutorId, String subjectId) {
+		ObjectNode jsonNodes = Model.get("/user/", tutorId + "?fields=competencies&fields=competencies.subject");
+		
+		assert (jsonNodes.get("competencies").isArray());
+		Iterator<JsonNode> competenciesIter = jsonNodes.get("competencies").iterator();
+		while (competenciesIter.hasNext()) {
+
+			JsonNode node = competenciesIter.next();
+			int currLv = node.get("level").intValue();
+			String currId = node.get("subject").get("id").textValue();
+			
+			if (currId.equals(subjectId)) {
+				System.out.println(currLv);
+				return currLv;
+			}
+		}	
+		return -1;
+	}
+	
 	public static List<String> getAllTutorsId() {
 		List<String> allTutorsId = new ArrayList<String>();
 		for (ObjectNode node : Model.getAll("/user")) {

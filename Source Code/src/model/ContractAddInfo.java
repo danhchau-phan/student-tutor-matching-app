@@ -74,4 +74,8 @@ public class ContractAddInfo {
 	public int getContractDuration() {
 		return duration;
 	}
+	
+	public int getCompetency() {
+		return Integer.parseInt(competency);
+	}
 }

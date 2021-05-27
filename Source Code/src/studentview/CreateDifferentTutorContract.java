@@ -2,7 +2,10 @@ package studentview;
 
 import mainview.MouseClickListener;
 import mainview.RemovablePanel;
+import mainview.Utils;
+import model.Bid;
 import model.Contract;
+import model.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,11 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateDifferentTutorContract extends JPanel {
-    public JComboBox<String> allTutors;
+    private JComboBox<String> allTutors;
+    private Contract contract;
     private String selectedTutorId;
 
-    public CreateDifferentTutorContract(List<String> allTutorsId) {
+    public CreateDifferentTutorContract(Contract contract, List<String> allTutorsId) {
         super();
+        this.contract = contract;
         allTutors = new JComboBox<String>((String[]) allTutorsId.toArray());
         this.add(allTutors);
     }
@@ -26,6 +31,9 @@ public class CreateDifferentTutorContract extends JPanel {
                 JOptionPane.INFORMATION_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             this.selectedTutorId = (String) allTutors.getSelectedItem();
+            if (User.getCompetency(selectedTutorId, contract.getSubjectId()) < contract.getRequiredCompetency() + Bid.COMPETENCY_PADDING)
+            	Utils.INSUFFICIENT_COMPETENCY.show();
+            	this.show();
         }
     }
 

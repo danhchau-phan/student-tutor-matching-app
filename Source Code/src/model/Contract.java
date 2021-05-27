@@ -17,7 +17,7 @@ public class Contract extends Observable implements Model {
 	private String id;
 	private User firstParty, secondParty;
 	private Subject subject;
-	private Date dateCreated, dateSigned, expiryDate, terminationDate;
+	private Date dateCreated, dateSigned, expiryDate;
 	
 	private ContractAddInfo addInfo;
 	private ContractCessationInfo cessationInfo;
@@ -30,13 +30,6 @@ public class Contract extends Observable implements Model {
 		Calendar c = Calendar.getInstance();
         c.setTime(now);
 		c.add(Calendar.MONTH, months);
-		return c.getTime();
-	}
-	
-	private static final Date ADD_DAYS(Date now, int days) {
-		Calendar c = Calendar.getInstance();
-        c.setTime(now);
-		c.add(Calendar.DATE, days);
 		return c.getTime();
 	}
 	
@@ -61,7 +54,7 @@ public class Contract extends Observable implements Model {
 		this.dateCreated = Utils.formatDate(node.get("dateCreated").textValue());
 		this.dateSigned = Utils.formatDate(node.get("dateSigned").textValue());
 		this.expiryDate = Utils.formatDate(node.get("expiryDate").textValue());
-		this.terminationDate = Utils.formatDate(node.get("terminationDate").textValue()); ///// req 2 //////
+		
 		this.addInfo = (node.get("additionalInfo").isEmpty()? null : new ContractAddInfo(node.get("additionalInfo")));
 	}
 	
@@ -191,6 +184,14 @@ public class Contract extends Observable implements Model {
 		this.deleteContract();
 	}
 
+	public String getSubjectId() {
+		return this.subject.getId();
+	}
+	
+	public int getRequiredCompetency() {
+		return this.addInfo.getCompetency();
+	}
+	
 	public void patchContractCessationInfo(ContractCessationInfo newInfo) {
 		this.cessationInfo = newInfo;
 		String url = Application.rootUrl + "/contract/" + this.id;
