@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TutorMonitorView extends RemovablePanel implements Observer {
@@ -23,24 +24,16 @@ public class TutorMonitorView extends RemovablePanel implements Observer {
         super(new BorderLayout());
         this.listener = listener;
         this.bids = bids;
-        placeComponents();
     }
     
-    protected void placeComponents(){
-        this.removeAll();
-        this.timer = new Timer(5000, listener);
-        this.timer.setInitialDelay(0);
-        this.timer.start();
-        
-        responses.clear();
+    public void placeComponents(){
+    	this.removeAll();
+    	this.revalidate();
+    	responses.clear();
         for (Bid b : this.bids) {
         	responses.addAll(b.getResponse());
-   
         }
-        
-        for (BidResponse r : this.responses) {
-        	System.out.print(r);
-        }
+        Collections.reverse(responses);
         DefaultListModel<BidResponse> model = new DefaultListModel<BidResponse>();
 		for (BidResponse r : responses)
 			model.addElement(r);
@@ -49,12 +42,10 @@ public class TutorMonitorView extends RemovablePanel implements Observer {
 		JScrollPane scrollp = new JScrollPane(responseList);
 		this.add(scrollp);
     }
-
     /** Update the latest Bid Response or expired Bid Request*/
     @Override
     public void update(EventType e) {
         placeComponents();
-        this.timer.stop();
     }
 
     private class ResponseCellRenderer extends JPanel implements ListCellRenderer<BidResponse> {
@@ -79,6 +70,10 @@ public class TutorMonitorView extends RemovablePanel implements Observer {
 	}
 	
 	public void onAttached() {
+		this.removeAll();
+        this.timer = new Timer(30000, listener);
+        this.timer.setInitialDelay(0);
+        this.timer.start();
 		placeComponents();
 	}
 	

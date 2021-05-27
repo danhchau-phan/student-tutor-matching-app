@@ -19,8 +19,8 @@ public class Application {
 		myApiKey = reader.nextLine();
 		reader.close();
 		
-		///// Delete contracts created from Assignment 2 (for testing purpose) //////
-		Contract.deleteAllContracts();
+		///// Delete all contracts created from Assignment 2 //////
+//		Contract.deleteAllContracts();
 
 		new Controller();
 	}

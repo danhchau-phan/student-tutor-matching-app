@@ -15,7 +15,6 @@ import model.*;
 public class TutorResponseView extends RemovablePanel implements Observer {
 	private Bid bid;
 	private JList<BidResponse> responseList;
-	// private JList<Message> messageList;
 	private List<BidResponse> responses;
 	private List<Message> messages;
 

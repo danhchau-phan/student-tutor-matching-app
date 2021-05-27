@@ -120,6 +120,7 @@ public class Controller implements Observer{
             this.allBids.add(b);
             b.subscribe(EventType.BID_CLOSEDDOWN, this);
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
+            b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorMonitor);
         }
     }
 
@@ -247,6 +248,7 @@ public class Controller implements Observer{
         
         for (Bid b : this.allBids) {
             b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
+            b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorMonitor);
         }
         
         for (Contract c : this.allContracts) {
@@ -712,6 +714,7 @@ public class Controller implements Observer{
 			for (Bid b : monitoredBids) {
 				b.updateBid();
 			}
+			tutorMonitor.placeComponents();
 			
 		}}
     
@@ -754,7 +757,8 @@ public class Controller implements Observer{
             studentExpiredContracts.remove(activeContract);
         }
         case USER_SUBSCRIBE_NEW_BID: {
-        	this.fetchMonitoredBids();
+        	this.monitoredBids.add(activeBid);
+//        	this.fetchMonitoredBids();
         }
         }
     }

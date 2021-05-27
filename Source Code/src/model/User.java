@@ -30,8 +30,6 @@ public class User extends Observable implements Model {
 
 	private boolean isStudent, isTutor;
 
-	// private Monitor monitor;
-
 	private List<String> monitor;
 
 
@@ -54,10 +52,6 @@ public class User extends Observable implements Model {
     	this.userName = (node.get("userName") != null) ?node.get("userName").textValue() : null;
     	this.isTutor = (node.get("isTutor") != null) ?node.get("isTutor").asBoolean() : null;
     	this.isStudent = (node.get("isStudent") != null) ?node.get("isStudent").asBoolean() : null;
-		// if (node.get("additionalInfo").isEmpty())
-		// 	this.monitor = new Monitor((List<Bid>) null);
-		// else
-		// 	this.monitor = new Monitor(node.get("additionalInfo"));
 		this.monitor = (node.get("additionalInfo").isEmpty() | node.get("additionalInfo").get("monitor") == null) ? new ArrayList<>() : getMonitor(node.get("additionalInfo").get("monitor").iterator());
 	}
 
@@ -72,8 +66,9 @@ public class User extends Observable implements Model {
 	public void addBidToMonitor(Bid b) {
 		if (this.monitor(b))
 			return;
-		patch();
+		
 		this.monitor.add(b.getId());
+		patch();
 		this.inform(EventType.USER_SUBSCRIBE_NEW_BID);
 	}
 
@@ -99,23 +94,14 @@ public class User extends Observable implements Model {
 	private String getMonitorJson() {
 		String jsonString = "[";
 		String comma = "";
-		for (String s : monitor) {
-			jsonString = jsonString + comma + s;
+		for (String s : this.monitor) {
+			jsonString = jsonString + comma + "\"" +  s + "\"";
 			comma = ",";
 		}
 		jsonString = jsonString + "]";
+		System.out.print(jsonString);
 		return jsonString;
 	}
-//	public Monitor getMonitor() {
-//		assert (this.monitor != null);
-//		return this.monitor;
-//	}
-//
-//	public void stopMonitor() {
-//		if (monitor.getBidAllRequests() != null) {
-//			this.patchMonitor();
-//		}
-//	}
 
 	public static User logIn(String username, String password) {
 		String usersLoginUrl = Application.rootUrl + "/user/login";
