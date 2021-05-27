@@ -188,6 +188,15 @@ public class User extends Observable implements Model {
 		return -1;
 	}
 	
+	public static List<String> getAllTutorsId() {
+		List<String> allTutorsId = new ArrayList<String>();
+		for (ObjectNode node : Model.getAll("/user")) {
+			if (node.get("isTutor").asBoolean() == true)
+				allTutorsId.add(node.get("id").textValue());
+		}
+		return allTutorsId;
+	}
+	
 	public List<Bid> getInitiatedBids() {
 		List<Bid> bids = new ArrayList<Bid>();
 		ObjectNode nodes = Model.get("/user/", this.id + "?fields=initiatedBids");

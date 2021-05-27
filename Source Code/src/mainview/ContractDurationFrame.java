@@ -29,7 +29,6 @@ public class ContractDurationFrame extends JPanel{
         duration.add(twelve);
         duration.add(twentyfour);
         duration.add(longer);
-//        six.setSelected(true);
     }
 
     private int selectedDuration;

@@ -203,8 +203,6 @@ public class Controller implements Observer{
         this.tutorResponse = new TutorResponseView();
         this.tutorMonitor = new TutorMonitorView(this.monitoredBids, new MonitorReloadListener());
         this.createBid = new CreateBid();
-        this.createSameTutorContract = new CreateSameTutorContract();
-        this.createDifferentTutorContract = new CreateDifferentTutorContract();
 
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
         tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
@@ -269,7 +267,11 @@ public class Controller implements Observer{
         this.studentAllContracts = new StudentAllContracts(this.allUnexpiredContracts);
         this.createRequest = new CreateRequest();
         this.contractReuse = new ContractReuse(studentExpiredContracts);
+        //////// requirement 3 ////////
+        this.createSameTutorContract = new CreateSameTutorContract();
+//        this.createDifferentTutorContract = new CreateDifferentTutorContract();
         this.reviseContractTerm = new ReviseContractTerm();
+        
         
         studentView.setSwitchPanelListener(studentView.main, studentView.homeButton, homeView);
         studentView.setSwitchPanelListener(studentView.main, studentView.viewAllBids, studentAllBids);
@@ -395,9 +397,8 @@ public class Controller implements Observer{
     class ReuseDifferentTutorListener implements MouseClickListener {
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
-        	///////// INCOMPLETE: INPUT FOR TUTOR SELECTION NEEDED ///////////////
-            createDifferentTutorContract.addAllContract(allUnexpiredContracts);
-            createDifferentTutorContract.show();
+        	List<String> allTutorsId = User.getAllTutorsId();
+            (new CreateDifferentTutorContract(allTutorsId)).show();
             String tutorId = createDifferentTutorContract.getSelectedTutor();
         	String newSecondPartyId = tutorId;
         	activeContract.reuseContract(newSecondPartyId);

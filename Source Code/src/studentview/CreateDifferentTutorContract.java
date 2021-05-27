@@ -9,37 +9,27 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateDifferentTutorContract extends RemovablePanel {
-    private List<Contract> contracts = new ArrayList<>();
-    public JComboBox<String> tutorsContract = new JComboBox<String>();
-    private String selectedTutor;
+public class CreateDifferentTutorContract extends JPanel {
+    public JComboBox<String> allTutors;
+    private String selectedTutorId;
 
-    private JButton reuseContractButton = new JButton("Reuse");
-
-    public CreateDifferentTutorContract() {
-        super(new BorderLayout());
+    public CreateDifferentTutorContract(List<String> allTutorsId) {
+        super();
+        allTutors = new JComboBox<String>((String[]) allTutorsId.toArray());
+        this.add(allTutors);
     }
 
     public void show() {
-        int result = JOptionPane.showConfirmDialog(new CreateDifferentTutorContract(),
-                null, "Reuse Contract!", JOptionPane.DEFAULT_OPTION);
+        int result = JOptionPane.showConfirmDialog(null,
+                this, "Reuse Contract With Different Tutor", 
+                JOptionPane.OK_CANCEL_OPTION, 
+                JOptionPane.INFORMATION_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
-            this.selectedTutor = (String) tutorsContract.getSelectedItem();
-        }
-    }
-
-    public void setListener(MouseClickListener listener) {
-        this.reuseContractButton.addMouseListener(listener);
-    }
-
-    public void addAllContract(List<Contract> contractList) {
-        this.contracts.addAll(contractList);
-        for (Contract contract: this.contracts) {
-            tutorsContract.addItem(contract.getSecondPartyId());
+            this.selectedTutorId = (String) allTutors.getSelectedItem();
         }
     }
 
     public String getSelectedTutor() {
-        return this.selectedTutor;
+        return this.selectedTutorId;
     }
 }
