@@ -192,14 +192,7 @@ public class Bid extends Observable implements Model{
     	
     	Model.patch(url, jsonString);
     }
-    
-    // public static Bid updateBid(String bidId) {
-    	
-    // 	ObjectNode node = Model.get("/bid/", bidId);
-    // 	return new Bid(node);
-    
-    // }
-    
+    /////////// requirement 1 ///////////////
     /**
      * Update bid without changing the reference
      */
@@ -220,6 +213,15 @@ public class Bid extends Observable implements Model{
     	this.inform(EventType.BID_CLOSEDDOWN);
     }   
     
+    public boolean tutorHasBidded(String tutorId) {
+    	try {
+    		for (BidResponse bR : this.getResponse()) 
+    			if (bR.getBidderId().equals(tutorId))
+    				return true;
+    	} catch (Exception e) {};
+    	return false;
+    }
+    
 	public List<Message> getMessages() {
 		List<Message> messages = new ArrayList<Message>(); 
 		ObjectNode node = Model.get("/bid/", this.id + "?fields=messages");
@@ -238,6 +240,12 @@ public class Bid extends Observable implements Model{
 	
 	public void addResponse(BidResponse r) {
 		this.addInfo.addResponse(r);
+		this.patchBid();
+		this.inform(EventType.BID_NEWRESPONSE);
+	}
+	
+	public void addResponse(BidResponse r, String tutorId) {
+		this.addInfo.addResponse(r, tutorId);
 		this.patchBid();
 		this.inform(EventType.BID_NEWRESPONSE);
 	}

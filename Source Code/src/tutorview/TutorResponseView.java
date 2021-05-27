@@ -16,12 +16,10 @@ public class TutorResponseView extends RemovablePanel implements Observer {
 	private Bid bid;
 	private JList<BidResponse> responseList;
 	private List<BidResponse> responses;
-	private List<Message> messages;
 
 	public JButton createBid;
 	public JButton buyOut;
 	public JButton subscribeBid;
-	public JButton modifyBid;
 
 	public TutorResponseView(Bid bid) {
 		super(new BorderLayout());
@@ -38,7 +36,6 @@ public class TutorResponseView extends RemovablePanel implements Observer {
 		this.createBid = new JButton("Create Bid");
 		this.buyOut = new JButton("Buy Out Bid");
 		this.subscribeBid = new JButton("Subscribe Bid");
-		this.modifyBid = new JButton("Modify Bid");
 		if (bid.getType() == Bid.BidType.open) {
 			
 			DefaultListModel<BidResponse> model = new DefaultListModel<>();
@@ -80,10 +77,6 @@ public class TutorResponseView extends RemovablePanel implements Observer {
 
 	public void setSubscribeBidListener(MouseClickListener listener) {
 		this.subscribeBid.addMouseListener(listener);
-	}
-
-	public void setModifyBidListener(MouseClickListener listener) {
-		this.modifyBid.addMouseListener(listener);
 	}
 
 	public BidResponse getSelectedResponse() {

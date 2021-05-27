@@ -38,7 +38,6 @@ public class ContractDurationFrame extends JPanel{
     twelve.setActionCommand("12");
     twentyfour.setActionCommand("24");
     longer.setActionCommand("longer");
-//    six.setSelected(true);
     }
     public ContractDurationFrame() {
         super();
@@ -66,8 +65,12 @@ public class ContractDurationFrame extends JPanel{
                 this , "Select Contract Duration",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
-			this.getSelectedDuration();
-		}
+			try {
+				this.getSelectedDuration();
+			} catch (NumberFormatException e) {
+				this.show();
+			}
+		} 
 	}
 
 
@@ -76,7 +79,7 @@ public class ContractDurationFrame extends JPanel{
         longerDuration.setEditable(false);
     }
 
-    private void getSelectedDuration() {
+    private void getSelectedDuration() throws NumberFormatException {
         selectedDuration = Integer.parseInt(duration.getSelection().getActionCommand());
         if (duration.getSelection().getActionCommand().equalsIgnoreCase("longer")) {
             if (!isNumeric(longerDuration.getText())) {

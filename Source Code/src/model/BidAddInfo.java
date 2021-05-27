@@ -98,7 +98,13 @@ public class BidAddInfo {
 
 	public void addResponse(BidResponse r) {
 		this.bidResponse.add(r);
-		
+	}
+	
+	public void addResponse(BidResponse r, String tutorId) {
+		for (int i = 0; i < this.bidResponse.size(); i++ ) {
+			if (this.bidResponse.get(i).getBidderId().equals(tutorId))
+				this.bidResponse.set(i, r);
+		}
 	}
 	
 	public void resetResponse(List<BidResponse> bR) {

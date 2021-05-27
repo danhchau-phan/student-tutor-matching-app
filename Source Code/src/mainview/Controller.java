@@ -226,7 +226,6 @@ public class Controller implements Observer{
                     tutorResponse.setCreateBidListener(new CreateBidListener());
                     tutorResponse.setBuyOutListener(new BuyOutListener());
                     tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
-                    tutorResponse.setModifyBidListener(new ModifyBidListener());
                     tutorView.main.add(tutorResponse);
                     tutorView.activePanel = tutorResponse;
                 } else {
@@ -476,6 +475,10 @@ public class Controller implements Observer{
         }
     }
     
+    /**
+     * Listener to switch to CreateBid view
+     *
+     */
     class CreateBidListener implements MouseClickListener{
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {
@@ -520,15 +523,6 @@ public class Controller implements Observer{
         public void mouseClicked(MouseEvent mouseEvent) {
         	user.addBidToMonitor(activeBid);
         }
-    }
-    
-    class ModifyBidListener implements MouseClickListener {
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			
-		}
-   
     }
     
     class SendStudentMessageListener implements MouseClickListener {
@@ -627,7 +621,11 @@ public class Controller implements Observer{
         }
 
     }
-
+    
+    /**
+     * Listener to submit new bid
+     *
+     */
     class SubmitBidListener implements MouseClickListener {
 
         @Override
@@ -650,8 +648,10 @@ public class Controller implements Observer{
                             s,
                             a,
                             f);
-
-                    activeBid.addResponse(response);
+                    if (activeBid.tutorHasBidded(user.getId()))
+                    	activeBid.addResponse(response, user.getId());
+                    else
+                    	activeBid.addResponse(response);
                     Utils.SUCCESS_BID_CREATION.show();
                 } catch (NumberFormatException nfe) {
                     Utils.INVALID_FIELDS.show();
