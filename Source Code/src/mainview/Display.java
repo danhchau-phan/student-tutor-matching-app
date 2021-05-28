@@ -18,7 +18,6 @@ public class Display {
 	}
 	
 	public void createPanel(JComponent panel) {
-        // frame.add(panel);
 		frame.setContentPane(panel);
 	}
 	

@@ -266,15 +266,6 @@ public class StudentController implements Observer {
 	    @Override
 	    public void mouseClicked(MouseEvent mouseEvent) {
 	    	reviseContractTerm.setStrategy(createSameTutorContract);
-//	    	createSameTutorContract.setCurrentContract(activeContract);
-//	    	
-//	    	if (studentView.activePanel != null) {
-//	            studentView.main.remove(studentView.activePanel);
-//	        }
-//	    	studentView.main.add(createSameTutorContract);
-//	    	studentView.activePanel = createSameTutorContract;
-//	        display.createPanel(studentView.main);
-//	        display.setVisible();
 	    }
 	}
 
@@ -283,9 +274,7 @@ public class StudentController implements Observer {
 	    public void mouseClicked(MouseEvent mouseEvent) {
 	    	createDifferentTutorContract = new CreateDifferentTutorContract(activeContract, User.getAllTutorsId());
 	    	reviseContractTerm.setStrategy(createDifferentTutorContract);
-//	    	List<String> allTutorsId = User.getAllTutorsId();
-//	    	CreateDifferentTutorContract createDifferentTutorContract = new CreateDifferentTutorContract(activeContract,allTutorsId);
-//	    	createDifferentTutorContract.show();
+	    	
 	        String tutorId = createDifferentTutorContract.getSelectedTutor();
 	        if (tutorId == null) 
 	        	return;

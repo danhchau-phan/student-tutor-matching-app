@@ -39,10 +39,11 @@ public class CreateSameTutorContract extends RemovablePanel implements Strategy 
 
     public CreateSameTutorContract() {
         super(new BorderLayout());
-        execute();
     }
 
     public void execute() {
+    	this.removeAll();
+    	this.revalidate();
     	
         JPanel midPanel = new JPanel();
         GroupLayout groupLayout = new GroupLayout(midPanel);
@@ -89,9 +90,9 @@ public class CreateSameTutorContract extends RemovablePanel implements Strategy 
         this.add(bottomPanel, BorderLayout.SOUTH);
         
         JFrame frame = new JFrame("Reuse Contract with same tutor");
-        frame.setSize(Display.FRAME_WIDTH, Display.FRAME_HEIGHT);
+        frame.setSize(Display.FRAME_WIDTH / 2, Display.FRAME_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setContentPane(this);
+        frame.add(this);
         frame.setVisible(true);
     }
     
