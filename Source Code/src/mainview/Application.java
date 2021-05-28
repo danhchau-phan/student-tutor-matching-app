@@ -22,6 +22,6 @@ public class Application {
 		///// Delete all contracts created from Assignment 2 //////
 //		Contract.deleteAllContracts();
 
-		new Controller();
+		new MainController();
 	}
 }
