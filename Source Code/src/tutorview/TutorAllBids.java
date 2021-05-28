@@ -24,7 +24,7 @@ import model.User;
 /**
  * This is the View for Tutor to see all available (unclosed, unexpired) match requests
  */
-public class TutorAllBids extends RemovablePanel implements Observer {
+public class TutorAllBids extends RemovablePanel {
 	private List<Bid> bids;
 	private JList<Bid> bidList;
 

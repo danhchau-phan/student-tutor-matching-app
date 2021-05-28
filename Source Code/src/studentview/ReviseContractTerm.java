@@ -5,6 +5,7 @@ import javax.swing.*;
 import mainview.MouseClickListener;
 import mainview.RemovablePanel;
 import model.Contract;
+import model.EventType;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -40,4 +41,8 @@ public class ReviseContractTerm extends RemovablePanel {
     public void setContract(Contract contract) {
         this.contract = contract;
     }
+
+	@Override
+	public void update(EventType e) {
+	}
 }

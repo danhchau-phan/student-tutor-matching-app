@@ -4,6 +4,7 @@ import mainview.MouseClickListener;
 import mainview.RemovablePanel;
 import model.Bid;
 import model.Contract;
+import model.EventType;
 import model.Subject;
 
 import javax.swing.*;
@@ -91,4 +92,8 @@ public class CreateSameTutorContract extends RemovablePanel {
     public void setCurrentContract(Contract c) {
     	this.contract = c;
     }
+
+	@Override
+	public void update(EventType e) {
+	}
 }

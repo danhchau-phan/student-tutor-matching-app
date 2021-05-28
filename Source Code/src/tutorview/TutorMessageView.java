@@ -15,7 +15,7 @@ import model.User;
 /**
  * This is the View where Tutor messages Student in close bidding
  */
-public class TutorMessageView extends RemovablePanel implements MessageView, Observer {
+public class TutorMessageView extends RemovablePanel implements MessageView {
 
 	private Message message;
 	private Bid bid;

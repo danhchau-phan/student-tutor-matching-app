@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import mainview.MouseClickListener;
 import mainview.RemovablePanel;
 import model.Bid;
+import model.EventType;
 import model.Subject;
 
 /**
@@ -123,6 +124,10 @@ public class CreateRequest extends RemovablePanel {
 
 	public void setCreateRequestListener(MouseClickListener listener) {
 		this.createRequest.addMouseListener(listener);
+	}
+
+	@Override
+	public void update(EventType e) {
 	}
 
 }

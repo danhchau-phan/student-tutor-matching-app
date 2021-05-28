@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TutorMonitorView extends RemovablePanel implements Observer {
+public class TutorMonitorView extends RemovablePanel {
 	private Timer timer;
     private List<Bid> bids = new ArrayList<>();
     private ActionListener listener;

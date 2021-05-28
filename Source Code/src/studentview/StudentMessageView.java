@@ -19,7 +19,7 @@ import model.Bid;
 /**
  * The View where Student chats with the Tutor in close bidding
  */
-public class StudentMessageView extends RemovablePanel implements MessageView, Observer{
+public class StudentMessageView extends RemovablePanel implements MessageView{
 
 	private Message message;
 	private Bid bid;

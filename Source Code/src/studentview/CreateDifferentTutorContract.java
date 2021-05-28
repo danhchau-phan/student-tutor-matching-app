@@ -32,7 +32,7 @@ public class CreateDifferentTutorContract extends JPanel {
         if (result == JOptionPane.OK_OPTION) {
             this.selectedTutorId = (String) allTutors.getSelectedItem();
             if (User.getCompetency(selectedTutorId, contract.getSubjectId()) < contract.getRequiredCompetency() + Bid.COMPETENCY_PADDING)
-            	Utils.INSUFFICIENT_COMPETENCY.show();
+            	Utils.INSUFFICIENT_COMPETENCY_REUSE_CONTRACT.show();
             	this.show();
         }
     }

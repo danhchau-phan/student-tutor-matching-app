@@ -8,6 +8,7 @@ import mainview.Display;
 import mainview.NavigationPane;
 import mainview.RemovablePanel;
 import mainview.View;
+import model.EventType;
 import model.User;
 
 /**
@@ -19,7 +20,10 @@ public class StudentView extends View implements NavigationPane {
 	public JButton viewAllBids = new JButton("View All Bids");
 	public JButton viewContracts = new JButton("View Contracts");
 	public JButton reuseContracts = new JButton("Reuse Contracts");
-	public RemovablePanel main = new RemovablePanel(new BorderLayout());
+	public RemovablePanel main = new RemovablePanel(new BorderLayout()) {
+		@Override
+		public void update(EventType e) {
+		}};
 	
 	public StudentView(Display display, User user) {
 		super(display);

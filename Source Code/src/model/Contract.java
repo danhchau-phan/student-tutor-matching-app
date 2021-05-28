@@ -243,12 +243,20 @@ public class Contract extends Observable implements Model {
 	}
 	
 	public String toString() {
-		return "First Party: " + firstParty.getFullName() + '\n'
-				+  "Second Party: " + secondParty.getFullName() + '\n'
-				+  "Subject: " + '\n' + subject + '\n'
-				+ "Date created: " + '\n' + dateCreated + '\n'
-				+ "Date signed: " + '\n' + (dateSigned == null?"unsigned" : dateSigned) + '\n'
-				+ "Date expire: " + '\n' + expiryDate;
+		if (dateSigned == null)
+			return "First Party: " + firstParty.getFullName() + '\n'
+					+  "Second Party: " + secondParty.getFullName() + '\n'
+					+  "Subject: " + '\n' + subject + '\n'
+					+ "Date created: " + '\n' + dateCreated + '\n'
+					+ "Date signed: " + '\n' + "unsigned" + '\n'
+					+ "Duration: " + '\n' + this.getContractDuration();
+		else
+			return "First Party: " + firstParty.getFullName() + '\n'
+					+  "Second Party: " + secondParty.getFullName() + '\n'
+					+  "Subject: " + '\n' + subject + '\n'
+					+ "Date created: " + '\n' + dateCreated + '\n'
+					+ "Date signed: " + '\n' + dateSigned + '\n'
+					+ "Date expire: " + '\n' + expiryDate;
 	}
 	
 	public boolean isSigned() {
