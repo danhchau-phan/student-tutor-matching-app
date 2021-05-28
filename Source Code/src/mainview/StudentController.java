@@ -412,6 +412,7 @@ public class StudentController implements Observer {
         }
         case CONTRACT_CREATED: {
             reFetchAllContractAsFirstParty();
+            break;
         }
         case CONTRACT_SIGN: {
         	int id = this.allUnexpiredContracts.indexOf(activeContract);

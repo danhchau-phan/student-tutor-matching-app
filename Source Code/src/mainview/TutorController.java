@@ -377,8 +377,10 @@ public class TutorController implements Observer {
         	break;
         }
         case CONTRACT_DELETED: {
+        	break;
         }
         case CONTRACT_REUSE: {
+        	break;
         }
         case USER_SUBSCRIBE_NEW_BID: {
         	this.monitoredBids.add(activeBid);
