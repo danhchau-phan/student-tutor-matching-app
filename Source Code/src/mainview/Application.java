@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import controller.MainController;
 import model.Contract;
 
 public class Application {

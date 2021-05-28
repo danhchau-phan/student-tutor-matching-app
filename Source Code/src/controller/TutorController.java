@@ -1,4 +1,4 @@
-package mainview;
+package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +6,13 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import mainview.ContractDurationFrame;
+import mainview.Display;
+import mainview.HomeView;
+import mainview.MouseClickListener;
+import mainview.NearExpiryContractFrame;
+import mainview.Observer;
+import mainview.Utils;
 import model.Bid;
 import model.BidResponse;
 import model.Contract;

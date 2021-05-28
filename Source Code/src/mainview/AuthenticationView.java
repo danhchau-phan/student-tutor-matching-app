@@ -9,13 +9,13 @@ import java.awt.Dimension;
 
 public class AuthenticationView extends View {
 	
-	JPanel panel = createPanel();
+	public JPanel panel = createPanel();
 		
 	JLabel userLabel = new JLabel("User");
 	JTextField userText = new JTextField(MAX_INPUT_LENGTH);
 	JLabel passwordLabel = new JLabel("Password");
 	JPasswordField passwordText = new JPasswordField(MAX_INPUT_LENGTH);
-	JButton loginButton = new JButton("Log in");
+	public JButton loginButton = new JButton("Log in");
 
 	private static final Dimension PREFERRED_SIZE = new Dimension(60,25);
 	private static final int MAX_INPUT_LENGTH = 20;

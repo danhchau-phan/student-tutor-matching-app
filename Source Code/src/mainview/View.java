@@ -13,7 +13,7 @@ import javax.swing.JPanel;
  */
 public abstract class  View {
 	protected Display display;
-	protected JButton homeButton = new JButton("Home");
+	public JButton homeButton = new JButton("Home");
 	public RemovablePanel activePanel;
 	
 	public View(Display display) {
@@ -45,7 +45,7 @@ public abstract class  View {
 	 * 	comp: the component where listener is attached to
 	 * 	view: the view to be displayed
 	 */
-	protected void setSwitchPanelListener(RemovablePanel panel, Component comp, View newView) {
+	public void setSwitchPanelListener(RemovablePanel panel, Component comp, View newView) {
 		MouseListener mouseListener = new MouseClickListener() {
 
 			@Override
@@ -63,7 +63,7 @@ public abstract class  View {
 	 * 	comp: the component where listener is attached to
 	 * 	newPanel: the panel to be displayed
 	 */
-	protected void setSwitchPanelListener(JPanel main, Component comp, RemovablePanel newPanel) {
+	public void setSwitchPanelListener(JPanel main, Component comp, RemovablePanel newPanel) {
 		MouseListener mouseListener = new MouseClickListener() {
 
 			@Override
@@ -82,7 +82,7 @@ public abstract class  View {
 		comp.addMouseListener(mouseListener);
 	}
 
-	protected void addMouseListener(JComponent component, MouseClickListener listener) {
+	public void addMouseListener(JComponent component, MouseClickListener listener) {
 		component.addMouseListener(listener);
 	}
 }

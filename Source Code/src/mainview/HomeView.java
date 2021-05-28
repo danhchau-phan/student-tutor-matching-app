@@ -14,10 +14,10 @@ public class HomeView extends View {
 	// JButton studentButton = new JButton("Student site");
 	// JButton tutorButton = new JButton("Tutor site");
 	// JButton logOut = new JButton("Log out");
-	JPanel panel;
-	JButton studentButton;
-	JButton tutorButton;
-	JButton logOut;
+	public JPanel panel;
+	public JButton studentButton;
+	public JButton tutorButton;
+	public JButton logOut;
 	
 	/**
 		 * Home view which directs user to different site

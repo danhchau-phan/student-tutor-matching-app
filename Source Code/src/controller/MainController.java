@@ -1,7 +1,13 @@
-package mainview;
+package controller;
 
 import java.awt.event.MouseEvent;
 
+import mainview.AuthenticationView;
+import mainview.Display;
+import mainview.HomeView;
+import mainview.MouseClickListener;
+import mainview.Observer;
+import mainview.Utils;
 import model.*;
 
 public class MainController implements Observer{
