@@ -6,7 +6,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import mainview.MainController.Role;
 import model.Bid;
 import model.BidResponse;
 import model.Contract;
@@ -15,15 +14,6 @@ import model.EventType;
 import model.Message;
 import model.MessageAddInfo;
 import model.User;
-import studentview.ContractReuse;
-import studentview.CreateRequest;
-import studentview.CreateSameTutorContract;
-import studentview.ReviseContractTerm;
-import studentview.StudentAllBids;
-import studentview.StudentAllContracts;
-import studentview.StudentMessageView;
-import studentview.StudentResponseView;
-import studentview.StudentView;
 import tutorview.CreateBid;
 import tutorview.TutorAllBids;
 import tutorview.TutorAllContracts;
@@ -54,10 +44,161 @@ public class TutorController implements Observer {
     
     private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     
-	class TutorRoleActivationListener implements MouseClickListener {
+    public TutorController(Display display, User user, HomeView homeView) {
+    	this.display = display;
+    	this.user = user;
+    	this.homeView = homeView;
+    }
+    
+    private void fetchAllBids() {
+        this.allBids.clear();
+        for (Bid b : Bid.getAll()) {
+            this.allBids.add(b);
+            b.subscribe(EventType.BID_CLOSEDDOWN, this);
+        }
+    }
+    
+    private void reFetchAllBids() {
+        this.allBids.clear();
+        for (Bid b : Bid.getAll()) {
+            this.allBids.add(b);
+            b.subscribe(EventType.BID_CLOSEDDOWN, this);
+            b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
+            b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorMonitor);
+        }
+    }
+    
+    private void fetchMonitoredBids() {
+    	this.monitoredBids.clear();
+    	
+    	for (Bid b : this.allBids)
+    		if (this.user.monitor(b))
+    			this.monitoredBids.add(b);
+    }
+    
+    private void initTutorViews() {
+        assert (this.user != null);
+        this.tutorView = new TutorView(display, user);
+        this.tutorAllBids = new TutorAllBids(this.allBids);
+        this.tutorAllContracts = new TutorAllContracts(this.allUnexpiredContracts);
+        this.tutorResponse = new TutorResponseView();
+        this.tutorMonitor = new TutorMonitorView(this.monitoredBids, new MonitorReloadListener());
+        this.createBid = new CreateBid();
+
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.homeButton, homeView);
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewAllBids, tutorAllBids);
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewContracts, tutorAllContracts);
+        tutorView.setSwitchPanelListener(tutorView.main, tutorView.viewMonitor, tutorMonitor);
+
+
+        /** Tutor Response Portal: Response Bid View and Message View*/
+        tutorAllBids.setListListener(new MouseClickListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (tutorView.activePanel != null) {
+                    tutorView.main.remove(tutorView.activePanel);
+                }
+
+                activeBid = tutorAllBids.getSelectedBid();
+                if (activeBid.getType() == Bid.BidType.open) {
+                    tutorResponse.setBid(activeBid);
+                    subscribeBidNewResponse();
+                    
+                    tutorResponse.setCreateBidListener(new CreateBidListener());
+                    tutorResponse.setBuyOutListener(new BuyOutListener());
+                    tutorResponse.setSubscribeBidListener(new SubscribeBidListener());
+                    tutorView.main.add(tutorResponse);
+                    tutorView.activePanel = tutorResponse;
+                } else {
+                    tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
+                    tutorMessage.setSendMessageListener(new SendTutorMessageListener());
+                    tutorView.main.add(tutorMessage);
+                    tutorView.activePanel = tutorMessage;
+                }
+                display.createPanel(tutorView.main);
+                display.setVisible();
+            }
+        });
+
+
+        tutorAllContracts.setSignContractListener(new TutorSignContractListener());
+
+        createBid.setSubmitBidListener(new SubmitBidListener());
+        
+        user.emptySubscription(EventType.USER_SUBSCRIBE_NEW_BID);
+        user.subscribe(EventType.USER_SUBSCRIBE_NEW_BID, this);
+        user.subscribe(EventType.USER_SUBSCRIBE_NEW_BID, tutorMonitor);
+        
+        for (Bid b : this.allBids) {
+            b.subscribe(EventType.BID_CLOSEDDOWN, tutorAllBids);
+            b.subscribe(EventType.BID_FETCH_NEWRESPONSE_FROM_API, tutorMonitor);
+        }
+        
+        for (Contract c : this.allUnexpiredContracts) {
+	        c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
+	        c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, tutorAllContracts);
+        }
+    }
+    
+    private void showTutorMessagePanel() {
+        tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
+        tutorMessage.setSendMessageListener(new SendTutorMessageListener());
+
+        if (tutorView.activePanel != null) {
+            tutorView.main.remove(tutorView.activePanel);
+        }
+        tutorView.main.add(tutorMessage);
+        tutorView.activePanel = tutorMessage;
+        display.createPanel(tutorView.main);
+        display.setVisible();
+    }
+    
+    private void subscribeContractCreation() {
+        subscriberContract.subscribe(EventType.CONTRACT_CREATED, this);
+        subscriberContract.subscribe(EventType.CONTRACT_CREATED, tutorAllContracts);
+    }
+    
+    private void subscribeBidNewResponse() {
+        activeBid.emptySubscription(EventType.BID_NEWRESPONSE);
+        activeBid.subscribe(EventType.BID_NEWRESPONSE, tutorResponse);
+    }
+    
+    private void subscribeBidCreation() {
+        subscriberBid.subscribe(EventType.BID_CREATED, this);
+        subscriberBid.subscribe(EventType.BID_CREATED, tutorAllBids);
+    }
+    
+    private void fetchAllContractAsSecondParty() {
+        this.allUnexpiredContracts.clear();
+        for (Contract c : Contract.getAllContractsAsSecondParty(this.user.getId())) {
+            this.allUnexpiredContracts.add(c);
+            c.subscribe(EventType.CONTRACT_SIGN, this);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
+        }
+    }
+    
+    private void reFetchAllContractAsSecondParty() {
+        this.allUnexpiredContracts.clear();
+        for (Contract c : Contract.getAllContractsAsSecondParty(this.user.getId())) {
+            this.allUnexpiredContracts.add(c);
+            c.subscribe(EventType.CONTRACT_SIGN, this);
+            c.subscribe(EventType.CONTRACT_SIGN, tutorAllContracts);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, this);
+            c.subscribe(EventType.CONTRACT_ONE_PARTY_SIGN, tutorAllContracts);
+        }
+    }
+    
+    private void fetchNearExpiredContract() {
+    	List<Contract> c = Contract.getNearExpiryContracts(allUnexpiredContracts);
+    	(new NearExpiryContractFrame(c)).show();
+    };
+    
+    private void subscribeMessage() {
+        activeMessage.subscribe(EventType.MESSAGE_PATCH, this);
+    }
+	public class TutorRoleActivationListener implements MouseClickListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
-	    activeRole = Role.tutor;
 	    fetchAllBids();
 	    fetchAllContractAsSecondParty();
 	    fetchNearExpiredContract();
@@ -205,17 +346,11 @@ public class TutorController implements Observer {
 	public void update(EventType e) {
 		switch (e) {
         case BID_CREATED: {
-            if (activeRole == Role.student) {
-                reFetchInitiatedBids();
-            } else if (activeRole == Role.tutor)
-                reFetchAllBids();
+            reFetchAllBids();
             break;
             }
         case BID_CLOSEDDOWN: {
-            if (activeRole == Role.student)
-                this.initiatedBids.remove(activeBid);
-            else if (activeRole == Role.tutor)
-                this.allBids.remove(activeBid);
+            this.allBids.remove(activeBid);
             activeBid = null;
             break;
         }
