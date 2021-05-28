@@ -158,7 +158,7 @@ public class StudentController implements Observer {
      */
     private void showStudentMessagePanel() {
         
-        studentMessage = new StudentMessageView(user, activeMessage, activeBid);
+        studentMessage = new StudentMessageView(activeMessage, activeBid);
         studentMessage.setSendMessageListener(new SendStudentMessageListener());
         studentMessage.setSelectBidListener(new MessageSelectBidListener());
 

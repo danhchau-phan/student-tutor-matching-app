@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TutorMonitorView extends RemovablePanel {
+	private static final int monitorCheckInterval = 15000;
 	private Timer timer;
     private List<Bid> bids = new ArrayList<>();
     private ActionListener listener;
@@ -71,7 +72,7 @@ public class TutorMonitorView extends RemovablePanel {
 	
 	public void onAttached() {
 		this.removeAll();
-        this.timer = new Timer(15000, listener);
+        this.timer = new Timer(this.monitorCheckInterval, listener);
         this.timer.setInitialDelay(0);
         this.timer.start();
 		placeComponents();

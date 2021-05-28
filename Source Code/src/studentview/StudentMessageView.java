@@ -25,11 +25,9 @@ public class StudentMessageView extends RemovablePanel implements MessageView{
 	private Bid bid;
 	private JButton send = new JButton("Send");
 	private JButton selectBid = new JButton("Select bid");
-	private User user;
 	private JTextField chatBox;
 
-	public StudentMessageView(User user, Message message, Bid bid) {
-		this.user = user;
+	public StudentMessageView(Message message, Bid bid) {
 		this.bid = bid;
 		this.message = message;
 	}
@@ -73,7 +71,5 @@ public class StudentMessageView extends RemovablePanel implements MessageView{
 
 	@Override
 	public void update(EventType e) {
-		// TODO Auto-generated method stub
-		
 	}
 }
