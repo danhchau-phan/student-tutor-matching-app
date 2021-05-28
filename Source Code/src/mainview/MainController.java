@@ -15,40 +15,9 @@ public class MainController implements Observer{
 
     private Display display;
     private User user;
-    private List<Bid> initiatedBids = new ArrayList<Bid>();
-    private List<Bid> allBids = new ArrayList<Bid>();
-    private List<Bid> monitoredBids = new ArrayList<Bid>();
-    private List<Contract> allUnexpiredContracts = new ArrayList<Contract>();
-    private List<Contract> studentExpiredContracts = new ArrayList<Contract>();
-
-    private Bid activeBid, subscriberBid = new Bid();
-    private Contract activeContract, subscriberContract = new Contract();
-    private Message activeMessage;
 
     private HomeView homeView;
 
-    //Student Fields
-    private StudentAllBids studentAllBids;
-    private StudentAllContracts studentAllContracts;
-    private CreateRequest createRequest;
-    private StudentView studentView;
-    private StudentResponseView studentResponse;
-    private StudentMessageView studentMessage;
-    private ContractReuse contractReuse;
-    private ReviseContractTerm reviseContractTerm;
-
-    //Tutor Fields
-    private TutorAllBids tutorAllBids;
-    private TutorAllContracts tutorAllContracts;
-    private CreateBid createBid;
-    private TutorView tutorView;
-    private TutorResponseView tutorResponse;
-    private TutorMonitorView tutorMonitor;
-    private TutorMessageView tutorMessage;
-    private CreateSameTutorContract createSameTutorContract;
-
-
-    private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     private enum Role {
         student,
         tutor
@@ -396,62 +365,6 @@ public class MainController implements Observer{
 
     @Override
     public void update(EventType e) {
-        switch (e) {
-        case BID_CREATED: {
-            if (activeRole == Role.student) {
-                reFetchInitiatedBids();
-            } else if (activeRole == Role.tutor)
-                reFetchAllBids();
-            break;
-            }
-        case BID_CLOSEDDOWN: {
-            if (activeRole == Role.student)
-                this.initiatedBids.remove(activeBid);
-            else if (activeRole == Role.tutor)
-                this.allBids.remove(activeBid);
-            activeBid = null;
-            break;
-        }
-        case MESSAGE_PATCH: {
-            if (activeRole == Role.student)
-                showStudentMessagePanel();
-            else if (activeRole == Role.tutor)
-                showTutorMessagePanel();
-            break;
-        }
-        case CONTRACT_CREATED: {
-            if (activeRole == Role.student)
-                reFetchAllContractAsFirstParty();
-            else if (activeRole == Role.tutor)
-                reFetchAllContractAsSecondParty();
-            break;
-        }
-        case CONTRACT_SIGN: {
-        	int id = this.allUnexpiredContracts.indexOf(activeContract);
-        	Contract newContract = activeContract.updateContract();
-        	this.allUnexpiredContracts.set(id, newContract); 
-        	activeContract = newContract;
-        	break;
-        }
-        case CONTRACT_ONE_PARTY_SIGN: {
-        	int id = this.allUnexpiredContracts.indexOf(activeContract);
-        	Contract newContract = activeContract.updateContract();
-        	this.allUnexpiredContracts.set(id, newContract); 
-        	activeContract = newContract;
-        	break;
-        }
-        case CONTRACT_DELETED: {
-            studentExpiredContracts.remove(activeContract);
-            break;
-        }
-        case CONTRACT_REUSE: {
-            this.reFetchAllContractAsFirstParty();
-            break;
-        }
-        case USER_SUBSCRIBE_NEW_BID: {
-        	this.monitoredBids.add(activeBid);
-        	break;
-        }
-        }
+        
     }
 }

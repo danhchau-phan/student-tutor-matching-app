@@ -1,20 +1,64 @@
 package mainview;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import mainview.MainController.Role;
 import model.Bid;
 import model.BidAddInfo;
 import model.BidResponse;
+import model.Contract;
 import model.ContractAddInfo;
+import model.EventType;
+import model.Message;
 import model.Subject;
 import model.User;
+import studentview.ContractReuse;
 import studentview.CreateDifferentTutorContract;
+import studentview.CreateRequest;
+import studentview.CreateSameTutorContract;
+import studentview.ReviseContractTerm;
+import studentview.StudentAllBids;
 import studentview.StudentAllContracts;
+import studentview.StudentMessageView;
+import studentview.StudentResponseView;
+import studentview.StudentView;
+import tutorview.CreateBid;
+import tutorview.TutorAllBids;
+import tutorview.TutorAllContracts;
+import tutorview.TutorMessageView;
+import tutorview.TutorMonitorView;
+import tutorview.TutorResponseView;
+import tutorview.TutorView;
 
-public class StudentController {
+public class StudentController implements Observer {
+	private Display display;
+    private User user;
+    private List<Bid> initiatedBids = new ArrayList<Bid>();
+    private List<Bid> allBids = new ArrayList<Bid>();
+    private List<Bid> monitoredBids = new ArrayList<Bid>();
+    private List<Contract> allUnexpiredContracts = new ArrayList<Contract>();
+    private List<Contract> studentExpiredContracts = new ArrayList<Contract>();
 
+    private Bid activeBid, subscriberBid = new Bid();
+    private Contract activeContract, subscriberContract = new Contract();
+    private Message activeMessage;
+
+    private HomeView homeView;
+
+    private StudentAllBids studentAllBids;
+    private StudentAllContracts studentAllContracts;
+    private CreateRequest createRequest;
+    private StudentView studentView;
+    private StudentResponseView studentResponse;
+    private StudentMessageView studentMessage;
+    private ContractReuse contractReuse;
+    private ReviseContractTerm reviseContractTerm;
+    private CreateSameTutorContract createSameTutorContract;
+    
+    private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
+    
 	class StudentRoleActivationListener implements MouseClickListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -227,5 +271,50 @@ public class StudentController {
 	        display.setVisible();
 	
 	    }}
+
+	@Override
+	public void update(EventType e) {
+		switch (e) {
+        case BID_CREATED: {
+            reFetchInitiatedBids();
+            break;
+            }
+        case BID_CLOSEDDOWN: {
+            this.initiatedBids.remove(activeBid);
+            break;
+        }
+        case MESSAGE_PATCH: {
+            showStudentMessagePanel();
+            break;
+        }
+        case CONTRACT_CREATED: {
+            reFetchAllContractAsFirstParty();
+        }
+        case CONTRACT_SIGN: {
+        	int id = this.allUnexpiredContracts.indexOf(activeContract);
+        	Contract newContract = activeContract.updateContract();
+        	this.allUnexpiredContracts.set(id, newContract); 
+        	activeContract = newContract;
+        	break;
+        }
+        case CONTRACT_ONE_PARTY_SIGN: {
+        	int id = this.allUnexpiredContracts.indexOf(activeContract);
+        	Contract newContract = activeContract.updateContract();
+        	this.allUnexpiredContracts.set(id, newContract); 
+        	activeContract = newContract;
+        	break;
+        }
+        case CONTRACT_DELETED: {
+            studentExpiredContracts.remove(activeContract);
+            break;
+        }
+        case CONTRACT_REUSE: {
+            this.reFetchAllContractAsFirstParty();
+            break;
+        }
+        case USER_SUBSCRIBE_NEW_BID: {
+        }
+        }
+	}
 	
 }
