@@ -79,6 +79,7 @@ public class Controller implements Observer{
     			if (!(user == null)) {
                     // should be a separate function
     			    display.removePanel(authView.panel);
+
                     homeView = new HomeView(display, user);
                     homeView.logOut.addMouseListener(new LogoutListener());
                     homeView.studentButton.addMouseListener(new StudentRoleActivationListener());
@@ -307,7 +308,7 @@ public class Controller implements Observer{
 
             }
         });
-    
+
         studentAllContracts.setSignContractListener(new StudentSignContractListener());
 
         contractReuse.setReuseContractListener(new ReuseContractListener());
@@ -336,7 +337,7 @@ public class Controller implements Observer{
             subscriberBid.subscribe(EventType.BID_CREATED, studentAllBids);
         else if (activeRole == Role.tutor)
             subscriberBid.subscribe(EventType.BID_CREATED, tutorAllBids);
-        
+
     }
 
     private void subscribeBidNewResponse() {
