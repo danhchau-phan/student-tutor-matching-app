@@ -46,6 +46,7 @@ public class StudentController implements Observer {
     private ContractReuse contractReuse;
     private ReviseContractTerm reviseContractTerm;
     private CreateSameTutorContract createSameTutorContract;
+    private CreateDifferentTutorContract createDifferentTutorContract;
     
     private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     public StudentController(Display display, User user, HomeView homeView) {
@@ -264,24 +265,27 @@ public class StudentController implements Observer {
 	
 	    @Override
 	    public void mouseClicked(MouseEvent mouseEvent) {
-	    	createSameTutorContract.setCurrentContract(activeContract);
-	    	
-	    	if (studentView.activePanel != null) {
-	            studentView.main.remove(studentView.activePanel);
-	        }
-	    	studentView.main.add(createSameTutorContract);
-	    	studentView.activePanel = createSameTutorContract;
-	        display.createPanel(studentView.main);
-	        display.setVisible();
+	    	reviseContractTerm.setStrategy(createSameTutorContract);
+//	    	createSameTutorContract.setCurrentContract(activeContract);
+//	    	
+//	    	if (studentView.activePanel != null) {
+//	            studentView.main.remove(studentView.activePanel);
+//	        }
+//	    	studentView.main.add(createSameTutorContract);
+//	    	studentView.activePanel = createSameTutorContract;
+//	        display.createPanel(studentView.main);
+//	        display.setVisible();
 	    }
 	}
 
 	class ReuseDifferentTutorListener implements MouseClickListener {
 	    @Override
 	    public void mouseClicked(MouseEvent mouseEvent) {
-	    	List<String> allTutorsId = User.getAllTutorsId();
-	    	CreateDifferentTutorContract createDifferentTutorContract = new CreateDifferentTutorContract(activeContract,allTutorsId);
-	    	createDifferentTutorContract.show();
+	    	createDifferentTutorContract = new CreateDifferentTutorContract(activeContract, User.getAllTutorsId());
+	    	reviseContractTerm.setStrategy(createDifferentTutorContract);
+//	    	List<String> allTutorsId = User.getAllTutorsId();
+//	    	CreateDifferentTutorContract createDifferentTutorContract = new CreateDifferentTutorContract(activeContract,allTutorsId);
+//	    	createDifferentTutorContract.show();
 	        String tutorId = createDifferentTutorContract.getSelectedTutor();
 	        if (tutorId == null) 
 	        	return;

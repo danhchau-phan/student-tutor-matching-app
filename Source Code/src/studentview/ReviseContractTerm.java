@@ -17,7 +17,9 @@ public class ReviseContractTerm extends RemovablePanel {
     private Contract contract;
     private JButton sameTutorReuse = new JButton("Reuse With Same Tutor");
     private JButton differentTutorReuse = new JButton("Reuse With Different Tutor");
-
+    
+    private Strategy strategy;
+    
     public ReviseContractTerm() {
         super(new BorderLayout());
         placeComponents();
@@ -45,4 +47,10 @@ public class ReviseContractTerm extends RemovablePanel {
 	@Override
 	public void update(EventType e) {
 	}
+	
+	public void setStrategy(Strategy strategy) {
+		this.strategy = strategy;
+		this.strategy.execute();
+	}
 }
+

@@ -1,5 +1,6 @@
 package studentview;
 
+import mainview.Display;
 import mainview.MouseClickListener;
 import mainview.RemovablePanel;
 import model.Bid;
@@ -8,9 +9,11 @@ import model.EventType;
 import model.Subject;
 
 import javax.swing.*;
+
+
 import java.awt.*;
 
-public class CreateSameTutorContract extends RemovablePanel {
+public class CreateSameTutorContract extends RemovablePanel implements Strategy {
 	private Contract contract;
     public JRadioButton perSession = new JRadioButton("per session");
     public JRadioButton perHour = new JRadioButton("per hour");
@@ -36,10 +39,11 @@ public class CreateSameTutorContract extends RemovablePanel {
 
     public CreateSameTutorContract() {
         super(new BorderLayout());
-        placeComponents();
+        execute();
     }
 
-    private void placeComponents() {
+    public void execute() {
+    	
         JPanel midPanel = new JPanel();
         GroupLayout groupLayout = new GroupLayout(midPanel);
         midPanel.setLayout(groupLayout);
@@ -83,6 +87,12 @@ public class CreateSameTutorContract extends RemovablePanel {
         bottomPanel.setBackground(Color.red);
         bottomPanel.add(reuseContractButton);
         this.add(bottomPanel, BorderLayout.SOUTH);
+        
+        JFrame frame = new JFrame("Reuse Contract with same tutor");
+        frame.setSize(Display.FRAME_WIDTH, Display.FRAME_HEIGHT);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setContentPane(this);
+        frame.setVisible(true);
     }
     
     public void setListener(MouseClickListener listener) {
