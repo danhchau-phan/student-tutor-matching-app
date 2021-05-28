@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 /**
  * Factory class for all views
  */
-public abstract class View {
+public abstract class  View {
 	protected Display display;
 	protected JButton homeButton = new JButton("Home");
 	public RemovablePanel activePanel;
