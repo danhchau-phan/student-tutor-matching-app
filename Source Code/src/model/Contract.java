@@ -22,9 +22,8 @@ public class Contract extends Observable implements Model {
 	private ContractAddInfo addInfo;
 	private ContractCessationInfo cessationInfo;
 	private static final int YEAR_IN_MILLIS = 3600 * 24 * 365 * 1000;
-	private static final int ONE_MONTH_IN_MILLIS = 3600 * 24 * 30 * 1000;
 	public static final int DEFAULT_CONTRACT_DURATION = 6;
-	public static final int MAX_CONTRACT_VIEWED = 50;
+	public static final int MAX_CONTRACT_VIEWED = 5;
 
 	private static final Date ADD_MONTH(Date now, int months) {
 		Calendar c = Calendar.getInstance();
@@ -85,7 +84,7 @@ public class Contract extends Observable implements Model {
 	public void signContract() {
 		this.addInfo.firstPartySign(true);
 		this.addInfo.secondPartySign(true);
-		// set Contract expiry Date
+		
 		Date now = new Date();
 //		setContractExpiryDate(ADD_MONTH(now, getContractDuration()));
 		////////// FOR TESTING ///////////
@@ -220,7 +219,7 @@ public class Contract extends Observable implements Model {
 	public static List<Contract> getNearExpiryContracts(List<Contract> allContracts) {
 		List<Contract> contracts = new ArrayList<Contract>();
 		for (Contract c : allContracts) {
-			if (c.isSigned() && c.expiryDate.after(new Date()) && c.expiryDate.before(new Date(System.currentTimeMillis() + ONE_MONTH_IN_MILLIS)) )
+			if (c.isSigned() && c.expiryDate.after(new Date()) && c.expiryDate.before(ADD_MONTH(new Date(), 1)) )
 				contracts.add(c);
 		}
 		return contracts;

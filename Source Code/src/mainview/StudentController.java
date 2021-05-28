@@ -361,28 +361,6 @@ public class StudentController implements Observer {
 	    
 	}
 
-	/**
-	     * Listener to revise contract's term (if student reuse contract with the same tutor)
-	     *
-	     */
-	class ReviseContractTermListener implements MouseClickListener {
-	
-	        @Override
-	        public void mouseClicked(MouseEvent e) {
-	//        	assert activeRole == Role.student;
-	//            activeContract = contractReuse.getSelectedContract();
-	//            reviseContractTerm.setContract(activeContract);
-	//            if (studentView.activePanel != null) {
-	//                studentView.main.remove(studentView.activePanel);
-	//            }
-	//            studentView.main.add(reviseContractTerm);
-	//            studentView.activePanel = reviseContractTerm;
-	//            display.createPanel(studentView.main);
-	//            display.setVisible();
-	        }
-	        
-	    }
-
 	class SubmitReuseSameTutorListener implements MouseClickListener {
 	
 	    @Override
