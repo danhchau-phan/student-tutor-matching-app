@@ -1,7 +1,5 @@
 package mainview;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,7 @@ import tutorview.*;
 
 import javax.swing.*;
 
-public class Controller implements Observer{
+public class MainController implements Observer{
     private static final int monitorCheckInterval = 5000;
 
     private Display display;
@@ -56,7 +54,7 @@ public class Controller implements Observer{
         tutor
     }
     private Role activeRole;
-    public Controller() {
+    public MainController() {
         this.start();
     }
 
@@ -77,7 +75,6 @@ public class Controller implements Observer{
     				exception.printStackTrace();
     			}
     			if (!(user == null)) {
-                    // should be a separate function
     			    display.removePanel(authView.panel);
                     homeView = new HomeView(display, user);
                     homeView.logOut.addMouseListener(new LogoutListener());
@@ -387,384 +384,16 @@ public class Controller implements Observer{
         display.setVisible();
     }
 
-    /**
-     * Listener for reusing contract with same tutor
-     *
-     */
-    class ReuseSameTutorListener implements MouseClickListener {
-
-        @Override
-        public void mouseClicked(MouseEvent mouseEvent) {
-        	createSameTutorContract.setCurrentContract(activeContract);
-        	
-        	if (studentView.activePanel != null) {
-                studentView.main.remove(studentView.activePanel);
-            }
-        	studentView.main.add(createSameTutorContract);
-        	studentView.activePanel = createSameTutorContract;
-            display.createPanel(studentView.main);
-            display.setVisible();
-        }
-    }
-    
-    class SubmitReuseSameTutorListener implements MouseClickListener {
-
-        @Override
-        public void mouseClicked(MouseEvent mouseEvent) {
-        	
-            
-        	String c = (String) createSameTutorContract.competency.getSelectedItem();
-            String h = createSameTutorContract.hourPerLesson.getText();
-            String ss = createSameTutorContract.sessionsPerWeek.getText();
-            String r = createSameTutorContract.rate.getText();
-            String rT = createSameTutorContract.rateType.getSelection().getActionCommand();
-        	activeContract.reuseContract(new ContractAddInfo(false, false, activeContract.getContractDuration() , c, h, ss, r));
-        	Utils.SUCCESS_CONTRACT_CREATION.show();
-        }
-    }
-
-
-    class ReuseDifferentTutorListener implements MouseClickListener {
-        @Override
-        public void mouseClicked(MouseEvent mouseEvent) {
-        	List<String> allTutorsId = User.getAllTutorsId();
-        	CreateDifferentTutorContract createDifferentTutorContract = new CreateDifferentTutorContract(activeContract,allTutorsId);
-        	createDifferentTutorContract.show();
-            String tutorId = createDifferentTutorContract.getSelectedTutor();
-            if (tutorId == null) 
-            	return;
-        	String newSecondPartyId = tutorId;
-        	activeContract.reuseContract(newSecondPartyId);
-        }
-    }
-
     class LogoutListener implements MouseClickListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
             display.closeWindow();
-            new Controller();
+            new MainController();
         }
         
     }
 
-    class StudentRoleActivationListener implements MouseClickListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            activeRole = Role.student;
-            fetchInitiatedBids();
-            fetchAllContractAsFirstParty();
-            fetchStudentExpiredContract();
-            fetchNearExpiredContract();
-
-            initStudentViews();
-            subscribeBidCreation();
-            subscribeContractCreation();
-            display.removePanel(homeView.panel);
-            studentView.display();
-        }}
-
-    class TutorRoleActivationListener implements MouseClickListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            activeRole = Role.tutor;
-            fetchAllBids();
-            fetchAllContractAsSecondParty();
-            fetchNearExpiredContract();
-            fetchMonitoredBids();
-            initTutorViews();
-            subscribeBidCreation();
-            subscribeContractCreation();
-            display.removePanel(homeView.panel);
-            tutorView.display();
-        }}
-
-    class ResponseListener implements MouseClickListener{
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (activeBid.getType() == Bid.BidType.close) {
-                activeMessage = studentResponse.getSelectedMessage();
-                subscribeMessage();
-                showStudentMessagePanel();
-            } else {
-                BidResponse selectedResponse = studentResponse.getSelectedResponse();
-                if (selectedResponse == null)
-                    return;
-
-                /** Set up the contract expiry date*/
-                contractDurationFrame.show();
-                int contractDuration = contractDurationFrame.getDuration();
-                
-                subscriberContract.postContract(user.getId(),
-                        selectedResponse.getBidderId(),
-                        activeBid.getSubject().getId(),
-                        new ContractAddInfo(true, false, contractDuration,
-                        		activeBid.getRequestCompetency(),
-                        		activeBid.getRequestHourPerLesson(),
-                        		activeBid.getRequestSessionPerWeek(),
-                        		activeBid.getRequestRate()));
-                activeBid.closeDownBid();
-                Utils.SUCCESS_CONTRACT_CREATION.show();
-            }
-        }
-    }
-    
-    /**
-     * Listener to switch to CreateBid view
-     *
-     */
-    class CreateBidListener implements MouseClickListener{
-        @Override
-        public void mouseClicked(MouseEvent mouseEvent) {
-            if (activeBid.checkEligibility(user)) {
-                if (tutorView.activePanel != null) {
-                    tutorView.main.remove(tutorView.activePanel);
-                }
-                tutorView.main.add(createBid);
-                tutorView.activePanel = createBid;
-                display.createPanel(tutorView.main);
-                display.setVisible();
-            } else {
-                Utils.INSUFFICIENT_COMPETENCY.show();
-            }
-        }
-    }
-
-    class BuyOutListener implements MouseClickListener{
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (activeBid.checkEligibility(user)) {
-                contractDurationFrame.show();
-                int contractDuration = contractDurationFrame.getDuration();
-                subscriberContract.postContract(user.getId(), activeBid.getInitiatorId(),
-                        activeBid.getSubject().getId(),
-                        new ContractAddInfo(true, true, contractDuration,
-                        		activeBid.getRequestCompetency(),
-                        		activeBid.getRequestHourPerLesson(),
-                        		activeBid.getRequestSessionPerWeek(),
-                        		activeBid.getRequestRate()));
-
-                activeBid.closeDownBid();
-                Utils.SUCCESS_CONTRACT_CREATION.show();
-            } else {
-                Utils.INSUFFICIENT_COMPETENCY.show();
-            }
-        }
-    }
-
-    class SubscribeBidListener implements MouseClickListener{
-        @Override
-        public void mouseClicked(MouseEvent mouseEvent) {
-        	user.addBidToMonitor(activeBid);
-        }
-    }
-    
-    class SendStudentMessageListener implements MouseClickListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            String content = studentMessage.getChatContent();
-            activeMessage.addNewMessage(content, user.getUsername());
-            showStudentMessagePanel();
-        }
-    }
-
-    class SendTutorMessageListener implements MouseClickListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            String content = tutorMessage.getChatContent();
-            if (activeMessage != null) {
-                activeMessage.addNewMessage(content, user.getUsername());
-            } else {
-                activeMessage.postMessage(activeBid.getId(), user.getId(), content, new MessageAddInfo(content, user.getUsername()));
-            }
-            showTutorMessagePanel();
-        }
-    }
-
-    class MessageSelectBidListener implements MouseClickListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            contractDurationFrame.show();
-            int contractDuration = contractDurationFrame.getDuration();
-            subscriberContract.postContract(user.getId(),
-                    activeMessage.getPosterId(),
-                    activeBid.getSubject().getId(),
-                    new ContractAddInfo(true, false, contractDuration, activeBid.getRequestCompetency(),
-                    		activeBid.getRequestHourPerLesson(),
-                    		activeBid.getRequestSessionPerWeek(),
-                    		activeBid.getRequestRate()));
-            activeBid.closeDownBid();
-            Utils.SUCCESS_CONTRACT_CREATION.show();
-
-        }
-    }
-
-    class StudentSignContractListener implements MouseClickListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-        	activeContract = studentAllContracts.getSelectedContract();
-            if (!activeContract.isSigned() && studentAllContracts.getSignedContracts() >= StudentAllContracts.CONTRACT_QUOTA) {
-                Utils.REACHED_CONTRACT_LIMIT.show();
-            }
-            else {
-                activeContract.firstPartySign();
-                if (activeContract.isSigned()) {
-                    Utils.CONTRACT_SIGNED.show();
-                } else
-                    Utils.OTHER_PARTY_PENDING.show();
-            }
-        }
-        
-    }
-
-    class TutorSignContractListener implements MouseClickListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            
-            activeContract = tutorAllContracts.getSelectedContract();
-            activeContract.secondPartySign();
-            if (activeContract.isSigned()) {
-                Utils.CONTRACT_SIGNED.show();
-            } else
-                Utils.OTHER_PARTY_PENDING.show();   
-        }
-    }
-
-    class CreateRequestListener implements MouseClickListener {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            // needs refactoring
-            String c = (String) createRequest.competency.getSelectedItem();
-            String h = createRequest.hourPerLesson.getText();
-            String ss = createRequest.sessionsPerWeek.getText();
-            String r = createRequest.rate.getText();
-            String rT = createRequest.rateType.getSelection().getActionCommand();
-            String sj = (String) createRequest.subject.getSelectedItem();
-            String t = createRequest.bidType.getSelection().getActionCommand();
-            try {
-                BidAddInfo addInfo = new BidAddInfo(c,h,ss,r,rT);
-                subscriberBid.postBid(t, user.getId(), Subject.getSubjectId(sj), addInfo);
-                Utils.SUCCESS_MATCH_REQUEST.show();
-            } catch (NumberFormatException nfe) {
-                Utils.INVALID_FIELDS.show();
-            } catch (NullPointerException npe) {
-                npe.printStackTrace();
-                Utils.PLEASE_FILL_IN.show();
-            }
-        }
-
-    }
-    
-    /**
-     * Listener to submit new bid
-     *
-     */
-    class SubmitBidListener implements MouseClickListener {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            String r = createBid.rate.getText();
-                String d = createBid.duration.getText();
-                String tD = createBid.timeDate.getText();
-                String s = createBid.sessionsPerWeek.getText();
-                String rT = createBid.rateType.getSelection().getActionCommand();
-                String a = createBid.addInfo.getText();
-                boolean f = createBid.freeLesson.getSelection().getActionCommand() == "yes"? true : false;
-                try {
-                    BidResponse response = new BidResponse(
-                            user.getId(),
-                            user.getFullName(),
-                            r,
-                            rT,
-                            d,
-                            tD,
-                            s,
-                            a,
-                            f);
-                    if (activeBid.tutorHasBidded(user.getId()))
-                    	activeBid.addResponse(response, user.getId());
-                    else
-                    	activeBid.addResponse(response);
-                    Utils.SUCCESS_BID_CREATION.show();
-                } catch (NumberFormatException nfe) {
-                    Utils.INVALID_FIELDS.show();
-                } catch (NullPointerException npe) {
-                    npe.printStackTrace();
-                    Utils.PLEASE_FILL_IN.show();
-                }
-        }
-
-    }
-    
-    /**
-     * Listener to revise contract's term (if student reuse contract with the same tutor)
-     *
-     */
-    class ReviseContractTermListener implements MouseClickListener {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-//        	assert activeRole == Role.student;
-//            activeContract = contractReuse.getSelectedContract();
-//            reviseContractTerm.setContract(activeContract);
-//            if (studentView.activePanel != null) {
-//                studentView.main.remove(studentView.activePanel);
-//            }
-//            studentView.main.add(reviseContractTerm);
-//            studentView.activePanel = reviseContractTerm;
-//            display.createPanel(studentView.main);
-//            display.setVisible();
-        }
-        
-    }
-    
-    class SaveCessationInfoListener implements MouseClickListener {
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			//////// INCOMPLETE /////////
-		}}
-    
-    /**
-     * Listener to create new contract and delete current contract
-     *
-     */
-    class ReuseContractListener implements MouseClickListener {
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-            activeContract = contractReuse.getSelectedContract();
-            reviseContractTerm.setContract(activeContract);
-            reviseContractTerm.setReuseSameTutorListener(new ReuseSameTutorListener());
-            reviseContractTerm.setReuseDifferentTutorListener(new ReuseDifferentTutorListener());
-
-
-            if (studentView.activePanel != null) {
-                studentView.main.remove(studentView.activePanel);
-            }
-            studentView.main.add(reviseContractTerm);
-            studentView.activePanel = reviseContractTerm;
-            display.createPanel(studentView.main);
-            display.setVisible();
-
-        }}
-    
-    /**
-     * Listener to reload monitor
-     *
-     */
-    class MonitorReloadListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			System.out.println("Reload monitor");
-			for (Bid b : monitoredBids) {
-				b.updateBid();
-			}
-			tutorMonitor.placeComponents();
-			
-		}}
-    
     @Override
     public void update(EventType e) {
         switch (e) {
