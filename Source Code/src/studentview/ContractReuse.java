@@ -15,7 +15,7 @@ import model.Contract;
 /**
  * Display expired / terminated contracts for reuse
  */
-public class ContractReuse extends RemovablePanel implements Observer{
+public class ContractReuse extends RemovablePanel {
     private List<Contract> contracts;
     private JList<Contract> contractList;
     public ContractReuse(List<Contract> contracts) {

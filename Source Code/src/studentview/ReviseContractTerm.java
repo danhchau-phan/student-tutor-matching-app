@@ -5,6 +5,7 @@ import javax.swing.*;
 import mainview.MouseClickListener;
 import mainview.RemovablePanel;
 import model.Contract;
+import model.EventType;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -16,7 +17,9 @@ public class ReviseContractTerm extends RemovablePanel {
     private Contract contract;
     private JButton sameTutorReuse = new JButton("Reuse With Same Tutor");
     private JButton differentTutorReuse = new JButton("Reuse With Different Tutor");
-
+    
+    private Strategy strategy;
+    
     public ReviseContractTerm() {
         super(new BorderLayout());
         placeComponents();
@@ -40,4 +43,14 @@ public class ReviseContractTerm extends RemovablePanel {
     public void setContract(Contract contract) {
         this.contract = contract;
     }
+
+	@Override
+	public void update(EventType e) {
+	}
+	
+	public void setStrategy(Strategy strategy) {
+		this.strategy = strategy;
+		this.strategy.execute();
+	}
 }
+

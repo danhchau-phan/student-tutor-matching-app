@@ -19,11 +19,11 @@ public class NearExpiryContractFrame extends JPanel{
     List<Contract> contracts;
     public NearExpiryContractFrame(List<Contract> contracts) {
         super();
+        this.setSize(Display.FRAME_WIDTH, Display.FRAME_HEIGHT);
         this.contracts = contracts;
     }
 
     public void show() {
-    	System.out.print(this.contracts.size());
         this.removeAll();
         JList<Contract> cList;
         DefaultListModel<Contract> model = new DefaultListModel<>();
@@ -36,7 +36,7 @@ public class NearExpiryContractFrame extends JPanel{
         JScrollPane scrollp = new JScrollPane(cList);
 		this.add(scrollp);
 
-        JOptionPane.showMessageDialog(null, this);
+        JOptionPane.showMessageDialog(null, this, "Contracts about to expire", JOptionPane.INFORMATION_MESSAGE);
     }
     
     private class CellRenderer extends JPanel implements ListCellRenderer<Contract> {

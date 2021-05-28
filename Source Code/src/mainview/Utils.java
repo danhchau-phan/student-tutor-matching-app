@@ -30,6 +30,7 @@ public class Utils {
     public static final NotificationFrame SUCCESS_CONTRACT_CREATION = new NotificationFrame("Contract created successfully");
     public static final NotificationFrame SUCCESS_BID_CREATION = new NotificationFrame("Bid created successfully");
     public static final NotificationFrame INSUFFICIENT_COMPETENCY =	new NotificationFrame("You don't have sufficient competency this bid required");
+    public static final NotificationFrame INSUFFICIENT_COMPETENCY_REUSE_CONTRACT = new NotificationFrame("This tutor doesn't have sufficient competency this contract required");
     public static final NotificationFrame SUCCESS_MATCH_REQUEST =	new NotificationFrame("Match request created successfully");
     public static final NotificationFrame PLEASE_FILL_IN =	new NotificationFrame("Please fill in all fields");
     public static final NotificationFrame INVALID_FIELDS =	new NotificationFrame("Invalid fields");

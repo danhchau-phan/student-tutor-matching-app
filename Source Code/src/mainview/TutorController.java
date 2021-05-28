@@ -110,7 +110,7 @@ public class TutorController implements Observer {
                     tutorView.main.add(tutorResponse);
                     tutorView.activePanel = tutorResponse;
                 } else {
-                    tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
+                    tutorMessage = new TutorMessageView(activeMessage, activeBid);
                     tutorMessage.setSendMessageListener(new SendTutorMessageListener());
                     tutorView.main.add(tutorMessage);
                     tutorView.activePanel = tutorMessage;
@@ -141,7 +141,7 @@ public class TutorController implements Observer {
     }
     
     private void showTutorMessagePanel() {
-        tutorMessage = new TutorMessageView(user, activeMessage, activeBid);
+        tutorMessage = new TutorMessageView(activeMessage, activeBid);
         tutorMessage.setSendMessageListener(new SendTutorMessageListener());
 
         if (tutorView.activePanel != null) {

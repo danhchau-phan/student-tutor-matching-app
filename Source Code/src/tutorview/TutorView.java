@@ -8,6 +8,7 @@ import mainview.Display;
 import mainview.HomeView;
 import mainview.NavigationPane;
 import mainview.RemovablePanel;
+import model.EventType;
 import model.User;
 
 import mainview.View;
@@ -21,7 +22,10 @@ public class TutorView extends View implements NavigationPane{
 	public JButton viewAllBids = new JButton("View All Bids");
 	public JButton viewContracts = new JButton("View Contracts");
 	public JButton viewMonitor = new JButton("View Monitor");
-	public RemovablePanel main = new RemovablePanel(new BorderLayout());
+	public RemovablePanel main = new RemovablePanel(new BorderLayout()) {
+		@Override
+		public void update(EventType e) {
+		}};
 
 	public TutorView(Display display, User user) {
 		super(display);

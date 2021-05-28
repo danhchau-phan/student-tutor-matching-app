@@ -12,7 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateDifferentTutorContract extends JPanel {
+public class CreateDifferentTutorContract extends JPanel implements Strategy {
     private JComboBox<String> allTutors;
     private Contract contract;
     private String selectedTutorId;
@@ -24,7 +24,7 @@ public class CreateDifferentTutorContract extends JPanel {
         this.add(allTutors);
     }
 
-    public void show() {
+    public void execute() {
         int result = JOptionPane.showConfirmDialog(null,
                 this, "Reuse Contract With Different Tutor", 
                 JOptionPane.OK_CANCEL_OPTION, 
@@ -32,7 +32,7 @@ public class CreateDifferentTutorContract extends JPanel {
         if (result == JOptionPane.OK_OPTION) {
             this.selectedTutorId = (String) allTutors.getSelectedItem();
             if (User.getCompetency(selectedTutorId, contract.getSubjectId()) < contract.getRequiredCompetency() + Bid.COMPETENCY_PADDING)
-            	Utils.INSUFFICIENT_COMPETENCY.show();
+            	Utils.INSUFFICIENT_COMPETENCY_REUSE_CONTRACT.show();
             	this.show();
         }
     }

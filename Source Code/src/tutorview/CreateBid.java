@@ -5,6 +5,7 @@ import javax.swing.*;
 
 import mainview.MouseClickListener;
 import mainview.RemovablePanel;
+import model.EventType;
 
 /**
  * This is the View where the Tutor creates the bid in open bidding
@@ -112,5 +113,10 @@ public class CreateBid extends RemovablePanel {
 
 	public void setSubmitBidListener(MouseClickListener listener) {
 		this.createBid.addMouseListener(listener);
+	}
+
+	@Override
+	public void update(EventType e) {
+		
 	}
 }

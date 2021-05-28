@@ -21,7 +21,7 @@ import model.EventType;
 /**
  * View that allows the Student to see all unexpired and unclosed match requests created by them
  */
-public class StudentAllBids extends RemovablePanel implements Observer{
+public class StudentAllBids extends RemovablePanel {
 	private List<Bid> bids;
 	private JList<Bid> bidList;
 	public StudentAllBids(List<Bid> bids) {

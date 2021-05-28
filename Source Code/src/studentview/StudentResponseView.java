@@ -24,7 +24,7 @@ import java.awt.Component;
  * If the match request is type open, the student can View all bids.
  * If the match request is type close, the student can View all incoming messages..
  */
-public class StudentResponseView extends RemovablePanel implements Observer {
+public class StudentResponseView extends RemovablePanel {
 	private Bid bid;
 	private JList<BidResponse> responseList;
 	private JList<Message> messageList;

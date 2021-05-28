@@ -12,7 +12,7 @@ import model.*;
  * If the match request is type open, the Tutor sees all competing bids from other Tutors.
  * If the match request is type close, the Tutor is redirected to TutorMessageView.
  */
-public class TutorResponseView extends RemovablePanel implements Observer {
+public class TutorResponseView extends RemovablePanel {
 	private Bid bid;
 	private JList<BidResponse> responseList;
 	private List<BidResponse> responses;

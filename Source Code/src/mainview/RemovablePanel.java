@@ -4,7 +4,7 @@ import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 
-public class RemovablePanel extends JPanel {
+public abstract class RemovablePanel extends JPanel implements Observer {
 	
 	public RemovablePanel() {
 		super();

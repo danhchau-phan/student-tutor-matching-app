@@ -20,7 +20,7 @@ import model.Contract;
 /**
  * View that displays all contracts where this Student is first party
  */
-public class StudentAllContracts extends RemovablePanel implements Observer {
+public class StudentAllContracts extends RemovablePanel {
 	public static final int CONTRACT_QUOTA = 5; 
 	private JList<Contract> contractList;
 	List<Contract> contracts;

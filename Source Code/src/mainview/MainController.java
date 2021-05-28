@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import model.*;
 
 public class MainController implements Observer{
-    private static final int monitorCheckInterval = 5000;
 
     private Display display;
     private User user;

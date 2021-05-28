@@ -46,6 +46,7 @@ public class StudentController implements Observer {
     private ContractReuse contractReuse;
     private ReviseContractTerm reviseContractTerm;
     private CreateSameTutorContract createSameTutorContract;
+    private CreateDifferentTutorContract createDifferentTutorContract;
     
     private ContractDurationFrame contractDurationFrame = new ContractDurationFrame();
     public StudentController(Display display, User user, HomeView homeView) {
@@ -158,7 +159,7 @@ public class StudentController implements Observer {
      */
     private void showStudentMessagePanel() {
         
-        studentMessage = new StudentMessageView(user, activeMessage, activeBid);
+        studentMessage = new StudentMessageView(activeMessage, activeBid);
         studentMessage.setSendMessageListener(new SendStudentMessageListener());
         studentMessage.setSelectBidListener(new MessageSelectBidListener());
 
@@ -264,24 +265,16 @@ public class StudentController implements Observer {
 	
 	    @Override
 	    public void mouseClicked(MouseEvent mouseEvent) {
-	    	createSameTutorContract.setCurrentContract(activeContract);
-	    	
-	    	if (studentView.activePanel != null) {
-	            studentView.main.remove(studentView.activePanel);
-	        }
-	    	studentView.main.add(createSameTutorContract);
-	    	studentView.activePanel = createSameTutorContract;
-	        display.createPanel(studentView.main);
-	        display.setVisible();
+	    	reviseContractTerm.setStrategy(createSameTutorContract);
 	    }
 	}
 
 	class ReuseDifferentTutorListener implements MouseClickListener {
 	    @Override
 	    public void mouseClicked(MouseEvent mouseEvent) {
-	    	List<String> allTutorsId = User.getAllTutorsId();
-	    	CreateDifferentTutorContract createDifferentTutorContract = new CreateDifferentTutorContract(activeContract,allTutorsId);
-	    	createDifferentTutorContract.show();
+	    	createDifferentTutorContract = new CreateDifferentTutorContract(activeContract, User.getAllTutorsId());
+	    	reviseContractTerm.setStrategy(createDifferentTutorContract);
+	    	
 	        String tutorId = createDifferentTutorContract.getSelectedTutor();
 	        if (tutorId == null) 
 	        	return;
@@ -360,28 +353,6 @@ public class StudentController implements Observer {
 	    }
 	    
 	}
-
-	/**
-	     * Listener to revise contract's term (if student reuse contract with the same tutor)
-	     *
-	     */
-	class ReviseContractTermListener implements MouseClickListener {
-	
-	        @Override
-	        public void mouseClicked(MouseEvent e) {
-	//        	assert activeRole == Role.student;
-	//            activeContract = contractReuse.getSelectedContract();
-	//            reviseContractTerm.setContract(activeContract);
-	//            if (studentView.activePanel != null) {
-	//                studentView.main.remove(studentView.activePanel);
-	//            }
-	//            studentView.main.add(reviseContractTerm);
-	//            studentView.activePanel = reviseContractTerm;
-	//            display.createPanel(studentView.main);
-	//            display.setVisible();
-	        }
-	        
-	    }
 
 	class SubmitReuseSameTutorListener implements MouseClickListener {
 	
